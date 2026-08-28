@@ -1,0 +1,33 @@
+title: c4cker
+description: Investigación, retos y laboratorios de seguridad ofensiva responsable.
+url: "https://c4cker.com"
+baseurl: ""
+markdown: kramdown
+permalink: /blog/:year/:month/:day/:title/
+timezone: America/Argentina/Buenos_Aires
+
+collections:
+  challenges:
+    output: true
+    permalink: /desafios/:name/
+  labs:
+    output: true
+    permalink: /laboratorios/:name/
+  projects:
+    output: true
+    permalink: /proyectos/:name/
+  writeups:
+    output: true
+    permalink: /writeups/:name/
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor

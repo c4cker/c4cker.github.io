@@ -1,0 +1,11 @@
+---
+const language = Astro.cookies.get("c4cker-language")?.value === "en" ? "en" : "es";
+const nextLanguage = language === "en" ? "es" : "en";
+const href = `/api/language?lang=${nextLanguage}&returnTo=${encodeURIComponent(Astro.url.pathname)}`;
+---
+<a class="language-switcher" href={href} role="switch" aria-label={language === "en" ? "Language: English" : "Idioma: Español"} aria-checked={language === "en" ? "true" : "false"}>
+  <span class="sr-only">{language === "en" ? "Language" : "Idioma"}</span>
+  <span class="language-flag language-flag--es" aria-hidden="true">ES</span>
+  <span class="language-thumb" aria-hidden="true"></span>
+  <span class="language-flag language-flag--en" aria-hidden="true">EN</span>
+</a>

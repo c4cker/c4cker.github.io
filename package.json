@@ -1,0 +1,32 @@
+{
+  "name": "c4cker-site",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm exec concurrently -- --kill-others-on-fail --names main,blog,labs --prefix-colors cyan,magenta,green \"node scripts/astro.mjs main dev --force --port 4321\" \"C:\\Ruby34-x64\\bin\\jekyll.bat serve --source apps/blog --destination apps/blog/_site --livereload --port 4000\" \"node scripts/astro.mjs labs dev --ignore-lock --host labs.localhost --port 4322\"",
+    "dev:main": "node scripts/astro.mjs main dev --port 4321",
+    "dev:blog": "C:\\Ruby34-x64\\bin\\jekyll.bat serve --source apps/blog --destination apps/blog/_site --livereload --port 4000",
+    "dev:labs": "node scripts/astro.mjs labs dev --ignore-lock --host labs.localhost --port 4322",
+    "build": "npm run build:main && npm run build:labs",
+    "build:main": "node scripts/astro.mjs main build",
+    "build:labs": "node scripts/astro.mjs labs build",
+    "preview": "node scripts/astro.mjs main preview",
+    "check": "node scripts/astro.mjs main check && node scripts/astro.mjs labs check",
+    "security:audit": "npm audit --omit=dev --audit-level=high"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.2.3",
+    "@supabase/supabase-js": "^2.57.0",
+    "@tailwindcss/vite": "^4.1.12",
+    "astro": "^7.2.0",
+    "tailwindcss": "^4.1.12",
+    "validator": "^13.15.35"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "concurrently": "^10.0.5",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.34.0"
+  }
+}

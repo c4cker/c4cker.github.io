@@ -1,0 +1,92 @@
+---
+import "../../../../packages/shared/styles/global.css";
+import LanguageSwitcher from "../../../../packages/shared/components/LanguageSwitcher.astro";
+// import CursorProbe from "../../../../packages/shared/components/CursorProbe.astro"; // Efecto de burbuja preservado para reactivarlo más adelante.
+// import CommandTrail from "../../../../packages/shared/components/CommandTrail.astro"; // Rastro preservado para reactivarlo más adelante.
+import SignalGlitch from "../../../../packages/shared/components/SignalGlitch.astro";
+import MatrixRain from "../../../../packages/shared/components/MatrixRain.astro";
+import BrowserOracle from "../../../../packages/shared/components/BrowserOracle.astro";
+interface Props { title?: string; description?: string; image?: string; noindex?: boolean }
+const { title, description = "Investigación, retos y laboratorios de seguridad ofensiva responsable.", image = "/og-card.svg", noindex = false } = Astro.props;
+const pageTitle = title ? `${title} · c4cker` : "c4cker · seguridad aplicada";
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL(image, Astro.site);
+const labsOrigin = import.meta.env.DEV ? "http://labs.localhost:4322" : "https://labs.c4cker.com";
+const portfolioLinks = [
+  ["nav.blog", "Blog", "https://blog.c4cker.com"], ["nav.writeups", "Writeups", "/writeups"], ["nav.projects", "Proyectos", "/proyectos"],
+  ["nav.labs", "Academy", labsOrigin], ["nav.contact", "Contacto", "/contacto"]
+];
+const links = portfolioLinks;
+const brand = "c4cker";
+const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4cker", url: Astro.site?.href, inLanguage: "es-AR", description };
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content={description} /><meta name="color-scheme" content="dark" /><meta name="theme-color" content="#111720" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" /><meta name="format-detection" content="telephone=no, email=no, address=no" />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <link rel="canonical" href={canonical} /><link rel="manifest" href="/site.webmanifest" /><link rel="icon" href="/favicon.ico" sizes="any" /><link rel="icon" href="/favicon.png" type="image/png" /><link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Syne:wght@600;700,800&display=swap" />
+    <link rel="sitemap" href="/sitemap.xml" type="application/xml" />
+    <meta property="og:type" content="website" /><meta property="og:site_name" content="c4cker" /><meta property="og:locale" content="es_AR" /><meta property="og:title" content={pageTitle} /><meta property="og:description" content={description} /><meta property="og:url" content={canonical} /><meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content={pageTitle} /><meta name="twitter:description" content={description} /><meta name="twitter:image" content={imageUrl} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)}></script><title>{pageTitle}</title>
+  </head>
+  <body>
+    <MatrixRain />
+    <a class="absolute -left-full top-4 z-10 bg-signal p-2 text-void focus:left-4" href="#contenido">Saltar al contenido</a>
+    <header class="site-header">
+      <div class="container-site flex min-h-20 items-center justify-between gap-4 py-4">
+        <a class="brand-signal font-mono text-2xl font-bold text-signal no-underline" href="/" data-glitch-logo><span data-brand-text>{brand}</span><span class="animate-pulse">_</span></a>
+        <div class="hidden items-center gap-4 md:flex"><nav class="flex flex-wrap items-center gap-x-4 gap-y-2" aria-label="Navegación principal">{links.map(([key, label, href]) => <a class="nav-link" aria-current={Astro.url.pathname === href ? "page" : undefined} href={href} data-probe-button><span data-i18n={key}>{label}</span></a>)}</nav><div class="header-socials" aria-label="Redes profesionales"><a href="https://github.com/Luciano-plaza" target="_blank" rel="noreferrer noopener" aria-label="GitHub de Luciano Plaza" class="social-link social-link--nav"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.18-3.37-1.18-.46-1.15-1.11-1.46-1.11-1.46-.91-.61.07-.6.07-.6 1 .07 1.54 1.03 1.54 1.03.9 1.52 2.36 1.08 2.93.83.09-.65.35-1.08.64-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.8c.85 0 1.7.12 2.5.34 1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.68 0 3.84-2.33 4.68-4.56 4.93.36.31.68.91.68 1.84v2.78c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" /></svg><span class="sr-only">GitHub</span></a><a href="https://www.linkedin.com/in/luciano-matias-plaza-silva" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn de Luciano Plaza" class="social-link social-link--nav"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.5 8.2H3.2V21h3.3V8.2ZM4.85 3A1.92 1.92 0 1 0 4.8 6.84 1.92 1.92 0 0 0 4.85 3ZM21 13.66c0-3.86-2.06-5.66-4.8-5.66-2.21 0-3.2 1.22-3.75 2.07V8.2H9.16V21h3.29v-6.33c0-1.67.32-3.29 2.39-3.29 2.04 0 2.07 1.91 2.07 3.4V21h3.3v-7.34Z" /></svg><span class="sr-only">LinkedIn</span></a></div><LanguageSwitcher /></div>
+        <div class="flex items-center gap-3 md:hidden"><LanguageSwitcher /><button class="menu-toggle" type="button" aria-label="Abrir menú" data-i18n-aria-label="menu.open" aria-controls="menu-movil" aria-expanded="false" data-menu-toggle><span></span><span></span><span></span></button></div>
+      </div>
+      <nav id="menu-movil" class="mobile-menu md:hidden" aria-label="Navegación móvil" data-mobile-menu inert><div>{links.map(([key, label, href], index) => <a class="mobile-nav-link" aria-current={Astro.url.pathname === href ? "page" : undefined} href={href} style={`--menu-index: ${index}`}><span data-i18n={key}>{label}</span><span aria-hidden="true">→</span></a>)}</div></nav>
+    </header>
+    <main id="contenido"><slot /></main>
+    <footer class="container-site flex flex-col justify-between gap-4 border-t border-line py-6 font-mono text-xs text-[#929991] sm:flex-row sm:items-center"><span><span data-i18n="footer.learning">Aprendizaje responsable</span> · {new Date().getFullYear()}</span><nav class="footer-legal" aria-label="Enlaces legales"><a class="footer-privacy" href="/privacidad" data-i18n="footer.privacy">Privacidad</a><a class="footer-privacy" href="/terminos" data-i18n="footer.terms">Términos y condiciones</a></nav></footer>
+    {/* <CursorProbe /> Efecto de burbuja temporalmente desactivado. */}
+    {/* <CommandTrail /> */}
+    <SignalGlitch />
+    <BrowserOracle />
+    <script>
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((link) => {
+        const destination = new URL(link.href, window.location.href);
+        if (destination.origin !== window.location.origin) {
+          link.target = "_blank";
+          link.rel = "noreferrer noopener";
+        }
+      });
+      document.querySelectorAll<HTMLAnchorElement>('nav a[href]').forEach((link) => {
+        const target = new URL(link.href, window.location.href);
+        const current = window.location.pathname.replace(/\/$/, "") || "/";
+        const destination = target.pathname.replace(/\/$/, "") || "/";
+        if (target.origin === window.location.origin && destination === current) link.setAttribute("aria-current", "page");
+      });
+      document.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
+        if (link.textContent?.trim().startsWith("← Volver a")) link.classList.add("back-link");
+      });
+      const footerIdentity = document.querySelector<HTMLElement>("footer > div:first-child > span");
+      footerIdentity?.remove();
+      const footerIdentityBlock = document.querySelector<HTMLElement>("footer > div:first-child");
+      if (footerIdentityBlock && footerIdentityBlock.childElementCount === 0 && !footerIdentityBlock.textContent?.trim()) footerIdentityBlock.remove();
+      const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+      const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
+      const setMenu = (open: boolean) => {
+        if (!toggle || !menu) return;
+        menu.classList.toggle("is-open", open);
+        menu.toggleAttribute("inert", !open);
+        toggle.setAttribute("aria-expanded", String(open));
+        const english = document.documentElement.lang === "en";
+        toggle.setAttribute("aria-label", open ? (english ? "Close menu" : "Cerrar menú") : (english ? "Open menu" : "Abrir menú"));
+      };
+      toggle?.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
+      menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setMenu(false)));
+      document.addEventListener("keydown", (event) => { if (event.key === "Escape") setMenu(false); });
+      window.matchMedia("(min-width: 768px)").addEventListener("change", (event) => { if (event.matches) setMenu(false); });
+    </script>
+  </body>
+</html>

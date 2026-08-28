@@ -1,0 +1,4 @@
+---
+import Base from "../layouts/MainLayout.astro";
+---
+<Base title="Privacidad"><article class="container-site max-w-3xl py-20"><p class="eyebrow">Transparencia</p><h1 class="mt-3 font-display text-6xl font-bold tracking-[-.07em]">Privacidad</h1><p class="mt-5 text-lg text-[#c2c8c0]">El sitio no pide registro. Cuando enviás una flag, el servidor genera un identificador HMAC a partir de la IP que Cloudflare entrega al Worker. La IP original no se guarda en la base de datos.</p><p class="mt-4">Ese identificador sirve para evitar solves duplicados y construir un Hall of Fame anónimo. Antes de lanzarlo, completá esta política con responsable, contacto, plazo de conservación y base legal aplicable.</p><a class="route-link mt-8" href="/terminos">Leer términos y condiciones <span aria-hidden="true">→</span></a></article></Base>

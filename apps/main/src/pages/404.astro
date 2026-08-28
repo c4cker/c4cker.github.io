@@ -1,0 +1,5 @@
+---
+import Base from "../layouts/MainLayout.astro";
+import ErrorState from "../../../../packages/shared/components/ErrorState.astro";
+---
+<Base title="Ruta no encontrada" description="La ruta solicitada no existe" noindex><ErrorState code={404} /></Base>

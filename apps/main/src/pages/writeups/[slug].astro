@@ -1,0 +1,15 @@
+---
+import Base from "../../layouts/MainLayout.astro";
+export const prerender = true;
+export function getStaticPaths() { const modules = import.meta.glob("../../content/writeups/*.md", { eager: true }); return Object.values(modules).map((writeup: any) => ({ params: { slug: writeup.frontmatter.slug }, props: { writeup } })); }
+const { writeup } = Astro.props;
+const { Content, frontmatter } = writeup;
+const sources = Array.isArray(frontmatter.sources)
+  ? frontmatter.sources
+  : frontmatter.sourceUrl
+    ? [{ label: "Fuente de referencia", url: frontmatter.sourceUrl }]
+    : [];
+---
+<Base title={`${frontmatter.platform} · ${frontmatter.title}`} description={frontmatter.description}>
+  <article class="container-site max-w-5xl py-16 sm:py-20"><a class="back-link font-mono" href="/writeups">← Volver</a><div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_17rem]"><div><p class="eyebrow">{frontmatter.platform} · {frontmatter.kind}</p><h1 class="mt-4 font-display text-5xl font-bold tracking-[-.07em] sm:text-6xl">{frontmatter.title}</h1><p class="mt-3 font-mono text-xs text-electric">{frontmatter.level} · {frontmatter.date} · {frontmatter.status}</p><p class="mt-6 max-w-2xl text-lg text-[#cbd5e1]">{frontmatter.description}</p></div><aside class="border-l border-ember/60 pl-4 font-mono text-xs leading-6 text-[#a9b6c8]"><span class="text-ember">ETIQUETAS</span><div class="mt-3 flex flex-wrap gap-2">{frontmatter.tags.map((tag: string) => <span class="data-chip">{tag}</span>)}</div>{sources.length > 0 && <div class="mt-6"><span class="text-ember">REFERENCIAS</span><ul class="mt-3 space-y-2">{sources.map((source: { label: string; url: string }) => <li><a class="block text-electric hover:text-signal" href={source.url} target="_blank" rel="noreferrer noopener">{source.label} ↗</a></li>)}</ul></div>}</aside></div><div class="markdown-report mt-12"><Content /></div></article>
+</Base>

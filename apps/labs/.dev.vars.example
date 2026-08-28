@@ -1,0 +1,7 @@
+# Solo desarrollo local. Copiar como .dev.vars; el archivo real está ignorado.
+SUPABASE_URL=https://TU_PROYECTO.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=REEMPLAZAR_EN_CLOUDFLARE
+FLAG_HMAC_SECRET=REEMPLAZAR_CON_UN_SECRETO_ALEATORIO_LARGO
+FLAGS_JSON={"hello-local":"C4CKER{flag_solo_de_desarrollo}"}
+# URL pública de inserción de Google Forms. No es una credencial.
+PUBLIC_GOOGLE_FORM_URL=https://docs.google.com/forms/d/e/TU_ID/viewform?embedded=true

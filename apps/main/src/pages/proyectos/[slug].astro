@@ -1,0 +1,21 @@
+---
+import Base from "../../layouts/MainLayout.astro";
+import { projects } from "../../data/projects";
+
+export const prerender = true;
+export function getStaticPaths() { return projects.map((project) => ({ params: { slug: project.slug }, props: { project } })); }
+const { project } = Astro.props;
+const hasRepo = Boolean(project.repoUrl);
+const isExternal = hasRepo && project.repoUrl.startsWith("http");
+---
+<Base title={project.title} description={project.detail}>
+  <article class="container-site max-w-5xl py-16 sm:py-20">
+    <a class="back-link font-mono" href="/proyectos">← Volver</a>
+    <header class="mt-10 grid gap-8 border-b border-line pb-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
+      <div><p class="eyebrow">{project.kind} · {project.status}</p><h1 class="mt-4 font-display text-5xl font-bold tracking-[-.07em] sm:text-7xl">{project.title}</h1><p class="mt-5 max-w-2xl text-xl leading-8 text-[#cbd5e1]">{project.detail}</p></div>
+      <aside class="border-l border-electric/50 pl-4 font-mono text-xs leading-6 text-[#a9b6c8]"><span class="text-signal">STACK</span><br />{project.stack}<br /><br /><span class="text-signal">ESTADO</span><br />{project.status}</aside>
+    </header>
+    <section class="mt-10 border border-line bg-panel/70 p-6"><p class="eyebrow">Qué intento resolver</p><p class="mt-4 max-w-2xl text-lg leading-8 text-[#cbd5e1]">{project.objective}</p></section>
+    {hasRepo && <a class="route-link mt-8 inline-flex" href={project.repoUrl} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noreferrer noopener" : undefined}>{isExternal ? "Abrir repositorio" : "Ir a la sección relacionada"} <span aria-hidden="true">↗</span></a>}
+  </article>
+</Base>

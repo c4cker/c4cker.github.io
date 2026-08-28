@@ -1,0 +1,77 @@
+<div class="signal-glitch" aria-hidden="true" data-signal-glitch>
+  <div class="glitch-words" data-glitch-words></div>
+</div>
+
+<script>
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const logo = document.querySelector<HTMLElement>("[data-glitch-logo]");
+  const brandText = logo?.querySelector<HTMLElement>("[data-brand-text]");
+  const glitch = document.querySelector<HTMLElement>("[data-signal-glitch]");
+  const glitchWords = glitch?.querySelector<HTMLElement>("[data-glitch-words]");
+  const source = brandText?.textContent?.trim() ?? "c4cker";
+  let restoreLogo: number | undefined;
+  const toHex = (value: string) => Array.from(value).map((character) => character.charCodeAt(0).toString(16).padStart(2, "0")).join("");
+  const toBinary = (value: string) => Array.from(value).map((character) => character.charCodeAt(0).toString(2).padStart(8, "0")).join(" ");
+  const toUnicode = (value: string) => Array.from(value).map((character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`).join("");
+  // Separar con espacios evita que los códigos ASCII se parezcan a una dirección IPv4.
+  const toAscii = (value: string) => Array.from(value).map((character) => character.charCodeAt(0)).join(" ");
+  const toOctal = (value: string) => Array.from(value).map((character) => character.charCodeAt(0).toString(8).padStart(3, "0")).join(" ");
+  const toAssembly = (value: string) => Array.from(value).map((character) => `mov al,0x${character.charCodeAt(0).toString(16).padStart(2, "0")}`).join(";");
+  const toPercent = (value: string) => Array.from(value).map((character) => `%${character.charCodeAt(0).toString(16).padStart(2, "0")}`).join("");
+  const toBase32 = (value: string) => {
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"; let buffer = 0; let bits = 0; let output = "";
+    for (const character of value) { buffer = (buffer << 8) | character.charCodeAt(0); bits += 8; while (bits >= 5) { output += alphabet[(buffer >>> (bits - 5)) & 31]; bits -= 5; } }
+    return bits ? output + alphabet[(buffer << (5 - bits)) & 31] : output;
+  };
+  const encoders = [
+    { name: "b64", encode: (value: string) => btoa(value) }, { name: "hex", encode: toHex }, { name: "bin", encode: toBinary },
+    { name: "unicode", encode: toUnicode }, { name: "percent", encode: toPercent }, { name: "ascii", encode: toAscii },
+    { name: "oct", encode: toOctal }, { name: "b32", encode: toBase32 }, { name: "asm", encode: toAssembly }
+  ];
+  const encodeLogo = () => encoders[Math.floor(Math.random() * encoders.length)].encode(source);
+  const restartAnimation = (element: HTMLElement, className: string) => {
+    element.classList.remove(className);
+    window.requestAnimationFrame(() => element.classList.add(className));
+  };
+  const corruptLogo = () => {
+    if (!logo || !brandText) return;
+    const encoded = encodeLogo();
+    brandText.textContent = encoded;
+    brandText.dataset.glitchCopy = encoded;
+    restartAnimation(logo, "is-corrupted");
+  };
+  const restore = () => {
+    if (!logo || !brandText) return;
+    brandText.textContent = source;
+    delete brandText.dataset.glitchCopy;
+    logo.classList.remove("is-corrupted");
+  };
+  const securityWords = ["ACCESS", "UPLINK", "CIPHER", "SIGNAL", "PACKET", "VAULT", "SHELL", "TRACE"];
+  const flashBlock = () => {
+    if (!glitch || !glitchWords) return;
+    const lines = Array.from({ length: 2 + Math.floor(Math.random() * 3) }, () => {
+      const word = securityWords[Math.floor(Math.random() * securityWords.length)];
+      const encoder = encoders[Math.floor(Math.random() * encoders.length)];
+      return `<span data-codec="${encoder.name}">${encoder.encode(word)}</span>`;
+    });
+    glitchWords.innerHTML = lines.join("");
+    glitch.style.setProperty("--glitch-x", `${8 + Math.random() * 76}vw`);
+    glitch.style.setProperty("--glitch-y", `${16 + Math.random() * 68}vh`);
+    glitch.style.setProperty("--glitch-ratio", `${1.2 + Math.random() * 1.4}`);
+    restartAnimation(glitch, "is-flashing");
+  };
+  const schedule = (callback: () => void, minimum: number, maximum: number) => {
+    const next = () => window.setTimeout(() => {
+      if (!document.hidden) callback();
+      next();
+    }, minimum + Math.random() * (maximum - minimum));
+    next();
+  };
+
+  if (!reduceMotion) {
+    logo?.addEventListener("pointerenter", () => { window.clearTimeout(restoreLogo); corruptLogo(); window.dispatchEvent(new Event("c4cker:logo-enter")); });
+    logo?.addEventListener("pointerleave", () => { restore(); window.dispatchEvent(new Event("c4cker:logo-leave")); });
+    schedule(() => { corruptLogo(); restoreLogo = window.setTimeout(restore, 260); }, 5_000, 8_000);
+    schedule(flashBlock, 3_500, 6_500);
+  }
+</script>

@@ -1,0 +1,134 @@
+<aside class="browser-oracle" aria-label="Oráculo del navegador" data-browser-oracle>
+  <section id="oraculo-local" class="oracle-panel" aria-hidden="true" data-oracle-panel>
+    <header class="oracle-header">
+      <span class="oracle-status" aria-hidden="true"></span>
+      <div><strong data-oracle-title>Hola, soy Bob.</strong></div>
+      <button class="oracle-close" type="button" aria-label="Cerrar oráculo" data-oracle-close>×</button>
+    </header>
+    <div class="oracle-log" aria-live="polite" data-oracle-log></div>
+    <div class="oracle-choices" data-oracle-choices></div>
+  </section>
+  <button class="oracle-trigger" type="button" aria-expanded="false" aria-controls="oraculo-local" data-oracle-trigger>
+    <img src="/bob-avatar.jpg" width="56" height="56" alt="" aria-hidden="true" />
+    <span class="sr-only" data-oracle-trigger-label>Preguntale al oráculo</span>
+  </button>
+</aside>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-browser-oracle]");
+  const panel = root?.querySelector<HTMLElement>("[data-oracle-panel]");
+  const trigger = root?.querySelector<HTMLButtonElement>("[data-oracle-trigger]");
+  const close = root?.querySelector<HTMLButtonElement>("[data-oracle-close]");
+  const log = root?.querySelector<HTMLElement>("[data-oracle-log]");
+  const choices = root?.querySelector<HTMLElement>("[data-oracle-choices]");
+  const title = root?.querySelector<HTMLElement>("[data-oracle-title]");
+  const triggerLabel = root?.querySelector<HTMLElement>("[data-oracle-trigger-label]");
+
+  if (root && panel && trigger && close && log && choices && title && triggerLabel) {
+    const english = () => document.documentElement.lang === "en";
+    const signal = {
+      language: navigator.language || "es",
+      zone: Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown",
+      hour: new Date().getHours(),
+      viewport: window.innerWidth < 768 ? "mobile" : "desktop"
+    };
+    const asked = new Set<string>();
+    const browserName = () => {
+      const agent = navigator.userAgent;
+      if (/Edg\//.test(agent)) return "Microsoft Edge";
+      if (/Firefox\//.test(agent)) return "Firefox";
+      if (/CriOS\//.test(agent)) return "Chrome";
+      if (/Chrome\//.test(agent)) return "Chrome";
+      if (/Safari\//.test(agent)) return "Safari";
+      return english() ? "an unknown browser" : "un navegador no identificado";
+    };
+    const browserVersion = () => navigator.userAgent.match(/(?:Edg|Firefox|CriOS|Chrome|Version)\/([\d.]+)/)?.[1]?.split(".")[0] ?? "";
+    const short = (value: string) => value.length > 50 ? `${value.slice(0, 49)}…` : value;
+    const addLine = (content: string, emphasis = false) => {
+      const line = document.createElement("p");
+      line.className = `oracle-line${emphasis ? " oracle-line--signal" : ""}`;
+      line.textContent = content;
+      log.append(line);
+      log.scrollTop = log.scrollHeight;
+    };
+    const button = (label: string, action: () => void) => {
+      const element = document.createElement("button");
+      element.type = "button";
+      element.className = "oracle-choice";
+      element.textContent = label;
+      element.addEventListener("click", action);
+      choices.append(element);
+    };
+    const reset = () => {
+      const en = english();
+      log.replaceChildren(); choices.replaceChildren(); asked.clear();
+      title.textContent = en ? "Hi, I'm Bob." : "Hola, soy Bob.";
+      triggerLabel.textContent = en ? "Ask the oracle" : "Preguntale al oráculo";
+      addLine(en ? "Want to play a small game?" : "¿Querés jugar un pequeño juego?");
+      showQuestions();
+    };
+    const revealDevice = () => {
+      const en = english(); asked.add("device"); choices.replaceChildren();
+      const agent = navigator.userAgent;
+      const system = /Windows NT 10\.0/.test(agent) ? "Windows 10" : /Windows/.test(agent) ? "Windows" : /Android/.test(agent) ? "Android" : /iPhone|iPad/.test(agent) ? "iOS" : /Mac OS X/.test(agent) ? "macOS" : "Unknown OS";
+      const architecture = /Win64|x86_64|x64/.test(agent) ? "x64" : /arm|aarch64/i.test(agent) ? "ARM" : "unknown architecture";
+      addLine(short(en ? `You opened this from ${system}, ${architecture}.` : `Abriste desde ${system}, ${architecture}.`), true);
+      showQuestions();
+    };
+    const revealEnvironment = () => {
+      const en = english(); asked.add("environment"); choices.replaceChildren();
+      const period = signal.hour < 6 ? (en ? "late night" : "la madrugada") : signal.hour < 12 ? (en ? "the morning" : "la mañana") : signal.hour < 19 ? (en ? "the afternoon" : "la tarde") : (en ? "the evening" : "la noche");
+      addLine(short(`${browserName()} ${browserVersion()}, ${signal.zone}: ${period}.`), true);
+      showQuestions();
+    };
+    const revealCapabilities = () => {
+      const en = english(); asked.add("capabilities"); choices.replaceChildren();
+      const navigatorSpecs = navigator as Navigator & { deviceMemory?: number };
+      const memory = navigatorSpecs.deviceMemory === undefined ? "unavailable" : `${navigatorSpecs.deviceMemory} GiB`;
+      addLine(short(en ? `${navigator.hardwareConcurrency ?? "?"} cores, ${memory}, ${navigator.maxTouchPoints} touch points.` : `${navigator.hardwareConcurrency ?? "?"} núcleos, ${memory}, ${navigator.maxTouchPoints} toques.`), true);
+      showQuestions();
+    };
+    const revealNetwork = async () => {
+      const en = english(); asked.add("network"); choices.replaceChildren();
+      addLine(en ? "Checking the address of this request…" : "Consultando la dirección de esta solicitud…");
+      try {
+        const response = await fetch("/api/oracle-network", { headers: { Accept: "application/json" } });
+        const data = await response.json() as { address?: string; local?: boolean };
+        if (!response.ok) throw new Error("network request failed");
+        if (data.local) addLine(en ? "You are on a local network." : "Estás en una red local.", true);
+        else addLine(short(en ? `IP: ${data.address ?? "unavailable"}` : `La IP es ${data.address ?? "no disponible"}.`), true);
+      } catch {
+        addLine(en ? "IP unavailable." : "IP no disponible.", true);
+      }
+      window.setTimeout(() => {
+        addLine(en ? "Oh no, I got involved with the wrong person…" : "Oh no, me metí con la persona equivocada…", true);
+        window.setTimeout(() => {
+          root.classList.add("is-glitching");
+          panel.setAttribute("aria-hidden", "true");
+          trigger.setAttribute("aria-expanded", "false");
+          window.setTimeout(() => {
+            root.classList.remove("is-open", "is-glitching");
+            root.classList.add("is-gone");
+            trigger.tabIndex = -1;
+          }, 420);
+        }, 2000);
+      }, 1000);
+    };
+    const showQuestions = () => {
+      const en = english(); choices.replaceChildren();
+      if (!asked.has("device")) button(en ? "Where did I open the page from?" : "¿Desde dónde abrí la página?", revealDevice);
+      if (!asked.has("environment")) button(en ? "Tell me something else" : "Decime algo más", revealEnvironment);
+      if (!asked.has("capabilities")) button(en ? "What can my browser do?" : "¿Qué puede hacer mi navegador?", revealCapabilities);
+      if (asked.has("device") && asked.has("environment") && asked.has("capabilities") && !asked.has("network")) button(en ? "Do you want to tell me my IP?" : "¿Querés que te diga tu IP?", revealNetwork);
+    };
+    const setOpen = (open: boolean) => {
+      root.classList.toggle("is-open", open);
+      panel.setAttribute("aria-hidden", String(!open));
+      trigger.setAttribute("aria-expanded", String(open));
+      if (open) reset();
+    };
+    trigger.addEventListener("click", () => setOpen(!root.classList.contains("is-open")));
+    close.addEventListener("click", () => setOpen(false));
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") setOpen(false); });
+  }
+</script>

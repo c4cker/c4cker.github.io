@@ -1,0 +1,34 @@
+<div class="command-trail" data-command-trail aria-hidden="true"></div>
+
+<script>
+  // @ts-nocheck - efecto efímero del cursor, aislado del render.
+  window.__c4ckerCommandTrailCleanup?.();
+  const trail = document.querySelector<HTMLElement>("[data-command-trail]");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const touchLayout = window.matchMedia("(pointer: coarse), (hover: none), (max-width: 767px)").matches;
+  if (trail && !reduceMotion && !touchLayout) {
+    const controller = new AbortController();
+    let lastX = -1000, lastY = -1000, lastStamp = 0;
+    const emit = (event: PointerEvent) => {
+      if (event.pointerType && event.pointerType !== "mouse") return;
+      const interactiveTarget = document.elementFromPoint(event.clientX, event.clientY)?.closest("a, button, input, textarea, select, [role='button'], [contenteditable='true'], [data-glitch-logo]");
+      if (interactiveTarget) return;
+      const now = performance.now();
+      if (now - lastStamp < 70 || Math.hypot(event.clientX - lastX, event.clientY - lastY) < 26) return;
+      lastX = event.clientX; lastY = event.clientY; lastStamp = now;
+      const fragment = document.createElement("span");
+      fragment.className = "glitch-fragment";
+      fragment.style.left = `${event.clientX + 12}px`;
+      fragment.style.top = `${event.clientY + 12}px`;
+      fragment.style.setProperty("--fragment-width", `${12 + Math.floor(Math.random() * 32)}px`);
+      fragment.style.setProperty("--fragment-height", `${4 + Math.floor(Math.random() * 10)}px`);
+      fragment.style.setProperty("--fragment-grid", `${4 + Math.floor(Math.random() * 6)}px`);
+      trail.append(fragment);
+      window.setTimeout(() => fragment.remove(), 980);
+    };
+    window.addEventListener("pointermove", emit, { passive: true, signal: controller.signal });
+    const cleanup = () => { controller.abort(); trail.replaceChildren(); if (window.__c4ckerCommandTrailCleanup === cleanup) delete window.__c4ckerCommandTrailCleanup; };
+    window.__c4ckerCommandTrailCleanup = cleanup;
+    if (import.meta.hot) import.meta.hot.dispose(cleanup);
+  }
+</script>

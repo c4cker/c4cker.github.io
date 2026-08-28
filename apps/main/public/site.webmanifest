@@ -1,0 +1,10 @@
+{
+  "name": "c4cker · seguridad aplicada",
+  "short_name": "c4cker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111720",
+  "theme_color": "#111720",
+  "lang": "es-AR",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

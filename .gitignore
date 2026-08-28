@@ -1,0 +1,71 @@
+# Dependencias y artefactos de Jekyll
+.bundle/
+vendor/
+_site/
+.jekyll-cache/
+.sass-cache/
+node_modules/
+dist/
+.astro/
+.wrangler/
+.local-logs/
+.wrangler-state/
+.vite/
+coverage/
+.turbo/
+*.log
+
+# Configuración local: jamás publicar secretos ni endpoints privados
+assets/js/config.local.js
+**/config.local.js
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+*.local
+*.local.*
+!*.local.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Supabase local y secretos
+supabase/.temp/
+supabase/.env
+supabase/functions/.env
+apps/main/.dev.vars
+apps/main/.env
+apps/main/.env.*
+apps/labs/.dev.vars
+apps/labs/.env
+apps/labs/.env.*
+
+# Editor / SO
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.history/
+
+# Archivos temporales y credenciales exportadas
+*.tmp
+*.bak
+*.backup
+*.dump
+*.sqlite
+*.sqlite3
+*.db
+secrets/
+private/
+
+# Datos seed locales usados para dar forma a Labs y al portfolio.
+# Las vistas los consumen, pero el contenido de ejemplo no se publica en Git.
+apps/labs/src/data/
+apps/main/src/data/projects.ts
+apps/main/src/content/writeups/
+apps/labs/src/content/writeups/
+apps/blog/_writeups/
+apps/blog/_projects/

@@ -1,0 +1,20 @@
+---
+interface Props {
+  code: 403 | 404 | 500;
+}
+
+const code = Astro.props.code as Props["code"];
+const messages = {
+  403: { signal: "acceso restringido", title: "Esta zona requiere otro alcance", body: "La solicitud llegó, pero no tiene permiso para continuar. Revisá la dirección o volvé a una sección pública." },
+  404: { signal: "señal perdida", title: "No hay evidencia en esta ruta", body: "Puede que el enlace haya cambiado o que todavía no exista. Volvé a una zona conocida." },
+  500: { signal: "fallo interno", title: "El sistema no pudo completar la solicitud", body: "No hace falta reintentar de forma repetida. Volvé a intentarlo más tarde o reportá el problema con el contexto disponible." }
+}[code];
+---
+
+<section class="container-site grid min-h-[65vh] content-center gap-6 py-16 sm:py-20">
+  <p class="eyebrow">{code} · {messages.signal}</p>
+  <div class="error-code" aria-hidden="true">{code}</div>
+  <h1 class="max-w-3xl font-display text-5xl font-bold tracking-[-.07em] sm:text-7xl">{messages.title}</h1>
+  <p class="max-w-xl text-lg text-[#cbd5e1]">{messages.body}</p>
+  <a class="error-return" href="/">Volver al inicio <span aria-hidden="true">→</span></a>
+</section>
