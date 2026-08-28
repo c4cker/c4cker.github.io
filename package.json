@@ -12,6 +12,8 @@
     "build:main": "node scripts/astro.mjs main build",
     "build:labs": "node scripts/astro.mjs labs build",
     "preview": "node scripts/astro.mjs main preview",
+    "deploy:main": "npm run build:main && wrangler deploy --config wrangler.main.jsonc",
+    "deploy:labs": "npm run build:labs && wrangler deploy --config wrangler.labs.jsonc",
     "check": "node scripts/astro.mjs main check && node scripts/astro.mjs labs check",
     "security:audit": "npm audit --omit=dev --audit-level=high"
   },

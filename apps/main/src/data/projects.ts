@@ -1,0 +1,10 @@
+/**
+ * Catálogo editorial del portfolio.
+ * Agregá o editá proyectos aquí; cada `slug` crea su URL /proyectos/<slug>.
+ */
+export const projects = [
+  { slug: "c4cker-site", title: "c4cker.com", status: "activo", kind: "sitio", stack: "Astro · Cloudflare · Supabase", description: "Núcleo personal para investigación, práctica, documentación y recursos.", detail: "El sitio que estás recorriendo: portfolio, writeups y una zona de práctica separada para experimentar con seguridad.", objective: "Publicar trabajo verificable y mantener los ejercicios aislados del portfolio.", repoUrl: "https://github.com/Luciano-plaza/c4cker.github.io" },
+  { slug: "headermap", title: "HeaderMap", status: "semilla", kind: "herramienta", stack: "TypeScript · CLI", description: "Proyecto de ejemplo para visualizar relaciones entre cabeceras, proxys y servicios antes de crear la herramienta real.", detail: "Una idea de herramienta para dibujar cómo viajan y cambian las cabeceras entre un proxy y sus servicios.", objective: "Hacer visibles los supuestos de confianza antes de automatizar un análisis.", repoUrl: "" },
+  { slug: "lab-manifest", title: "Lab Manifest", status: "semilla", kind: "herramienta", stack: "JSON · Docker", description: "Contrato mínimo para publicar laboratorios locales con alcance, requisitos y forma de limpiar el entorno.", detail: "Un formato pequeño para describir qué necesita un laboratorio, cómo iniciarlo y cómo dejar el equipo limpio.", objective: "Publicar prácticas reproducibles sin esconder requisitos ni ampliar el alcance.", repoUrl: "https://labs.c4cker.com/laboratorios" },
+  { slug: "evidence-notes", title: "Evidence Notes", status: "semilla", kind: "plantilla", stack: "Markdown · Git", description: "Estructura de notas para conservar decisiones, pruebas y mitigaciones sin perder el contexto.", detail: "Una plantilla de trabajo para que cada hallazgo conserve evidencia, decisiones y mitigaciones en el mismo hilo.", objective: "Convertir apuntes sueltos en documentación que otra persona pueda revisar.", repoUrl: "/writeups" }
+] as const;

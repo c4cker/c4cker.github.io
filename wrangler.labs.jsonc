@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "c4cker-labs",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./dist/labs/server/entry.mjs",
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist/labs/client",
+    "not_found_handling": "404-page"
+  }
+}

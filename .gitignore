@@ -61,11 +61,4 @@ Thumbs.db
 secrets/
 private/
 
-# Datos seed locales usados para dar forma a Labs y al portfolio.
-# Las vistas los consumen, pero el contenido de ejemplo no se publica en Git.
-apps/labs/src/data/
-apps/main/src/data/projects.ts
-apps/main/src/content/writeups/
-apps/labs/src/content/writeups/
-apps/blog/_writeups/
-apps/blog/_projects/
+# Catálogos y contenido editorial: forman parte del sitio y deben viajar a CI.
