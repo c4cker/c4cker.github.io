@@ -6,6 +6,7 @@ on:
     paths:
       - "apps/main/**"
       - "apps/labs/**"
+      - "apps/blog/**"
       - "packages/**"
       - "astro.config.mjs"
       - "package.json"
@@ -57,3 +58,23 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config wrangler.labs.jsonc
+
+  deploy-blog:
+    if: vars.CLOUDFLARE_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+          working-directory: apps/blog
+      - name: Construir blog Jekyll
+        working-directory: apps/blog
+        run: bundle exec jekyll build --destination _site
+      - name: Desplegar blog
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.blog.jsonc

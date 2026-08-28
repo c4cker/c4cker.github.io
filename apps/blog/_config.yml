@@ -1,7 +1,7 @@
 title: c4cker
 description: Investigación, retos y laboratorios de seguridad ofensiva responsable.
-url: "https://luciano-plaza.github.io"
-baseurl: "/c4cker.github.io"
+url: ""
+baseurl: ""
 markdown: kramdown
 permalink: /blog/:year/:month/:day/:title/
 timezone: America/Argentina/Buenos_Aires

@@ -1,19 +1,13 @@
 # Integraciones
 
-## c4cker.com: Cloudflare
+## Despliegue: Cloudflare Workers
 
-1. Creá un proyecto Cloudflare Workers/Pages conectado a este repositorio.
-2. Usá `npm run build` como comando de build y `dist` como directorio de salida.
-3. Asigná únicamente el dominio personalizado `c4cker.com`. No crees ni redirijas `www.c4cker.com`.
-4. En **Settings → Variables and Secrets** cargá como secretos: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `FLAG_HMAC_SECRET` (aleatorio, 32 bytes o más) y `FLAGS_JSON`.
-5. Dejá los secretos solo en Cloudflare; nunca en GitHub, `.env` versionados o JavaScript público.
-6. Antes de habilitar flags públicas, agregá una regla de Rate Limiting de Cloudflare para `POST /api/submit-flag` y revisá los headers de `apps/site/public/_headers` con tu dominio final.
-
-## blog.c4cker.com: GitHub Pages
-
-1. En GitHub, activá Pages con **GitHub Actions**. El workflow construye `apps/blog`.
-2. Configurá `blog.c4cker.com` como dominio personalizado en Pages.
-3. En Cloudflare DNS, creá el registro que GitHub Pages indique para `blog`. Empezá con proxy desactivado y habilitá HTTPS en GitHub cuando propague.
+1. En el repositorio, creá los secretos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID`.
+2. Creá la variable de Actions `CLOUDFLARE_DEPLOY_ENABLED` con valor `true`.
+3. El workflow `Publicar main y labs` despliega tres Workers: `c4cker-main`, `c4cker-labs` y `c4cker-blog`.
+4. En Cloudflare, cargá en cada Worker las variables que correspondan. Main/Labs usan `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `FLAG_HMAC_SECRET`, `FLAGS_JSON` y `PUBLIC_GOOGLE_FORM_URL` cuando aplique; el blog no necesita secretos.
+5. Asigná los dominios finales desde Cloudflare cuando controles DNS. Hasta entonces, usá las URLs `workers.dev` que entrega Wrangler.
+6. Antes de habilitar flags públicas, agregá una regla de Rate Limiting de Cloudflare para `POST /api/submit-flag` y revisá los headers de `apps/main/public/_headers` y `apps/labs/public/_headers`.
 
 ## Supabase
 
@@ -24,4 +18,4 @@
 
 ## Variables GitHub
 
-No se necesitan secretos de GitHub en esta versión. GitHub Pages solo publica el blog estático.
+El workflow usa los secretos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID`. Nunca los incluyas en archivos `.env`, `.dev.vars` ni en el repositorio. El token debe limitarse a permisos de edición de Workers para la cuenta correspondiente.

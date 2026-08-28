@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "c4cker-blog",
+  "compatibility_date": "2026-08-26",
+  "assets": {
+    "directory": "./apps/blog/_site",
+    "not_found_handling": "404-page"
+  }
+}
