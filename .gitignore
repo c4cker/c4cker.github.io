@@ -43,6 +43,9 @@ supabase/seed.local.sql
 # Templates de desafíos (solo referencia local)
 apps/labs/src/data/_templates/
 
+# Fuentes locales de los desafíos; solo se publican sus ZIPs en challenges-sources/
+challenges/
+
 # Mocks editoriales sólo para desarrollo local
 apps/main/src/data/*.local.ts
 apps/main/src/content/writeups/*.local.md

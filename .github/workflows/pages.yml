@@ -57,6 +57,7 @@ jobs:
           cp -R dist/main/. _site/
           mkdir -p _site/labs
           cp -R dist/labs/. _site/labs/
+          cp -R challenges-sources _site/challenges-sources
           cd apps/blog
           bundle exec jekyll build --baseurl /blog --destination ../../_site/blog
       - uses: actions/upload-pages-artifact@v3

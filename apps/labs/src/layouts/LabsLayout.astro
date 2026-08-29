@@ -54,7 +54,7 @@ const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4
       const siteBase = import.meta.env.BASE_URL.replace(/\/$/, "");
       if (siteBase) document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach((link) => {
         const href = link.getAttribute("href");
-        if (href && !href.startsWith(`${siteBase}/`)) link.setAttribute("href", `${siteBase}${href}`);
+        if (href && !link.hasAttribute("data-root-link") && !href.startsWith(`${siteBase}/`)) link.setAttribute("href", `${siteBase}${href}`);
       });
       document.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((link) => {
         const destination = new URL(link.href, window.location.href);

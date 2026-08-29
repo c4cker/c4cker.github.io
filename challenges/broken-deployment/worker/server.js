@@ -1,1 +1,0 @@
-const http=require('http');http.createServer((q,r)=>{if(q.url==='/receipt'){r.writeHead(200,{'content-type':'application/json'});return r.end(JSON.stringify({token:'IBu3OaKBqbtRBrzyis9MNEkVMTr82OopATwpvzgki_tYRJGX'}));}r.writeHead(404);r.end();}).listen(3001);
