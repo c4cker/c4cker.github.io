@@ -40,8 +40,10 @@ supabase/.temp/
 supabase/.env
 supabase/seed.local.sql
 
+# Templates de desafíos (solo referencia local)
+apps/labs/src/data/_templates/
+
 # Mocks editoriales sólo para desarrollo local
-apps/labs/
 apps/main/src/data/*.local.ts
 apps/main/src/content/writeups/*.local.md
 apps/labs/src/data/*.local.ts

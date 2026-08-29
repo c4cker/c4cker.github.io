@@ -1,0 +1,6 @@
+/* TEAM */
+Site: c4cker.com
+Focus: investigación y práctica de seguridad responsable
+
+/* STACK */
+Astro · Tailwind · Cloudflare · Supabase
