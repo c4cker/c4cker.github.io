@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
+import cloudflare from "@astrojs/cloudflare";
 
 const app = process.env.C4CKER_APP === "labs" ? "labs" : "main";
 const pages = process.env.C4CKER_TARGET === "pages";
@@ -11,7 +12,8 @@ export default defineConfig({
   outDir: `./dist/${app}`,
   site,
   base: pages && app === "labs" ? "/labs" : undefined,
-  output: "static",
+  output: app === "labs" ? "hybrid" : "static",
+  adapter: app === "labs" ? cloudflare() : undefined,
   devToolbar: { enabled: false },
   vite: {
     plugins: [tailwindcss()],
