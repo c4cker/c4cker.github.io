@@ -16,6 +16,7 @@
     "security:audit": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "14.2.5",
     "@supabase/supabase-js": "^2.57.0",
     "@tailwindcss/vite": "^4.1.12",
     "astro": "^7.2.0",
