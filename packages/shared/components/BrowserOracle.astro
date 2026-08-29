@@ -1,3 +1,6 @@
+---
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+---
 <aside class="browser-oracle" aria-label="Oráculo del navegador" data-browser-oracle>
   <section id="oraculo-local" class="oracle-panel" aria-hidden="true" data-oracle-panel>
     <header class="oracle-header">
@@ -9,7 +12,7 @@
     <div class="oracle-choices" data-oracle-choices></div>
   </section>
   <button class="oracle-trigger" type="button" aria-expanded="false" aria-controls="oraculo-local" data-oracle-trigger>
-    <img src="/bob-avatar.jpg" width="56" height="56" alt="" aria-hidden="true" />
+    <img src={`${base}bob-avatar.jpg`} width="56" height="56" alt="" aria-hidden="true" />
     <span class="sr-only" data-oracle-trigger-label>Preguntale al oráculo</span>
   </button>
 </aside>
@@ -88,18 +91,9 @@
       addLine(short(en ? `${navigator.hardwareConcurrency ?? "?"} cores, ${memory}, ${navigator.maxTouchPoints} touch points.` : `${navigator.hardwareConcurrency ?? "?"} núcleos, ${memory}, ${navigator.maxTouchPoints} toques.`), true);
       showQuestions();
     };
-    const revealNetwork = async () => {
+    const revealNetwork = () => {
       const en = english(); asked.add("network"); choices.replaceChildren();
-      addLine(en ? "Checking the address of this request…" : "Consultando la dirección de esta solicitud…");
-      try {
-        const response = await fetch("/api/oracle-network", { headers: { Accept: "application/json" } });
-        const data = await response.json() as { address?: string; local?: boolean };
-        if (!response.ok) throw new Error("network request failed");
-        if (data.local) addLine(en ? "You are on a local network." : "Estás en una red local.", true);
-        else addLine(short(en ? `IP: ${data.address ?? "unavailable"}` : `La IP es ${data.address ?? "no disponible"}.`), true);
-      } catch {
-        addLine(en ? "IP unavailable." : "IP no disponible.", true);
-      }
+      addLine(en ? "A static site cannot read your IP." : "Un sitio estático no puede leer tu IP.", true);
       window.setTimeout(() => {
         addLine(en ? "Oh no, I got involved with the wrong person…" : "Oh no, me metí con la persona equivocada…", true);
         window.setTimeout(() => {

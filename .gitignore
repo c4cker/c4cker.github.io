@@ -2,6 +2,7 @@
 .bundle/
 vendor/
 _site/
+_site-test/
 .jekyll-cache/
 .sass-cache/
 node_modules/

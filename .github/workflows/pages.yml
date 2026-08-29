@@ -4,7 +4,14 @@ on:
   push:
     branches: [main]
     paths:
+      - "apps/main/**"
+      - "apps/labs/**"
       - "apps/blog/**"
+      - "packages/**"
+      - "scripts/**"
+      - "astro.config.mjs"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -17,25 +24,38 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
-# Se activa cuando GitHub Pages esté disponible para el repositorio.
 jobs:
   build:
-    if: vars.GITHUB_PAGES_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - uses: actions/configure-pages@v5
         with:
           enablement: true
-      - uses: actions/jekyll-build-pages@v1
+      - run: C4CKER_TARGET=pages npm run build:main
+      - run: C4CKER_TARGET=pages npm run build:labs
+      - uses: ruby/setup-ruby@v1
         with:
-          source: ./apps/blog
-          destination: ./_site
+          ruby-version: "3.4"
+          bundler-cache: true
+          working-directory: apps/blog
+      - name: Construir artefacto estático unificado
+        shell: bash
+        run: |
+          mkdir -p _site/labs _site/blog
+          cp -R dist/main/. _site/
+          cp -R dist/labs/. _site/labs/
+          cd apps/blog
+          bundle exec jekyll build --baseurl /blog --destination ../../_site/blog
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
   deploy:
-    if: vars.GITHUB_PAGES_DEPLOY_ENABLED == 'true'
     needs: build
     runs-on: ubuntu-latest
     environment:

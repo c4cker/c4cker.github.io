@@ -1,18 +1,18 @@
 import { defineConfig } from "astro/config";
-import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
 
 const app = process.env.C4CKER_APP === "labs" ? "labs" : "main";
-const site = app === "labs" ? "https://labs.c4cker.com" : "https://c4cker.com";
+const pages = process.env.C4CKER_TARGET === "pages";
+const site = pages ? "https://c4cker.github.io" : app === "labs" ? "https://labs.c4cker.com" : "https://c4cker.com";
 
 export default defineConfig({
   srcDir: `./apps/${app}/src`,
   publicDir: `./apps/${app}/public`,
   outDir: `./dist/${app}`,
   site,
-  output: "server",
+  base: pages && app === "labs" ? "/labs" : undefined,
+  output: "static",
   devToolbar: { enabled: false },
-  adapter: cloudflare(),
   vite: {
     plugins: [tailwindcss()],
     server: { allowedHosts: ["labs.c4cker.com", "labs.localhost", "c4cker.com"] },
