@@ -36,6 +36,7 @@ assets/js/config.local.js
 # Supabase local y secretos
 supabase/.temp/
 supabase/.env
+supabase/seed.local.sql
 supabase/functions/.env
 apps/main/.dev.vars
 apps/main/.env

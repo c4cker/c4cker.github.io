@@ -1,7 +1,6 @@
 ---
 import { challenges } from "../data/challenges";
 import { labs } from "../data/laboratories";
-import { hallOfFameSeed } from "../data/hall-of-fame";
 
 const labsOrigin = import.meta.env.DEV ? "http://labs.localhost:4322" : "https://labs.c4cker.com";
 const portfolioOrigin = import.meta.env.DEV ? "http://localhost:4321" : "https://c4cker.com";
@@ -28,7 +27,7 @@ const tour = [
   {
     number: "03",
     name: "Hall of Fame",
-    detail: `${hallOfFameSeed.length} solves semilla y un lugar para dejar tu marca.`,
+    detail: "solves verificados y un lugar para dejar tu marca.",
     href: labsOrigin + "/hall-of-fame",
     action: "Ver el Hall",
     screen: "hall",

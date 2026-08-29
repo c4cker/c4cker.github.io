@@ -3,7 +3,7 @@
 ## Próximo backend: Supabase
 
 1. Creá un proyecto de Supabase y ejecutá `supabase/migrations/001_initial.sql`.
-2. Cargá `supabase/seed.sql` sólo para datos de demostración.
+2. Si necesitás datos de prueba local, cargá `supabase/seed.local.sql`; está ignorado y no debe ejecutarse en producción.
 3. Cuando se migren las APIs de Labs, usá claves públicas en el cliente y políticas RLS; nunca publiques la service role ni flags válidas.
 
 ## Despliegue previsto: GitHub Pages
