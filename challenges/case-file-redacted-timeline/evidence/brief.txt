@@ -1,0 +1,4 @@
+La primera evidencia confirma que el adjunto fue recuperado.
+
+La hora en el registro indica que el JSON fue generado después del adjunto.
+La cadena en `recovered.json` está codificada en Base64 y corresponde a la etapa final.

@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /archive/
+# archive-key: z1khIB2zHlnPtAslXj7csdGaqby4LkWSAab0xEEqhSS3fpk9
