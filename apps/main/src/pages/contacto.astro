@@ -15,7 +15,7 @@ import Base from "../layouts/MainLayout.astro";
       </div>
       <label class="mt-5 block">Asunto<input name="subject" placeholder="Motivo del mensaje" required /></label>
       <label class="mt-5 block">Mensaje<textarea name="message" rows="6" placeholder="Contexto, alcance y cualquier enlace público relevante" required></textarea></label>
-      <div class="mt-7 flex flex-wrap items-center justify-between gap-4"><p class="max-w-sm font-mono text-xs leading-5 text-[#a9b6c8]">Los datos se envían a Google Forms. No se guardan en este servidor.</p><button class="contact-form__submit" type="submit">Enviar <span aria-hidden="true">→</span></button></div>
+      <div class="mt-7 flex flex-wrap items-center justify-between gap-4"><button class="contact-form__submit" type="submit">Enviar <span aria-hidden="true">→</span></button></div>
       <p class="contact-form__notice" role="status" aria-live="polite" hidden></p>
     </form>
   </article>
@@ -49,6 +49,11 @@ import Base from "../layouts/MainLayout.astro";
         form.reset();
         if (stateLabel) stateLabel.textContent = "enviado";
         if (notice) { notice.textContent = "Mensaje recibido. Gracias por escribir."; notice.hidden = false; }
+        setTimeout(() => {
+          if (stateLabel) { stateLabel.textContent = ""; stateLabel.hidden = true; }
+          if (notice) notice.hidden = true;
+          if (submitBtn) submitBtn.disabled = false;
+        }, 3000);
       } catch {
         if (stateLabel) stateLabel.textContent = "error";
         if (notice) { notice.textContent = "Error al enviar. Intentá de nuevo o escribime por LinkedIn."; notice.hidden = false; }
