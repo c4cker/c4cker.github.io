@@ -3,13 +3,12 @@
 Tres aplicaciones separadas, con componentes y contenido ordenados para editarlos a mano:
 
 - `apps/main`: portfolio, proyectos, writeups, contacto y legales.
-- `apps/labs`: desafíos, laboratorios, Hall of Fame, comunidad y sus API routes.
 - `apps/blog`: blog Jekyll independiente.
 - `packages/shared`: identidad visual y componentes reutilizados por Main y Labs.
 
 ## Publicación prevista
 
-La publicación es un único sitio estático en GitHub Pages: Main en `/`, Labs en `/labs/` y el blog Jekyll en `/blog/`. Cloudflare se usará sólo como proxy de un dominio propio, para DNS, SSL y seguridad perimetral.
+La publicación es un único sitio estático en GitHub Pages: Main en `/` y el blog Jekyll en `/blog/`. Cloudflare se usará sólo como proxy de un dominio propio, para DNS, SSL y seguridad perimetral.
 
 ## Desarrollo local del sitio principal
 
@@ -20,9 +19,18 @@ npm.cmd install
 npm.cmd run dev
 ```
 
-El comando inicia Main en `http://localhost:4321`, el blog en `http://127.0.0.1:4000` y Labs en `http://labs.localhost:4322`. Para levantar sólo uno usá `npm.cmd run dev:main`, `npm.cmd run dev:blog` o `npm.cmd run dev:labs`. El envío de flags no se activa hasta crear `apps/labs/.dev.vars` desde su `.dev.vars.example`; ese archivo está ignorado.
+El comando inicia Main en `http://localhost:4321` y el blog en `http://127.0.0.1:4000`. Para levantar sólo uno usá `npm.cmd run dev:main` o `npm.cmd run dev:blog`.
 
 El script del blog apunta a la instalación estándar que usás: `C:\Ruby34-x64`. Si en el futuro instalás Ruby en otra ruta, actualizá `dev` y `dev:blog` en `package.json`.
+
+## Contenido local antes de publicar
+
+El sitio público no trae contenido de muestra. Para previsualizar una entrada antes de subirla, usá los mocks locales —todos están ignorados por Git— y reemplazá sus datos por los tuyos:
+
+- `apps/main/src/data/projects.local.ts`
+- `apps/main/src/content/writeups/writeup-local.local.md`
+
+Cuando esté listo para publicar, renombrá los catálogos a `*.published.ts` y agregalos a Git. Para un writeup, quitale `.local` al nombre del Markdown. Así se incluye en el deploy; los mocks nunca se suben.
 
 ## Formulario de contacto
 
@@ -34,11 +42,7 @@ PUBLIC_GOOGLE_FORM_URL=https://docs.google.com/forms/d/e/TU_ID/viewform?embedded
 
 La URL de inserción es pública y no es un secreto. No guardes credenciales de Google, tokens ni claves en el repositorio. El formulario queda oculto hasta que esa variable exista.
 
-```powershell
-Copy-Item apps/labs/.dev.vars.example apps/labs/.dev.vars
-```
-
-No subas `.dev.vars` ni claves de Supabase.
+No subas archivos `.local`, `.dev.vars` ni claves de Supabase.
 
 ## Desarrollo del blog
 

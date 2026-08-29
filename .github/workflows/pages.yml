@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths:
       - "apps/main/**"
-      - "apps/labs/**"
       - "apps/blog/**"
       - "packages/**"
       - "scripts/**"
@@ -38,7 +37,6 @@ jobs:
         with:
           enablement: true
       - run: C4CKER_TARGET=pages npm run build:main
-      - run: C4CKER_TARGET=pages npm run build:labs
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4"
@@ -47,9 +45,8 @@ jobs:
       - name: Construir artefacto estático unificado
         shell: bash
         run: |
-          mkdir -p _site/labs _site/blog
+          mkdir -p _site/blog
           cp -R dist/main/. _site/
-          cp -R dist/labs/. _site/labs/
           cd apps/blog
           bundle exec jekyll build --baseurl /blog --destination ../../_site/blog
       - uses: actions/upload-pages-artifact@v3

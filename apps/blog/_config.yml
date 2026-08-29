@@ -1,30 +1,44 @@
 title: c4cker
+tagline: Seguridad aplicada
 description: Investigación, retos y laboratorios de seguridad ofensiva responsable.
-url: ""
+url: "https://c4cker.github.io"
 baseurl: ""
-markdown: kramdown
-permalink: /blog/:year/:month/:day/:title/
+lang: es-AR
 timezone: America/Argentina/Buenos_Aires
 
-collections:
-  challenges:
-    output: true
-    permalink: /desafios/:name/
-  labs:
-    output: true
-    permalink: /laboratorios/:name/
-  projects:
-    output: true
-    permalink: /proyectos/:name/
-  writeups:
-    output: true
-    permalink: /writeups/:name/
+github:
+  username: c4cker
+
+social:
+  name: Luciano Plaza
+  email: luciano@koga.ar
+  links:
+    - https://github.com/c4cker
+    - https://www.linkedin.com/in/luciano-matias-plaza-silva
+
+theme: jekyll-theme-chirpy
+
+paginate: 10
+
+permalink: /:year/:month/:day/:title/
 
 defaults:
   - scope:
       path: ""
+      type: posts
     values:
-      layout: default
+      layout: post
+      comments: false
+      toc: true
+
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  profile: false
+  blanklines: false
+  ignore:
+    envs: development
 
 exclude:
   - Gemfile
