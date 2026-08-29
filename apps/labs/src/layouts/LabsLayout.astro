@@ -87,6 +87,12 @@ const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4
       };
       toggle?.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
       menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setMenu(false)));
+      document.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
+        if (link.textContent?.trim() === "Portfolio") {
+          link.target = "_blank";
+          link.rel = "noreferrer noopener";
+        }
+      });
       document.addEventListener("keydown", (event) => { if (event.key === "Escape") setMenu(false); });
       window.matchMedia("(min-width: 768px)").addEventListener("change", (event) => { if (event.matches) setMenu(false); });
     </script>
