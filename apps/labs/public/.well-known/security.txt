@@ -1,4 +1,0 @@
-Contact: mailto:security@c4cker.com
-Preferred-Languages: es, en
-Policy: https://c4cker.com/privacidad
-Expires: 2027-08-26T00:00:00.000Z

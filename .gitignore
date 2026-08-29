@@ -37,6 +37,13 @@ assets/js/config.local.js
 supabase/.temp/
 supabase/.env
 supabase/seed.local.sql
+
+# Mocks editoriales sólo para desarrollo local
+apps/labs/
+apps/main/src/data/*.local.ts
+apps/main/src/content/writeups/*.local.md
+apps/labs/src/data/*.local.ts
+apps/labs/src/content/writeups/*.local.md
 supabase/functions/.env
 apps/main/.dev.vars
 apps/main/.env
