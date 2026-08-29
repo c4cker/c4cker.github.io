@@ -12,7 +12,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image, Astro.site);
 const portfolioLinks = [
   ["Blog", import.meta.env.DEV ? "http://127.0.0.1:4000" : "/blog/", "_blank"], ["Writeups", "/writeups"], ["Proyectos", "/proyectos"],
-  ...(import.meta.env.DEV ? [["Labs", "http://labs.localhost:4322", "_blank"]] : []),
+  ["Labs", import.meta.env.DEV ? "http://labs.localhost:4322" : "https://labs.c4cker.com", "_blank"],
   ["Contacto", "/contacto"]
 ];
 const links = portfolioLinks;
