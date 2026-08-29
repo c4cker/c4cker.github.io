@@ -5,7 +5,7 @@
   window.__c4ckerCommandTrailCleanup?.();
   const trail = document.querySelector<HTMLElement>("[data-command-trail]");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const touchLayout = window.matchMedia("(pointer: coarse), (hover: none), (max-width: 767px)").matches;
+  const touchLayout = window.matchMedia("(pointer: coarse), (hover: none), (max-width: 1023px)").matches;
   if (trail && !reduceMotion && !touchLayout) {
     const controller = new AbortController();
     let lastX = -1000, lastY = -1000, lastStamp = 0;

@@ -68,9 +68,12 @@
     next();
   };
 
+  const touchLayout = window.matchMedia("(pointer: coarse), (hover: none), (max-width: 1023px)").matches;
   if (!reduceMotion) {
-    logo?.addEventListener("pointerenter", () => { window.clearTimeout(restoreLogo); corruptLogo(); window.dispatchEvent(new Event("c4cker:logo-enter")); });
-    logo?.addEventListener("pointerleave", () => { restore(); window.dispatchEvent(new Event("c4cker:logo-leave")); });
+    if (!touchLayout) {
+      logo?.addEventListener("pointerenter", () => { window.clearTimeout(restoreLogo); corruptLogo(); window.dispatchEvent(new Event("c4cker:logo-enter")); });
+      logo?.addEventListener("pointerleave", () => { restore(); window.dispatchEvent(new Event("c4cker:logo-leave")); });
+    }
     schedule(() => { corruptLogo(); restoreLogo = window.setTimeout(restore, 260); }, 5_000, 8_000);
     schedule(flashBlock, 3_500, 6_500);
   }

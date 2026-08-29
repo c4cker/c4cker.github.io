@@ -7,7 +7,7 @@
   const probe = renderedProbe?.cloneNode(true);
   if (renderedProbe && probe) renderedProbe.replaceWith(probe);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const touchLayout = window.matchMedia("(pointer: coarse), (hover: none), (max-width: 767px)").matches;
+  const touchLayout = window.matchMedia("(pointer: coarse), (hover: none), (max-width: 1023px)").matches;
   if (probe && !reduceMotion && !touchLayout) {
     const listenerController = new AbortController();
     const baseSize = 70;

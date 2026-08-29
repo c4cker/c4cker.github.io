@@ -28,7 +28,6 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
   const triggerLabel = root?.querySelector<HTMLElement>("[data-oracle-trigger-label]");
 
   if (root && panel && trigger && close && log && choices && title && triggerLabel) {
-    const english = () => document.documentElement.lang === "en";
     const signal = {
       language: navigator.language || "es",
       zone: Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown",
@@ -43,7 +42,7 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       if (/CriOS\//.test(agent)) return "Chrome";
       if (/Chrome\//.test(agent)) return "Chrome";
       if (/Safari\//.test(agent)) return "Safari";
-      return english() ? "an unknown browser" : "un navegador no identificado";
+      return "un navegador no identificado";
     };
     const browserVersion = () => navigator.userAgent.match(/(?:Edg|Firefox|CriOS|Chrome|Version)\/([\d.]+)/)?.[1]?.split(".")[0] ?? "";
     const short = (value: string) => value.length > 50 ? `${value.slice(0, 49)}…` : value;
@@ -54,10 +53,10 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       log.append(line);
       log.scrollTop = log.scrollHeight;
     };
-    const reply = async (content: string, emphasis = false, delay = 720) => {
+    const reply = async (content: string, emphasis = false, delay = 1200) => {
       const typing = document.createElement("p");
       typing.className = "oracle-typing";
-      typing.innerHTML = `<span></span><span></span><span></span><b>${english() ? "Bob is typing" : "Bob está escribiendo"}</b>`;
+      typing.innerHTML = "<span></span><span></span><span></span><b>Escribiendo…</b>";
       log.append(typing);
       log.scrollTop = log.scrollHeight;
       await new Promise((resolve) => window.setTimeout(resolve, delay));
@@ -73,38 +72,38 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       choices.append(element);
     };
     const reset = () => {
-      const en = english();
       log.replaceChildren(); choices.replaceChildren(); asked.clear();
-      title.textContent = en ? "Hi, I'm Bob." : "Hola, soy Bob.";
-      triggerLabel.textContent = en ? "Ask the oracle" : "Preguntale al oráculo";
-      addLine(en ? "Want to play a small game?" : "¿Querés jugar un pequeño juego?");
+      title.textContent = "Hola, soy Bob.";
+      triggerLabel.textContent = "Preguntale al oráculo";
+      addLine("¿Querés jugar un pequeño juego?");
       showQuestions();
     };
     const revealDevice = async () => {
-      const en = english(); asked.add("device"); choices.replaceChildren();
+      asked.add("device"); choices.replaceChildren();
       const agent = navigator.userAgent;
       const system = /Windows NT 10\.0/.test(agent) ? "Windows 10" : /Windows/.test(agent) ? "Windows" : /Android/.test(agent) ? "Android" : /iPhone|iPad/.test(agent) ? "iOS" : /Mac OS X/.test(agent) ? "macOS" : "Unknown OS";
       const architecture = /Win64|x86_64|x64/.test(agent) ? "x64" : /arm|aarch64/i.test(agent) ? "ARM" : "unknown architecture";
-      await reply(short(en ? `You opened this from ${system}, ${architecture}.` : `Abriste desde ${system}, ${architecture}.`), true);
+      await reply(short(`Abriste desde ${system}, ${architecture}.`), true);
       showQuestions();
     };
     const revealEnvironment = async () => {
-      const en = english(); asked.add("environment"); choices.replaceChildren();
-      const period = signal.hour < 6 ? (en ? "late night" : "la madrugada") : signal.hour < 12 ? (en ? "the morning" : "la mañana") : signal.hour < 19 ? (en ? "the afternoon" : "la tarde") : (en ? "the evening" : "la noche");
+      asked.add("environment"); choices.replaceChildren();
+      const period = signal.hour < 6 ? "la madrugada" : signal.hour < 12 ? "la mañana" : signal.hour < 19 ? "la tarde" : "la noche";
       await reply(short(`${browserName()} ${browserVersion()}, ${signal.zone}: ${period}.`), true);
       showQuestions();
     };
     const revealCapabilities = async () => {
-      const en = english(); asked.add("capabilities"); choices.replaceChildren();
+      asked.add("capabilities"); choices.replaceChildren();
       const navigatorSpecs = navigator as Navigator & { deviceMemory?: number };
       const memory = navigatorSpecs.deviceMemory === undefined ? "unavailable" : `${navigatorSpecs.deviceMemory} GiB`;
-      await reply(short(en ? `${navigator.hardwareConcurrency ?? "?"} cores, ${memory}, ${navigator.maxTouchPoints} touch points.` : `${navigator.hardwareConcurrency ?? "?"} núcleos, ${memory}, ${navigator.maxTouchPoints} toques.`), true);
+      await reply(short(`${navigator.hardwareConcurrency ?? "?"} núcleos, ${memory}, ${navigator.maxTouchPoints} toques.`), true);
       showQuestions();
     };
     const revealNetwork = async () => {
-      const en = english(); asked.add("network"); choices.replaceChildren();
-      await reply(en ? "A static site cannot read your IP." : "Un sitio estático no puede leer tu IP.", true);
-      await reply(en ? "Oh no, I got involved with the wrong person…" : "Oh no, me metí con la persona equivocada…", true, 2600);
+      asked.add("network"); choices.replaceChildren();
+      await reply("Un sitio estático no puede leer tu IP.", true);
+      await new Promise((resolve) => window.setTimeout(resolve, 1300));
+      await reply("Oh no, me metí con la persona equivocada…", true, 2600);
       window.setTimeout(() => {
         root.classList.add("is-glitching");
         panel.setAttribute("aria-hidden", "true");
@@ -117,11 +116,11 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       }, 2000);
     };
     const showQuestions = () => {
-      const en = english(); choices.replaceChildren();
-      if (!asked.has("device")) button(en ? "Where did I open the page from?" : "¿Desde dónde abrí la página?", revealDevice);
-      if (!asked.has("environment")) button(en ? "Tell me something else" : "Decime algo más", revealEnvironment);
-      if (!asked.has("capabilities")) button(en ? "What can my browser do?" : "¿Qué puede hacer mi navegador?", revealCapabilities);
-      if (asked.has("device") && asked.has("environment") && asked.has("capabilities") && !asked.has("network")) button(en ? "Do you want to tell me my IP?" : "¿Querés que te diga tu IP?", revealNetwork);
+      choices.replaceChildren();
+      if (!asked.has("device")) button("¿Desde dónde abrí la página?", revealDevice);
+      if (!asked.has("environment")) button("Decime algo más", revealEnvironment);
+      if (!asked.has("capabilities")) button("¿Qué puede hacer mi navegador?", revealCapabilities);
+      if (asked.has("device") && asked.has("environment") && asked.has("capabilities") && !asked.has("network")) button("¿Querés que te diga tu IP?", revealNetwork);
     };
     const setOpen = (open: boolean) => {
       root.classList.toggle("is-open", open);
