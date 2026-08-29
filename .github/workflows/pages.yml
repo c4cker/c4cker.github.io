@@ -37,6 +37,12 @@ jobs:
         with:
           enablement: true
       - run: C4CKER_TARGET=pages npm run build:main
+        env:
+          PUBLIC_GOOGLE_FORM_URL: ${{ secrets.PUBLIC_GOOGLE_FORM_URL }}
+          PUBLIC_GOOGLE_ENTRY_NAME: ${{ secrets.PUBLIC_GOOGLE_ENTRY_NAME }}
+          PUBLIC_GOOGLE_ENTRY_EMAIL: ${{ secrets.PUBLIC_GOOGLE_ENTRY_EMAIL }}
+          PUBLIC_GOOGLE_ENTRY_SUBJECT: ${{ secrets.PUBLIC_GOOGLE_ENTRY_SUBJECT }}
+          PUBLIC_GOOGLE_ENTRY_MESSAGE: ${{ secrets.PUBLIC_GOOGLE_ENTRY_MESSAGE }}
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4"

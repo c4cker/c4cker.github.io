@@ -20,8 +20,13 @@ import Base from "../layouts/MainLayout.astro";
     </form>
   </article>
   <script>
-    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeGpBqtUOHOHwEXHf-p5DqLw9y-U0UPd4rMK40LJC_vYF8pFQ/formResponse";
-    const ENTRY = { name: "entry.117677077", email: "entry.1044628442", subject: "entry.1186340687", message: "entry.1744537590" };
+    const FORM_URL = import.meta.env.PUBLIC_GOOGLE_FORM_URL;
+    const ENTRY = {
+      name: import.meta.env.PUBLIC_GOOGLE_ENTRY_NAME,
+      email: import.meta.env.PUBLIC_GOOGLE_ENTRY_EMAIL,
+      subject: import.meta.env.PUBLIC_GOOGLE_ENTRY_SUBJECT,
+      message: import.meta.env.PUBLIC_GOOGLE_ENTRY_MESSAGE,
+    };
 
     const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
     const notice = document.querySelector<HTMLElement>(".contact-form__notice");
