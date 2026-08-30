@@ -7,6 +7,10 @@ alter table public.challenge_stage_solves
 create index if not exists challenge_solves_ranking_idx
   on public.challenge_solves (solved_at desc);
 
+-- Migration 002's rename path does not carry the UNIQUE constraint from 001's CREATE TABLE IF NOT EXISTS.
+create unique index if not exists challenge_solves_slug_visitor_uniq
+  on public.challenge_solves (challenge_slug, visitor_hash);
+
 create index if not exists challenge_stage_solves_visitor_idx
   on public.challenge_stage_solves (challenge_slug, visitor_hash);
 
