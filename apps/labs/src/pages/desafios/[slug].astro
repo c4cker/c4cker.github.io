@@ -17,7 +17,7 @@ const challengesHref = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/desafios`
     <form class="mt-8 grid max-w-xl gap-3 border border-line bg-panel p-5" data-flag-form data-challenge={challenge.slug}><label class="font-mono text-sm" for="flag">Flag obtenida</label>{challenge.stages.length > 0 && <select class="border border-line bg-void p-3" id="stage" name="stage" aria-label="Etapa"><option value="">Seleccioná una etapa</option>{challenge.stages.map((stage: ChallengeStage, index: number) => <option value={stage.id}>Etapa {index + 1} · {stage.title}</option>)}</select>}<input class="border border-line bg-void p-3" id="flag" name="flag" autocomplete="off" maxlength="512" placeholder="Pegá la flag" required /><button class="w-max cursor-pointer border border-signal bg-signal px-4 py-3 font-mono text-xs font-bold text-void hover:bg-transparent hover:text-signal" type="submit">Registrar flag</button><output class="min-h-6 text-sm text-[#a9b6c8]" aria-live="polite"></output><p class="text-xs text-[#718096]">Registro local en este navegador; no se valida ni se envía a un servidor.</p></form>
   </article>
   <script>
-    const flagForm = document.querySelector("[data-flag-form]");
+    const flagForm = document.querySelector<HTMLFormElement>("[data-flag-form]");
     flagForm?.addEventListener("submit", (event) => {
       event.preventDefault();
       const formData = new FormData(flagForm);
