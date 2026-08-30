@@ -22,10 +22,7 @@ const flagsApiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://c4cker-labs
         <h2 id="nickname-title" class="font-display text-3xl font-bold tracking-[-.05em]">Elegí tu nickname</h2>
         <p class="text-sm leading-6 text-[#a9b6c8]">Usaremos este nombre para mostrar tus desafíos completados en el ranking.</p>
         <input class="border border-line bg-void p-3" name="nickname" maxlength="32" autocomplete="nickname" placeholder="Tu nickname" required />
-        <div class="flex flex-wrap gap-3">
-          <button class="border border-signal bg-signal px-4 py-3 font-mono text-xs font-bold text-void hover:bg-transparent hover:text-signal" value="confirm" type="submit">Guardar nickname</button>
-          <button class="border border-line px-4 py-3 font-mono text-xs text-[#a9b6c8]" value="cancel" type="submit">Cancelar</button>
-        </div>
+        <button class="w-max border border-signal bg-signal px-4 py-3 font-mono text-xs font-bold text-void hover:bg-transparent hover:text-signal" value="confirm" type="submit">Guardar nickname</button>
       </form>
     </dialog>
   </article>
