@@ -9,3 +9,8 @@ create index if not exists challenge_solves_ranking_idx
 
 create index if not exists challenge_stage_solves_visitor_idx
   on public.challenge_stage_solves (challenge_slug, visitor_hash);
+
+-- El Worker usa service_role y RLS permanece activo para cualquier cliente público.
+grant usage, select on all sequences in schema public to service_role;
+grant select, insert on public.challenge_solves to service_role;
+grant select, insert on public.challenge_stage_solves to service_role;
