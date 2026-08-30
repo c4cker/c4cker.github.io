@@ -26,6 +26,8 @@
 @utility card { @apply relative block min-h-44 overflow-hidden rounded-2xl border border-line bg-panel/85 p-6 no-underline transition duration-300 hover:-translate-y-1 hover:border-electric; }
 @utility data-chip { @apply border border-line px-2 py-1 font-mono text-[10px] uppercase tracking-[.08em] text-[#b9c7da]; }
 @utility route-link { @apply block font-mono text-xs text-electric; }
+.repo-link { text-decoration: none; transition: color .2s ease, text-decoration-color .2s ease; }
+.repo-link:hover, .repo-link:focus-visible { color: var(--color-signal); text-decoration: underline; text-underline-offset: 4px; }
 
 .trace-card::after { content: ""; position: absolute; right: 1.25rem; bottom: .85rem; left: 1.25rem; height: 1px; background: linear-gradient(90deg, transparent, rgb(134 169 255 / .72) 24%, rgb(185 245 230 / .8) 52%, transparent); background-size: 180% 100%; background-position: 100% 0; opacity: .58; transition: background-position .55s ease, opacity .25s ease; }
 .trace-card:hover::after, .trace-card:focus-visible::after { background-position: 0 0; opacity: 1; }

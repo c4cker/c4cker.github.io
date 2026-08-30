@@ -12,6 +12,7 @@ const child = spawn(process.execPath, ['node_modules/astro/bin/astro.mjs', comma
   env: {
     ...process.env,
     C4CKER_APP: app,
+    ...(command === 'dev' ? { C4CKER_LOCAL_DEV: '1' } : {}),
     VITE_CACHE_DIR: process.env.VITE_CACHE_DIR ?? `node_modules/.vite-${app}`,
     ...(app === 'labs' ? { ASTRO_DEV_BACKGROUND: '1' } : {})
   }

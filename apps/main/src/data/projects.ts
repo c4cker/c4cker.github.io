@@ -1,4 +1,4 @@
-export type Project = { slug: string; title: string; status: string; kind: string; stack: string; description: string; detail: string; objective: string; repoUrl: string };
+export type Project = { slug: string; title: string; status: string; kind: string; stack: string; language: string; description: string; detail: string; objective: string; pending: string; repoUrl: string };
 
 /**
  * El catálogo público empieza vacío. Para trabajar en local, agregá
