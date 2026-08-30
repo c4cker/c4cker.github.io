@@ -41,7 +41,7 @@ const flagsApiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://c4cker-labs
       const formData = new FormData(flagForm);
       const flag = formData.get("flag");
       const stage = formData.get("stage");
-      const output = flagForm.querySelector<HTMLOutputElement>("output");
+      const output = flagForm.querySelector("output");
       if (typeof flag !== "string" || !flag.trim() || !output) return;
       const challenge = flagForm.dataset.challenge;
       const stageId = typeof stage === "string" && stage ? stage : "final";
