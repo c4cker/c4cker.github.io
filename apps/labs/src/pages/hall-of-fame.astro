@@ -4,7 +4,7 @@ import Base from "../layouts/LabsLayout.astro";
 <Base title="Hall of Fame" description="Registro anónimo de solves verificados en los desafíos de c4cker.">
   <article class="container-site max-w-4xl py-20">
     <h1 class="mt-3 font-display text-6xl font-bold tracking-[-.07em]">Ranking de solves</h1>
-    <p class="mt-5 max-w-2xl text-lg text-[#cbd5e1]">Un punto por desafío completado. Las etapas intermedias no suman puntaje.</p>
+    <p class="mt-5 max-w-2xl text-lg text-[#cbd5e1]">Cada desafío completado suma un punto. En los retos por etapas, el punto llega al completar el recorrido.</p>
     <div class="mt-10 border border-line bg-panel p-6" data-ranking-state><p class="text-[#a9b6c8]">Cargando ranking…</p></div>
   </article>
   <script is:inline define:vars={{ apiUrl: "https://c4cker-labs-api.lucianomps2015.workers.dev" }}>

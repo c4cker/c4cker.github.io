@@ -8,52 +8,32 @@ const dockerCount = challenges.filter((item) => item.format === "docker").length
 
 const tour = [
   {
-    number: "01",
     name: "Desafíos",
-    detail: "Retos para resolver a tu ritmo.",
+    detail: "Descargá un paquete, buscá la pista y enviá la flag cuando tengas una hipótesis comprobada.",
     href: labsOrigin + "/desafios",
     action: "Explorar desafíos",
-    screen: "challenge",
-    trace: "docker run · html source · flag",
   },
   {
-    number: "02",
     name: "Laboratorios",
-    detail: "Entornos reproducibles, con su repo a mano.",
+    detail: "Levantá servicios locales, seguí su tráfico y revisá cómo se relacionan entre sí.",
     href: labsOrigin + "/laboratorios",
     action: "Abrir laboratorios",
-    screen: "lab",
-    trace: "repository · setup · notes",
   },
   {
-    number: "03",
-    name: "Hall of Fame",
-    detail: "solves verificados y un lugar para dejar tu marca.",
-    href: labsOrigin + "/hall-of-fame",
-    action: "Ver el Hall",
-    screen: "hall",
-    trace: "challenge id · verified · solve",
-  },
-  {
-    number: "04",
     name: "Comunidad",
-    detail: "Recursos, enlaces y gente con quien compartir hallazgos.",
+    detail: "Enlaces y comunidades para contrastar hallazgos, consultar dudas y compartir evidencia.",
     href: labsOrigin + "/comunidad",
     action: "Entrar a comunidad",
-    screen: "community",
-    trace: "notes · links · people",
   },
 ];
 ---
 
 <section class="labs-intro container-site">
   <div class="labs-intro__copy">
-    <p class="eyebrow">c4cker / laboratorio abierto</p>
-    <h1>Un laboratorio<br /><span>para romper con permiso</span></h1>
-    <p class="labs-intro__lead">Labs reúne desafíos CTF locales, laboratorios Docker reproducibles y recursos de comunidad. Elegí una ruta y trabajá en tu propio entorno.</p>
+    <h2>Un laboratorio<br /><span>para romper con permiso</span></h2>
+    <p class="labs-intro__lead">Descargá un desafío, levantalo en tu equipo y verificá la flag acá. También podés consultar laboratorios, recursos y solves de la comunidad.</p>
     <div class="labs-intro__actions">
       <a class="labs-primary" href={labsOrigin + "/desafios"}>Empezar con un desafío <span aria-hidden="true">→</span></a>
-      <p>Usá únicamente tus equipos, máquinas y servicios autorizados.</p>
     </div>
     <dl class="labs-stats" aria-label="Resumen de Labs">
       <div><dt>{challenges.length}</dt><dd>desafíos</dd></div>
@@ -78,32 +58,17 @@ const tour = [
 <section class="labs-guide container-site" aria-labelledby="labs-guide-title">
   <header class="labs-guide__heading">
     <div>
-      <p class="eyebrow">Guía de campo</p>
     <h2 id="labs-guide-title">Elegí cómo practicar</h2>
     </div>
-    <p>Desafíos, laboratorios, ranking y comunidad en un mismo lugar.</p>
   </header>
 
   <div class="labs-tour">
     {tour.map((item) => (
       <a class="labs-tour__item" href={item.href}>
-        <div class="labs-tour__meta">
-          <span>{item.number}</span>
-        </div>
         <div class="labs-tour__copy">
           <h3>{item.name}</h3>
           <p>{item.detail}</p>
           <span class="labs-tour__action">{item.action} <b aria-hidden="true">→</b></span>
-        </div>
-        <div class={`labs-preview labs-preview--${item.screen}`} aria-hidden="true">
-          <div class="labs-preview__frame">
-            <div class="labs-preview__bar"><i></i><i></i><i></i><b>labs.localhost</b></div>
-            {item.screen === "challenge" && <><div class="labs-preview__title">header trace</div><div class="labs-preview__line"></div><div class="labs-preview__line labs-preview__line--short"></div><div class="labs-preview__code">$ docker compose up</div></>}
-            {item.screen === "lab" && <><div class="labs-preview__title">network observatory</div><div class="labs-preview__split"><span></span><span></span></div><div class="labs-preview__line labs-preview__line--short"></div></>}
-            {item.screen === "hall" && <><div class="labs-preview__title">recent solves</div><div class="labs-preview__rows"><span></span><span></span><span></span></div><div class="labs-preview__code">verified · 04</div></>}
-            {item.screen === "community" && <><div class="labs-preview__title">field notes</div><div class="labs-preview__quote"></div><div class="labs-preview__line"></div><div class="labs-preview__line labs-preview__line--short"></div></>}
-          </div>
-          <span class="labs-preview__veil">vista previa</span>
         </div>
       </a>
     ))}
@@ -112,7 +77,6 @@ const tour = [
 
 <section class="labs-outro container-site">
   <div>
-    <p class="eyebrow">Fuera del laboratorio</p>
     <h2>Más notas<br />y writeups</h2>
   </div>
   <div class="labs-outro__links">
@@ -124,9 +88,9 @@ const tour = [
 <style>
   .labs-intro { min-height: min(720px, 78vh); display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; padding-top: clamp(5.5rem, 10vw, 9rem); padding-bottom: clamp(4rem, 9vw, 8rem); }
   .labs-intro__copy { width: 100%; max-width: 68rem; min-width: 0; }
-  .labs-intro h1, .labs-guide h2, .labs-outro h2 { margin: .8rem 0 0; font-family: var(--font-display); font-weight: 700; letter-spacing: -.075em; line-height: .9; }
-  .labs-intro h1 { width: 100%; max-width: none; font-size: clamp(3.9rem, 9vw, 9.5rem); }
-  .labs-intro h1 span { color: var(--color-electric); }
+  .labs-intro h2, .labs-guide h2, .labs-outro h2 { margin: .8rem 0 0; font-family: var(--font-display); font-weight: 700; letter-spacing: -.075em; line-height: .92; }
+  .labs-intro h2 { width: 100%; max-width: 42rem; font-size: clamp(2.8rem, 6vw, 6rem); }
+  .labs-intro h2 span { color: var(--color-electric); }
   .labs-intro__lead { max-width: 42rem; margin: 2rem 0 0; color: #cbd5e1; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.75; }
   .labs-intro__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.25rem 1.75rem; margin-top: 2.25rem; }
   .labs-primary { display: inline-flex; align-items: center; gap: 1.5rem; padding: 1rem 1.2rem; border: 1px solid var(--color-signal); background: var(--color-signal); color: var(--color-void); font: 700 .72rem/1 var(--font-mono); text-decoration: none; letter-spacing: .04em; transition: background .2s ease, color .2s ease, transform .2s ease; }
@@ -147,9 +111,7 @@ const tour = [
   .labs-guide h2, .labs-outro h2 { max-width: 50rem; font-size: clamp(2.7rem, 5vw, 5.4rem); }
   .labs-guide__heading > p { max-width: 18rem; margin: 0; color: #91a799; font: .72rem/1.65 var(--font-mono); }
   .labs-tour { display: grid; gap: 1rem; }
-  .labs-tour__item { display: grid; grid-template-columns: minmax(4rem, .18fr) minmax(15rem, .92fr) minmax(14rem, .7fr); gap: clamp(1.25rem, 3.4vw, 4.5rem); align-items: center; padding: clamp(1.25rem, 2.5vw, 2.2rem) 0; border-top: 1px solid var(--color-line); color: inherit; text-decoration: none; }
-  .labs-tour__meta { align-self: stretch; display: flex; flex-direction: column; justify-content: space-between; color: var(--color-electric); font: .66rem/1.25 var(--font-mono); letter-spacing: .12em; }
-  .labs-tour__meta span:last-child { color: #698172; font-size: .57rem; }
+  .labs-tour__item { display: block; padding: clamp(1.25rem, 2.5vw, 2.2rem) 0; border-top: 1px solid var(--color-line); color: inherit; text-decoration: none; }
   .labs-tour__copy h3 { margin: 0; font-family: var(--font-display); font-size: clamp(2rem, 3vw, 3.2rem); letter-spacing: -.065em; }
   .labs-tour__copy p { max-width: 35rem; margin: .55rem 0 0; color: #aebdcb; line-height: 1.5; }
   .labs-tour__action { display: inline-block; margin-top: .9rem; color: var(--color-signal); font: .7rem/1 var(--font-mono); }
@@ -174,6 +136,6 @@ const tour = [
   .labs-outro__links div { display: flex; gap: 1.2rem; margin-top: 1.5rem; }
   .labs-outro__links div a { color: #91a799; font: .66rem var(--font-mono); text-decoration: none; }
   @media (hover: hover) { .labs-primary:hover { background: transparent; color: var(--color-signal); transform: translateY(-2px); } .labs-tour__item:hover .labs-preview__frame { filter: blur(1.35px); transform: scale(1.025); opacity: 1; } .labs-tour__item:hover .labs-preview { border-color: var(--color-signal); } .labs-tour__item:hover .labs-tour__action b { display: inline-block; transform: translateX(.28rem); } .labs-outro a:hover { color: var(--color-electric); } }
-  @media (max-width: 900px) { .labs-intro h1 { overflow-wrap: anywhere; } }
-  @media (max-width: 720px) { .labs-intro { min-height: auto; padding-top: 4rem; } .labs-intro h1 { font-size: clamp(3.25rem, 17vw, 5.8rem); } .labs-guide__heading, .labs-outro, .labs-start { display: grid; grid-template-columns: 1fr; } .labs-guide__heading { gap: 1rem; } .labs-tour__item { grid-template-columns: 2.7rem minmax(0, 1fr); gap: 1rem; } .labs-tour__meta { grid-row: 1 / 3; } .labs-preview { grid-column: 2; min-height: 8rem; } .labs-preview__frame { min-height: 8rem; } .labs-outro, .labs-start { gap: 2rem; } }
+  @media (max-width: 900px) { .labs-intro h2 { overflow-wrap: anywhere; } }
+  @media (max-width: 720px) { .labs-intro { min-height: auto; padding-top: 4rem; } .labs-intro h2 { font-size: clamp(2.8rem, 13vw, 4.8rem); } .labs-guide__heading, .labs-outro, .labs-start { display: grid; grid-template-columns: 1fr; } .labs-guide__heading { gap: 1rem; } .labs-outro, .labs-start { gap: 2rem; } }
 </style>

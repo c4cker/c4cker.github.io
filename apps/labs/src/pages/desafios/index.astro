@@ -4,8 +4,8 @@ import { challenges } from "../../data/challenges";
 ---
 <Base title="Desafíos" description="Retos CTF locales para ejecutar únicamente en un entorno propio y aislado.">
   <section class="container-site max-w-6xl py-16 sm:py-20">
-    <h1 class="mt-3 font-display text-5xl font-bold tracking-[-.07em] sm:text-6xl">Ponte a prueba<br /><span class="text-electric">ponte a romper</span></h1>
-    <p class="mt-5 max-w-2xl text-lg text-[#c2c8c0]">Elegí un formato, descargá el reto y trabajá dentro de un entorno controlado. Conseguí la bandera.</p>
+    <h1 class="mt-3 font-display text-5xl font-bold tracking-[-.07em] sm:text-6xl">Descargá un reto<br /><span class="text-electric">seguí las pistas</span></h1>
+    <p class="mt-5 max-w-2xl text-lg text-[#c2c8c0]">Elegí HTML o Docker, descargá el paquete y resolvelo en tu equipo. Después enviá la flag para comprobar el resultado.</p>
     {challenges.length > 0 && <div class="challenge-filters mt-8" role="group" aria-label="Filtrar desafíos">
       <button class="filter-button is-active" type="button" data-challenge-filter="all" aria-pressed="true">Todos</button>
       <button class="filter-button" type="button" data-challenge-filter="docker" aria-pressed="false">Docker</button>

@@ -6,7 +6,7 @@ import SignalGlitch from "../../../../packages/shared/components/SignalGlitch.as
 import MatrixRain from "../../../../packages/shared/components/MatrixRain.astro";
 import BrowserOracle from "../../../../packages/shared/components/BrowserOracle.astro";
 interface Props { title?: string; description?: string; image?: string; noindex?: boolean }
-const { title, description = "Investigación, retos y laboratorios de seguridad ofensiva responsable.", image = "/og-card.svg", noindex = false } = Astro.props;
+const { title, description = "Desafíos y laboratorios locales para practicar seguridad con autorización.", image = "/og-card.svg", noindex = false } = Astro.props;
 const pageTitle = title ? `${title} · c4cker` : "c4cker · seguridad aplicada";
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image, Astro.site);
@@ -45,7 +45,7 @@ const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4
       <nav id="menu-movil" class="mobile-menu md:hidden" aria-label="Navegación móvil" data-mobile-menu inert><div>{links.map(([label, href], index) => <a class="mobile-nav-link" aria-current={Astro.url.pathname === href ? "page" : undefined} href={href} style={`--menu-index: ${index}`}><span>{label}</span><span aria-hidden="true">→</span></a>)}</div></nav>
     </header>
     <main id="contenido"><slot /></main>
-    <footer class="container-site flex flex-col justify-between gap-4 border-t border-line py-6 font-mono text-xs text-[#929991] sm:flex-row sm:items-center"><div><span class="mt-2 block max-w-md text-[#718096]">Inspirado en el enfoque de <a class="text-[#a9b6c8]" href="https://valentorassa.com/" target="_blank" rel="noreferrer noopener">Valentín Torassa</a>.</span></div><span><span>Aprendizaje responsable</span> · {new Date().getFullYear()}</span><nav class="footer-legal" aria-label="Enlaces legales"><a class="footer-privacy" href="/privacidad">Privacidad</a><a class="footer-privacy" href="/terminos">Términos y condiciones</a></nav></footer>
+    <footer class="container-site flex flex-col justify-between gap-4 border-t border-line py-6 font-mono text-xs text-[#929991] sm:flex-row sm:items-center"><div><span class="mt-2 block max-w-md text-[#718096]">Practicá solo en entornos propios o autorizados.</span></div><span><span>Aprendizaje responsable</span> · {new Date().getFullYear()}</span><nav class="footer-legal" aria-label="Enlaces legales"><a class="footer-privacy" href="/privacidad">Privacidad</a><a class="footer-privacy" href="/terminos">Términos y condiciones</a></nav></footer>
     {/* <CursorProbe /> Efecto de burbuja temporalmente desactivado. */}
     {/* <CommandTrail /> */}
     <SignalGlitch />

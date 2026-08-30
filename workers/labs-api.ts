@@ -6,7 +6,7 @@ type Env = {
 };
 import { challenges as challengeCatalog } from "../apps/labs/src/data/challenges.published";
 
-const allowedOrigins = new Set(["https://c4cker.github.io"]);
+const allowedOrigins = new Set(["https://c4cker.github.io", "http://localhost:4322", "http://labs.localhost:4322"]);
 const challenges = Object.fromEntries(challengeCatalog.map((item) => [item.slug, { mode: item.flagMode, stages: item.stages.map((stage) => stage.id) }]));
 const attempts = new Map<string, { count: number; resetAt: number }>();
 
@@ -16,6 +16,9 @@ export default {
     if (request.method === "OPTIONS") return response(null, 204, origin);
     const pathname = new URL(request.url).pathname;
     if (request.method === "GET" && pathname === "/health") return response({ ok: true, service: "labs-api" }, 200, origin, "no-store");
+    if (request.method === "GET" && pathname === "/visitor-ip") {
+      return response({ ok: true, ip: request.headers.get("CF-Connecting-IP") ?? "unknown" }, 200, origin, "no-store");
+    }
     if (request.method === "GET" && pathname === "/ranking") {
       const result = await supabase(env, "challenge_solves?select=nickname,challenge_slug&nickname=not.is.null&order=solved_at.asc&limit=1000");
       if (!result.ok) return response({ ok: false, error: "db_error" }, 500, origin);

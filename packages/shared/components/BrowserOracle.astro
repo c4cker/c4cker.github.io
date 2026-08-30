@@ -101,9 +101,16 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
     };
     const revealNetwork = async () => {
       asked.add("network"); choices.replaceChildren();
-      await reply("Un sitio estático no puede leer tu IP.", true);
-      await new Promise((resolve) => window.setTimeout(resolve, 1300));
-      await reply("Oh no, me metí con la persona equivocada…", true, 2600);
+      try {
+        const result = await fetch("https://api4.ipify.org?format=json", { headers: { Accept: "application/json" } });
+        const payload = await result.json();
+        if (!result.ok || !/^\d{1,3}(?:\.\d{1,3}){3}$/.test(payload.ip ?? "")) throw new Error("ipv4 unavailable");
+        await reply(`Tu IPv4 pública es ${payload.ip}.`, true);
+      } catch {
+        await reply("No pude encontrar una IPv4 pública desde este entorno.", true);
+      }
+      await new Promise((resolve) => window.setTimeout(resolve, 2500));
+      await reply("Oh no, me metí con la persona equivocada…", true, 2500);
       window.setTimeout(() => {
         root.classList.add("is-glitching");
         panel.setAttribute("aria-hidden", "true");
@@ -113,7 +120,7 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
           root.classList.add("is-gone");
           trigger.tabIndex = -1;
         }, 420);
-      }, 2000);
+      }, 2800);
     };
     const showQuestions = () => {
       choices.replaceChildren();
