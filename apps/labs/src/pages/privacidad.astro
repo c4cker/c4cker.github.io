@@ -1,4 +1,17 @@
 ---
 import Base from "../layouts/LabsLayout.astro";
 ---
-<Base title="Privacidad"><article class="container-site max-w-3xl py-20"><p class="eyebrow">Transparencia</p><h1 class="mt-3 font-display text-6xl font-bold tracking-[-.07em]">Privacidad</h1><p class="mt-5 text-lg text-[#c2c8c0]">El sitio no pide registro. Cuando enviás una flag, el servidor genera un identificador HMAC a partir de la IP que Cloudflare entrega al Worker. La IP original no se guarda en la base de datos.</p><p class="mt-4">Ese identificador sirve para evitar solves duplicados y construir un Hall of Fame anónimo. Antes de lanzarlo, completá esta política con responsable, contacto, plazo de conservación y base legal aplicable.</p><a class="route-link mt-8" href="/terminos">Leer términos y condiciones <span aria-hidden="true">→</span></a></article></Base>
+<Base title="Privacidad" description="Política de privacidad de c4cker/labs.">
+  <article class="container-site max-w-3xl py-16 sm:py-20">
+    <p class="eyebrow">Transparencia</p><h1 class="mt-3 font-display text-5xl font-bold tracking-[-.07em] sm:text-6xl">Privacidad.</h1>
+    <p class="mt-6 text-lg text-[#c2c8c0]">Última actualización: 30 de agosto de 2026. Esta política explica qué información se procesa cuando visitás c4cker/labs y cómo se utiliza.</p>
+    <div class="mt-12 grid gap-8 border-t border-line pt-8 text-[#cbd5e1]">
+      <section><h2 class="font-display text-2xl font-bold text-ink">Qué información se recopila</h2><p class="mt-3">El sitio no exige registro para navegar, consultar los paneles ni abrir recursos externos. No guardamos el contenido de tus búsquedas ni creamos perfiles de visitantes.</p></section>
+      <section><h2 class="font-display text-2xl font-bold text-ink">Flags y Hall of Fame</h2><p class="mt-3">Cuando enviás una flag, el servidor puede recibir la información técnica necesaria para procesar la solicitud. Para evitar solves duplicados y construir un Hall of Fame anónimo, genera un identificador HMAC a partir de la IP que Cloudflare entrega al Worker. La IP original no se guarda en la base de datos. No envíes nombres, correos, credenciales, secretos ni información de terceros.</p></section>
+      <section><h2 class="font-display text-2xl font-bold text-ink">Cookies y servicios técnicos</h2><p class="mt-3">La infraestructura puede utilizar servicios técnicos de hosting, CDN y seguridad para entregar el sitio, detectar abuso y mantenerlo disponible. Esos proveedores pueden procesar datos técnicos conforme a sus propias políticas. El sitio no usa cookies publicitarias ni vende información personal.</p></section>
+      <section><h2 class="font-display text-2xl font-bold text-ink">Enlaces externos</h2><p class="mt-3">Los paneles contienen enlaces hacia repositorios, cursos, PDFs, videos, laboratorios y comunidades de terceros. Al abrirlos, pasás a sus dominios y políticas de privacidad. c4cker no recibe automáticamente los datos que esos sitios recopilen ni controla sus cambios, formularios, cuentas o tecnologías de seguimiento.</p></section>
+      <section><h2 class="font-display text-2xl font-bold text-ink">Cambios y contacto</h2><p class="mt-3">Podemos actualizar esta política para reflejar cambios técnicos o legales. Si necesitás consultar, corregir o reportar un problema relacionado con privacidad, usá los canales de <a class="text-signal" href="/contacto">contacto</a>.</p></section>
+    </div>
+    <a class="route-link mt-10" href="/terminos">Leer términos y condiciones <span aria-hidden="true">→</span></a>
+  </article>
+</Base>

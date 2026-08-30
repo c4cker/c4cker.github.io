@@ -1,0 +1,24 @@
+---
+import Base from "../../layouts/LabsLayout.astro";
+import { communityPanels, getCommunityPanel, getResourcesForPanel } from "../../data/community";
+
+export function getStaticPaths() {
+  return communityPanels.map((panel) => ({ params: { slug: panel.slug }, props: { panel } }));
+}
+
+const panel = Astro.props.panel ?? getCommunityPanel(Astro.params.slug ?? "");
+if (!panel) return Astro.redirect("/comunidad");
+const resources = getResourcesForPanel(panel);
+---
+<Base title={panel.title} description={panel.description}>
+  <article class="container-site max-w-6xl py-16 sm:py-20">
+    <a class="back-link" href="/comunidad">← Volver a Comunidad</a>
+    <div class="mt-12 max-w-4xl"><p class="eyebrow">{panel.eyebrow} · {resources.length} recursos</p><h1 class="mt-3 font-display text-5xl font-bold tracking-[-.07em] sm:text-7xl">{panel.title}</h1><p class="mt-6 max-w-3xl text-xl leading-8 text-[#c2c8c0]">{panel.intro}</p></div>
+    <section class="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1fr)_15rem]" aria-labelledby="recursos-title">
+      <div><div class="flex items-end justify-between gap-4"><div><p class="eyebrow">Selección curada</p><h2 id="recursos-title" class="mt-2 font-display text-3xl font-bold tracking-[-.05em]">Recursos del tema</h2></div><span class="font-mono text-xs text-[#718096]">{resources.length.toString().padStart(2, "0")} entradas</span></div>
+        <div class="mt-7 grid gap-4">{resources.map((item) => <a class="card trace-card group" href={item.href} target="_blank" rel="noreferrer noopener"><div class="flex flex-wrap items-start justify-between gap-3"><div><p class="eyebrow">{item.format}</p><h3 class="mt-3 font-display text-2xl font-bold tracking-[-.04em] group-hover:text-signal">{item.title}</h3><p class="mt-2 font-mono text-xs text-electric">{item.source}</p></div><span class="border border-ember/50 px-2 py-1 font-mono text-[.65rem] uppercase tracking-[.08em] text-[#a9b6c8]">{item.level}</span></div><p class="mt-5 max-w-3xl text-[#a9b6c8]">{item.description}</p><div class="mt-5 grid gap-2 border-t border-line pt-4 font-mono text-xs text-[#a9b6c8] sm:grid-cols-2"><p><span class="text-ember">Temas</span><br />{item.topics.join(" · ")}</p><p><span class="text-ember">Idioma / acceso</span><br />{item.language} · {item.access}</p></div><span class="route-link mt-6">Abrir recurso <span aria-hidden="true">↗</span></span></a>)}</div>
+      </div>
+      <aside class="h-fit border-l border-ember/60 pl-5 font-mono text-xs leading-6 text-[#a9b6c8]"><span class="text-ember">cómo usar este panel</span><p class="mt-3">Empezá por un recurso introductorio, practicá en un entorno controlado y documentá lo que aprendiste.</p><p class="mt-4">Los enlaces llevan a sitios externos. Revisá sus reglas, licencias y requisitos antes de descargar o ejecutar contenido.</p></aside>
+    </section>
+  </article>
+</Base>
