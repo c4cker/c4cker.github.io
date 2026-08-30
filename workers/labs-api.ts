@@ -18,7 +18,21 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = request.headers.get("Origin") ?? "";
     if (request.method === "OPTIONS") return response(null, 204, origin);
-    if (request.method !== "POST" || new URL(request.url).pathname !== "/submit-flag") return response({ ok: false, error: "not_found" }, 404, origin);
+    const pathname = new URL(request.url).pathname;
+    if (request.method === "GET" && pathname === "/ranking") {
+      const result = await supabase(env, "challenge_solves?select=nickname,challenge_slug,solved_at&nickname=not.is.null&order=solved_at.asc");
+      if (!result.ok) return response({ ok: false, error: "db_error" }, 500, origin);
+      const rows = await result.json() as Array<{ nickname: string; challenge_slug: string; solved_at: string }>;
+      const ranking = new Map<string, { nickname: string; points: number; solves: Array<{ challenge_slug: string; solved_at: string }> }>();
+      for (const row of rows) {
+        const current = ranking.get(row.nickname) ?? { nickname: row.nickname, points: 0, solves: [] };
+        current.points += 1;
+        current.solves.push({ challenge_slug: row.challenge_slug, solved_at: row.solved_at });
+        ranking.set(row.nickname, current);
+      }
+      return response({ ok: true, ranking: [...ranking.values()].sort((a, b) => b.points - a.points || a.nickname.localeCompare(b.nickname)) }, 200, origin);
+    }
+    if (request.method !== "POST" || pathname !== "/submit-flag") return response({ ok: false, error: "not_found" }, 404, origin);
 
     let body: { slug?: string; stage?: string; flag?: string; nickname?: string };
     try { body = await request.json(); } catch { return response({ ok: false, error: "bad_request" }, 400, origin); }
