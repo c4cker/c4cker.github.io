@@ -10,7 +10,7 @@ const { title, description = "Investigación, retos y laboratorios de seguridad 
 const pageTitle = title ? `${title} · c4cker` : "c4cker · seguridad aplicada";
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image, Astro.site);
-const mainOrigin = import.meta.env.DEV ? "http://localhost:4321" : Astro.site?.hostname === "c4cker.github.io" ? "https://c4cker.github.io/" : "https://c4cker.com";
+const mainOrigin = import.meta.env.DEV ? "http://localhost:4321" : "https://c4cker.github.io/";
 const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const labPath = (path: string) => `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 const labsLinks = [["Desafíos", labPath("/desafios")], ["Labs", labPath("/laboratorios")], ["Ranking", labPath("/hall-of-fame")], ["Comunidad", labPath("/comunidad")]];

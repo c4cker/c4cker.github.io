@@ -10,6 +10,7 @@
   const glitchWords = glitch?.querySelector<HTMLElement>("[data-glitch-words]");
   const source = brandText?.textContent?.trim() ?? "c4cker";
   let restoreLogo: number | undefined;
+  let logoHovered = false;
   const toHex = (value: string) => Array.from(value).map((character) => character.charCodeAt(0).toString(16).padStart(2, "0")).join("");
   const toBinary = (value: string) => Array.from(value).map((character) => character.charCodeAt(0).toString(2).padStart(8, "0")).join(" ");
   const toUnicode = (value: string) => Array.from(value).map((character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`).join("");
@@ -71,10 +72,10 @@
   const touchLayout = window.matchMedia("(pointer: coarse), (hover: none), (max-width: 1023px)").matches;
   if (!reduceMotion) {
     if (!touchLayout) {
-      logo?.addEventListener("pointerenter", () => { window.clearTimeout(restoreLogo); corruptLogo(); window.dispatchEvent(new Event("c4cker:logo-enter")); });
-      logo?.addEventListener("pointerleave", () => { restore(); window.dispatchEvent(new Event("c4cker:logo-leave")); });
+      logo?.addEventListener("pointerenter", () => { logoHovered = true; window.clearTimeout(restoreLogo); corruptLogo(); window.dispatchEvent(new Event("c4cker:logo-enter")); });
+      logo?.addEventListener("pointerleave", () => { logoHovered = false; restore(); window.dispatchEvent(new Event("c4cker:logo-leave")); });
     }
-    schedule(() => { corruptLogo(); restoreLogo = window.setTimeout(restore, 260); }, 5_000, 8_000);
+    schedule(() => { if (logoHovered) return; corruptLogo(); restoreLogo = window.setTimeout(restore, 260); }, 5_000, 8_000);
     schedule(flashBlock, 3_500, 6_500);
   }
 </script>
