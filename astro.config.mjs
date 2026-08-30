@@ -12,7 +12,7 @@ export default defineConfig({
   outDir: `./dist/${app}`,
   site,
   base: pages && app === "labs" ? "/labs" : undefined,
-  output: app === "labs" && !pages ? "hybrid" : "static",
+  output: app === "labs" && !pages ? "static" : "static",
   adapter: app === "labs" && !pages ? cloudflare() : undefined,
   devToolbar: { enabled: false },
   vite: {

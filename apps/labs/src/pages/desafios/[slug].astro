@@ -54,6 +54,9 @@ const flagsApiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://c4cker-labs
       already: "Esta etapa ya estaba registrada.",
       server_config: "El servicio de flags no está configurado.",
       db_error: "No se pudo guardar el solve. Intentá nuevamente.",
+      rate_limited: "Demasiados intentos. Esperá un minuto y probá de nuevo.",
+      bad_nickname: "El nickname debe tener hasta 32 caracteres y usar letras, números, espacios, guiones o puntos.",
+      payload_too_large: "La solicitud es demasiado grande.",
     };
     const showFeedback = (output, message, error = false) => {
       window.clearTimeout(feedbackTimer);
