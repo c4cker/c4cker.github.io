@@ -77,4 +77,9 @@ Thumbs.db
 secrets/
 private/
 
+# Auditorías de seguridad y outputs de investigación
+outputs/
+.vr-scope.json
+**/graphify-out/
+
 # Catálogos y contenido editorial: forman parte del sitio y deben viajar a CI.
