@@ -228,6 +228,15 @@
 .probe-target.is-owned { border-color: rgb(185 245 230 / .42) !important; background-image: radial-gradient(180px circle at var(--probe-x, 50%) var(--probe-y, 50%), rgb(185 245 230 / .04), transparent 72%) !important; box-shadow: none; }
 .probe-target.is-owned::before { opacity: .12; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } .cursor-probe, .cursor-probe::before, .lava-core, .lava-drop { animation: none !important; transition: none !important; } .probe-target::before, .signal-glitch, .matrix-rain { display: none !important; } }
+@media (hover: none), (pointer: coarse) {
+  .card:hover, .certification-card:hover, .community-mini:hover, .community-panel:hover, .back-link:hover, .menu-toggle:hover, .oracle-trigger:hover { transform: none; }
+  .nav-link:hover, .social-link:hover, .back-link:hover, .footer-privacy:hover, .oracle-close:hover { color: #a9b6c8; }
+  .menu-toggle:hover, .social-link--nav:hover { border-color: transparent; background: initial; box-shadow: initial; }
+  .oracle-trigger:hover { border-color: rgb(184 247 209 / .82); background: #0c1b14; box-shadow: 0 0 0 3px #07110b, 0 0 0 4px rgb(184 247 209 / .32), 5px 5px 0 rgb(3 9 5 / .78); }
+  .oracle-trigger:hover img { filter: saturate(.9) contrast(1.06); transform: none; }
+  .oracle-choice:hover, .filter-button:hover { background: transparent; color: #a9b6c8; box-shadow: initial; transform: none; }
+  .contact-form__submit:hover, .error-return:hover { background: var(--color-signal); color: var(--color-void); box-shadow: initial; transform: none; }
+}
 @keyframes lava-shift { from { transform: translate3d(-5%, 3%, 0) scale(.92); } to { transform: translate3d(7%, -5%, 0) scale(1.14); } }
 @keyframes lava-pulse { 0%,100% { transform: scale(.86) translate(-7%, 8%); border-radius: 60% 40% 54% 46% / 45% 56% 44% 55%; } 50% { transform: scale(1.14) translate(8%, -8%); border-radius: 42% 58% 38% 62% / 57% 39% 61% 43%; } }
 @keyframes lava-orbit { 0%,100% { transform: translate(4%, 2%) scale(.8); } 50% { transform: translate(-50%, 58%) scale(1.18); } }

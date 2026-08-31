@@ -79,8 +79,8 @@
     if (!touchLayout) {
       logo?.addEventListener("pointerenter", () => { logoHovered = true; window.clearTimeout(restoreLogo); corruptLogo(); window.dispatchEvent(new Event("c4cker:logo-enter")); });
       logo?.addEventListener("pointerleave", () => { logoHovered = false; restore(); window.dispatchEvent(new Event("c4cker:logo-leave")); });
+      schedule(() => { if (logoHovered) return; corruptLogo(); restoreLogo = window.setTimeout(restore, 260); }, 5_000, 8_000);
+      schedule(flashBlock, 3_500, 6_500);
     }
-    schedule(() => { if (logoHovered) return; corruptLogo(); restoreLogo = window.setTimeout(restore, 260); }, 5_000, 8_000);
-    schedule(flashBlock, 3_500, 6_500);
   }
 </script>
