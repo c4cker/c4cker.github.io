@@ -11,7 +11,7 @@ const imageUrl = new URL(image, Astro.site);
 const mainOrigin = import.meta.env.DEV ? "http://localhost:4321" : "https://c4cker.github.io/";
 const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const labPath = (path: string) => `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
-const labsLinks = [["Desafíos", labPath("/desafios")], ["Labs", labPath("/laboratorios")], ["Ranking", labPath("/hall-of-fame")], ["Comunidad", labPath("/comunidad")]];
+const labsLinks = [["Desafíos", labPath("/desafios")], ["Labs", labPath("/laboratorios")], ["Ranking", labPath("/hall-of-fame")], ["Comunidad", labPath("/comunidad")], ["Contacto", labPath("/contacto")]];
 const links = [...labsLinks, ["Portfolio", mainOrigin]];
 const brand = "c4cker/labs";
 const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4cker", url: Astro.site?.href, inLanguage: "es-AR", description };

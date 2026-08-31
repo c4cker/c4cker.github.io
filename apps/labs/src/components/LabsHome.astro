@@ -12,29 +12,29 @@ const panelCount = communityPanels.length;
 const tour = [
   {
     name: "Desafíos",
-    detail: "Descargá un paquete, buscá la pista y enviá la flag cuando tengas una hipótesis comprobada.",
+    detail: "Descargá ejercicios acotados para practicar reconocimiento, análisis y resolución de problemas con una hipótesis concreta. Cada desafío incluye sus evidencias, instrucciones y un entorno HTML o Docker para que puedas trabajar de forma local.",
     href: labsOrigin + "/desafios",
       action: "Ver desafíos",
   },
   {
     name: "Laboratorios",
-      detail: `${publishedLabs} entorno${publishedLabs === 1 ? "" : "s"} reproducible${publishedLabs === 1 ? "" : "s"} para estudiar servicios, tráfico y cadenas de ataque.`,
+      detail: `Hay ${publishedLabs} entorno${publishedLabs === 1 ? "" : "s"} reproducible${publishedLabs === 1 ? "" : "s"} para estudiar servicios, tráfico y cadenas de ataque. Levantá los componentes en una red controlada, observá su comportamiento y documentá cada hallazgo sin tocar objetivos externos.`,
     href: labsOrigin + "/laboratorios",
-    action: "Abrir laboratorios",
+    action: "Ver laboratorios",
   },
   {
     name: "Comunidad",
-      detail: `${panelCount} paneles con recursos externos para contrastar hallazgos y seguir estudiando.`,
+      detail: `Hay ${panelCount} temas con recursos externos seleccionados para seguir aprendiendo después de cada práctica. Encontrá cursos, documentación, libros, herramientas y plataformas sobre sistemas, Linux, redes, web, cloud, equipos defensivos y CTF.`,
     href: labsOrigin + "/comunidad",
-      action: "Explorar paneles",
+      action: "Explorar recursos",
   },
 ];
 ---
 
 <section class="labs-intro container-site">
   <div class="labs-intro__copy">
-    <h1>Aprendé<br /><span>haciendo</span></h1>
-    <p class="labs-intro__lead">Descargá un ejercicio, levantá un entorno local y documentá lo que encuentres.</p>
+    <h1>Un lugar <span>para desarrollarte</span></h1>
+    <p class="labs-intro__lead">Este lugar está pensado para enriquecer a cada persona que lo necesite y esté interesada en sumar ciberseguridad a su perfil, también hay recursos para otros perfiles. Descargá un ejercicio, levantá un entorno local y documentá lo que encuentres.</p>
     <div class="labs-intro__actions">
       <a class="labs-primary" href={labsOrigin + "/desafios"}>Empezar con un desafío</a>
     </div>
@@ -84,15 +84,15 @@ const tour = [
 </section>
 
 <style>
-  .labs-intro { min-height: min(720px, 78vh); display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; padding-top: clamp(5.5rem, 10vw, 9rem); padding-bottom: clamp(4rem, 9vw, 8rem); }
+  .labs-intro { min-height: min(720px, 78vh); display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; justify-items: center; padding-top: clamp(5.5rem, 10vw, 9rem); padding-bottom: clamp(4rem, 9vw, 8rem); text-align: center; }
   .labs-intro__copy { width: 100%; max-width: 68rem; min-width: 0; }
   .labs-intro h1, .labs-start h2, .labs-guide h2, .labs-author h2 { margin: .8rem 0 0; font-family: var(--font-display); font-weight: 700; letter-spacing: -.075em; line-height: .92; }
-  .labs-intro h1 { width: 100%; max-width: 42rem; font-size: clamp(3.5rem, 7vw, 6.5rem); }
+  .labs-intro h1 { width: 100%; max-width: 42rem; margin-inline: auto; font-size: clamp(3.5rem, 7vw, 6.5rem); }
   .labs-intro h1 span { color: var(--color-electric); }
-  .labs-intro__lead { max-width: 42rem; margin: 2rem 0 0; color: #cbd5e1; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.75; }
-  .labs-intro__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1.25rem 1.75rem; margin-top: 2.25rem; }
-  .labs-primary { display: inline-flex; align-items: center; gap: 1.5rem; padding: 1rem 1.2rem; border: 1px solid var(--color-signal); background: var(--color-signal); color: var(--color-void); font: 700 .72rem/1 var(--font-mono); text-decoration: none; letter-spacing: .04em; transition: background .2s ease, color .2s ease, transform .2s ease; }
-  .labs-stats { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin: 3rem 0 0; }
+  .labs-intro__lead { max-width: 42rem; margin: 2rem auto 0; color: #cbd5e1; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.75; }
+  .labs-intro__actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 1.25rem 1.75rem; margin-top: 2.25rem; }
+  .labs-primary { display: inline-flex; align-items: center; gap: 1.5rem; padding: 1rem 1.2rem; border: 1px solid var(--color-signal); background: var(--color-signal); color: var(--color-void); font: 700 .95rem/1 var(--font-mono); text-decoration: none; letter-spacing: .04em; transition: background .2s ease, color .2s ease, transform .2s ease; }
+  .labs-stats { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin: 3rem 0 0; }
   .labs-stats div { display: flex; align-items: baseline; gap: .55rem; border-left: 1px solid var(--color-line); padding-left: .75rem; }
   .labs-stats dt { color: var(--color-signal); font: 700 1.7rem/1 var(--font-display); }
   .labs-stats dd { color: #91a799; font: .63rem var(--font-mono); text-transform: uppercase; }
@@ -103,16 +103,16 @@ const tour = [
   .labs-start li b { color: var(--color-electric); font: .68rem var(--font-mono); }
   .labs-start li span { font-size: 1.05rem; line-height: 1.5; }
   .labs-guide { padding-top: clamp(4.5rem, 8vw, 8rem); padding-bottom: clamp(2rem, 4vw, 4rem); border-top: 1px solid var(--color-line); }
-  .labs-guide__heading { display: flex; justify-content: space-between; align-items: end; gap: 2rem; margin-bottom: 3rem; }
-  .labs-guide h2 { max-width: 50rem; }
+  .labs-guide__heading { display: block; margin-bottom: 3rem; }
+  .labs-guide h2 { max-width: 50rem; margin-inline: auto; text-align: center; }
   .labs-guide__heading > p { max-width: 18rem; margin: 0; color: #91a799; font: .72rem/1.65 var(--font-mono); }
   .labs-tour { display: grid; gap: 1rem; }
   .labs-tour__item { display: block; padding: clamp(1.25rem, 2.5vw, 2.2rem) 0; border-top: 1px solid var(--color-line); color: inherit; text-decoration: none; }
   .labs-tour__item:first-child { border-top: 0; }
   .labs-tour__item:last-child { padding-bottom: 0; }
   .labs-tour__copy h3 { margin: 0; font-family: var(--font-display); font-size: clamp(2rem, 3vw, 3.2rem); letter-spacing: -.065em; }
-  .labs-tour__copy p { max-width: 35rem; margin: .55rem 0 0; color: #aebdcb; line-height: 1.5; }
-  .labs-tour__action { display: inline-block; margin-top: .9rem; color: var(--color-signal); font: .7rem/1 var(--font-mono); }
+  .labs-tour__copy p { width: 75%; max-width: 52rem; margin: .75rem 0 0; color: #aebdcb; font-size: 1.05rem; line-height: 1.65; }
+  .labs-tour__action { display: inline-block; margin-top: .9rem; color: var(--color-signal); font: .9rem/1 var(--font-mono); }
   .labs-author { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 8vw, 9rem); padding-top: clamp(4rem, 8vw, 8rem); padding-bottom: clamp(4rem, 8vw, 8rem); border-top: 1px solid var(--color-line); }
   .labs-author h2 { max-width: 34rem; font-size: clamp(2.7rem, 5vw, 5rem); }
   .labs-author__copy { align-self: end; }
@@ -120,5 +120,5 @@ const tour = [
   .labs-author__copy a { display: inline-block; margin-top: 1.5rem; border-bottom: 1px solid var(--color-signal); padding-bottom: .4rem; color: var(--color-signal); font: .72rem var(--font-mono); text-decoration: none; }
   @media (hover: hover) { .labs-primary:hover { background: transparent; color: var(--color-signal); transform: translateY(-2px); } }
   @media (max-width: 900px) { .labs-intro h1 { overflow-wrap: anywhere; } }
-  @media (max-width: 720px) { .labs-intro { min-height: auto; padding-top: 4rem; } .labs-intro h1 { font-size: clamp(2.8rem, 13vw, 4.8rem); } .labs-guide__heading, .labs-start, .labs-author { display: grid; grid-template-columns: 1fr; } .labs-guide__heading { gap: 1rem; } .labs-start, .labs-author { gap: 2rem; } }
+  @media (max-width: 720px) { .labs-intro { min-height: auto; padding-top: 4rem; } .labs-intro h1 { font-size: clamp(2.8rem, 13vw, 4.8rem); } .labs-guide__heading, .labs-start, .labs-author { display: grid; grid-template-columns: 1fr; } .labs-guide__heading { gap: 1rem; } .labs-start, .labs-author { gap: 2rem; } .labs-tour__copy p { width: 100%; } }
 </style>
