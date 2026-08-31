@@ -1,7 +1,5 @@
 ---
 import "../../../../packages/shared/styles/global.css";
-// import CursorProbe from "../../../../packages/shared/components/CursorProbe.astro"; // Efecto de burbuja preservado para reactivarlo más adelante.
-// import CommandTrail from "../../../../packages/shared/components/CommandTrail.astro"; // Rastro preservado para reactivarlo más adelante.
 import SignalGlitch from "../../../../packages/shared/components/SignalGlitch.astro";
 import MatrixRain from "../../../../packages/shared/components/MatrixRain.astro";
 import BrowserOracle from "../../../../packages/shared/components/BrowserOracle.astro";
@@ -46,8 +44,6 @@ const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4
     </header>
     <main id="contenido"><slot /></main>
     <footer class="container-site flex flex-col justify-between gap-4 border-t border-line py-6 font-mono text-xs text-[#929991] sm:flex-row sm:items-center"><div><span class="mt-2 block max-w-md text-[#718096]">Practicá solo en entornos propios o autorizados.</span></div><span><span>Aprendizaje responsable</span> · {new Date().getFullYear()}</span><nav class="footer-legal" aria-label="Enlaces legales"><a class="footer-privacy" href="/privacidad">Privacidad</a><a class="footer-privacy" href="/terminos">Términos y condiciones</a></nav></footer>
-    {/* <CursorProbe /> Efecto de burbuja temporalmente desactivado. */}
-    {/* <CommandTrail /> */}
     <SignalGlitch />
     <BrowserOracle />
     <script>

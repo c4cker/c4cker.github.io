@@ -34,6 +34,20 @@ npm.cmd run security:audit
 
 `security:audit` falla ante vulnerabilidades de severidad alta o crítica de dependencias de producción. El análisis completo no sustituye una revisión de autorización, RLS, entradas y exposición de datos.
 
+## Despliegue de Labs
+
+El frontend se publica mediante el proyecto Pages `c4cker-github-io`. La API se publica por separado como Worker `c4cker-labs-api`:
+
+```powershell
+npx wrangler deploy --config wrangler.jsonc
+```
+
+El Worker usa el Durable Object `RATE_LIMITER`. Para cuentas Cloudflare Free, la migración de `RateLimiter` debe usar `new_sqlite_classes`; cambiarla a `new_classes` hace fallar el despliegue.
+
+La cuenta no tiene una zona DNS administrada por Cloudflare, así que no hay reglas WAF de zona ni Bot Fight Mode aplicables al dominio actual. El Worker funciona como primera barrera: limita intentos, restringe orígenes y métodos, exige JSON, limita el cuerpo y añade headers defensivos. Si se incorpora un dominio a Cloudflare, se debe agregar un WAF Managed Ruleset y una regla de rate limiting específica para `/submit-flag` sin retirar estas validaciones.
+
+Las migraciones de `supabase/migrations/` deben conservarse en orden. La tabla `challenge_solves` concede al rol del Worker solo lectura e inserción; no se concede borrado desde la API. Los datos creados por pruebas deben limpiarse manualmente desde el SQL Editor con un identificador específico, nunca con un borrado amplio.
+
 ## Reglas concretas para este repositorio
 
 - `.dev.vars`, `.env*` y claves privadas están ignorados; los valores de producción viven en Cloudflare/GitHub Secrets & Variables.

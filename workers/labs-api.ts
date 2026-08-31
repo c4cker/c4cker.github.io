@@ -3,22 +3,19 @@ type Env = {
   FLAG_HMAC_SECRET: string;
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
+  RATE_LIMITER?: DurableObjectNamespace;
 };
 import { challenges as challengeCatalog } from "../apps/labs/src/data/challenges.published";
 
 const allowedOrigins = new Set(["https://c4cker.github.io", "http://localhost:4322", "http://labs.localhost:4322"]);
 const challenges = Object.fromEntries(challengeCatalog.map((item) => [item.slug, { mode: item.flagMode, stages: item.stages.map((stage) => stage.id) }]));
-const attempts = new Map<string, { count: number; resetAt: number }>();
-
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = request.headers.get("Origin") ?? "";
-    if (request.method === "OPTIONS") return response(null, 204, origin);
+    if (request.method === "OPTIONS") return allowedOrigins.has(origin) ? response(null, 204, origin) : response({ ok: false, error: "origin_not_allowed" }, 403, origin);
+    if (request.method !== "GET" && !allowedOrigins.has(origin)) return response({ ok: false, error: "origin_not_allowed" }, 403, origin);
     const pathname = new URL(request.url).pathname;
     if (request.method === "GET" && pathname === "/health") return response({ ok: true, service: "labs-api" }, 200, origin, "no-store");
-    if (request.method === "GET" && pathname === "/visitor-ip") {
-      return response({ ok: true, ip: request.headers.get("CF-Connecting-IP") ?? "unknown" }, 200, origin, "no-store");
-    }
     if (request.method === "GET" && pathname === "/ranking") {
       const result = await supabase(env, "challenge_solves?select=nickname,challenge_slug&nickname=not.is.null&order=solved_at.asc&limit=1000");
       if (!result.ok) return response({ ok: false, error: "db_error" }, 500, origin);
@@ -33,7 +30,9 @@ export default {
     }
     if (request.method !== "POST" || pathname !== "/submit-flag") return response({ ok: false, error: "not_found" }, 404, origin);
     const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
-    if (!allowAttempt(ip)) return response({ ok: false, error: "rate_limited" }, 429, origin);
+    if (!(await allowAttempt(ip, env))) return response({ ok: false, error: "rate_limited" }, 429, origin);
+    const contentType = request.headers.get("Content-Type") ?? "";
+    if (!contentType.toLowerCase().startsWith("application/json")) return response({ ok: false, error: "unsupported_media_type" }, 415, origin);
     const contentLength = Number(request.headers.get("Content-Length") ?? 0);
     if (contentLength > 8192) return response({ ok: false, error: "payload_too_large" }, 413, origin);
 
@@ -81,7 +80,7 @@ export default {
       const prior = await supabase(env, `challenge_stage_solves?${key}&select=id&limit=1`);
       if ((await prior.json() as unknown[]).length) return response({ ok: true, already: true, completed: false, ranked: false }, 200, origin);
       const inserted = await supabase(env, "challenge_stage_solves", "POST", { challenge_slug: slug, stage_id: stage, visitor_hash: visitorHash, nickname });
-      if (!inserted.ok) return response({ ok: false, error: "db_error" }, 500, origin);
+      if (!inserted.ok && inserted.status !== 409) return response({ ok: false, error: "db_error" }, 500, origin);
       const all = await supabase(env, `challenge_stage_solves?challenge_slug=eq.${encodeURIComponent(slug)}&visitor_hash=eq.${encodeURIComponent(visitorHash)}&select=stage_id`);
       const solved = new Set((await all.json() as Array<{ stage_id: string }>).map((row) => row.stage_id));
       if (!challenge.stages.every((id) => solved.has(id))) return response({ ok: true, completed: false, ranked: false }, 200, origin);
@@ -90,7 +89,7 @@ export default {
     const priorSolve = await supabase(env, `challenge_solves?challenge_slug=eq.${encodeURIComponent(slug)}&visitor_hash=eq.${encodeURIComponent(visitorHash)}&select=id&limit=1`);
     if ((await priorSolve.json() as unknown[]).length) return response({ ok: true, already: true, completed: true, ranked: false }, 200, origin);
     const inserted = await supabase(env, "challenge_solves", "POST", { challenge_slug: slug, nickname, visitor_hash: visitorHash });
-    if (!inserted.ok) return response({ ok: false, error: "db_error" }, 500, origin);
+    if (!inserted.ok) return inserted.status === 409 ? response({ ok: true, already: true, completed: true, ranked: false }, 200, origin) : response({ ok: false, error: "db_error" }, 500, origin);
     return response({ ok: true, completed: true, ranked: true }, 200, origin);
   }
 };
@@ -100,10 +99,20 @@ function normalizeNickname(value?: string) {
   return nickname && nickname.length <= 32 && /^[\p{L}\p{N}_ .-]+$/u.test(nickname) ? nickname : null;
 }
 
-function allowAttempt(ip: string) {
+async function allowAttempt(ip: string, env: Env) {
+  if (env.RATE_LIMITER) {
+    const id = env.RATE_LIMITER.idFromName(ip);
+    const result = await env.RATE_LIMITER.get(id).fetch("https://rate-limit/allow");
+    return result.ok;
+  }
+  return allowAttemptLocal(ip);
+}
+
+const localAttempts = new Map<string, { count: number; resetAt: number }>();
+function allowAttemptLocal(ip: string) {
   const now = Date.now();
-  const current = attempts.get(ip);
-  if (!current || current.resetAt <= now) { attempts.set(ip, { count: 1, resetAt: now + 60_000 }); return true; }
+  const current = localAttempts.get(ip);
+  if (!current || current.resetAt <= now) { localAttempts.set(ip, { count: 1, resetAt: now + 60_000 }); return true; }
   if (current.count >= 15) return false;
   current.count += 1;
   return true;
@@ -120,7 +129,26 @@ function supabase(env: Env, path: string, method = "GET", body?: unknown) {
 }
 
 function response(body: unknown, status: number, origin: string, cacheControl = "no-store") {
-  const headers = new Headers({ "Content-Type": "application/json", "Cache-Control": cacheControl, "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type" });
+  const headers = new Headers({ "Content-Type": "application/json", "Cache-Control": cacheControl, "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" });
   if (allowedOrigins.has(origin)) headers.set("Access-Control-Allow-Origin", origin);
   return new Response(body === null ? null : JSON.stringify(body), { status, headers });
+}
+
+export class RateLimiter {
+  constructor(private readonly state: DurableObjectState) {}
+
+  async fetch(): Promise<Response> {
+    const allowed = await this.state.blockConcurrencyWhile(async () => {
+      const now = Date.now();
+      const current = await this.state.storage.get<{ count: number; resetAt: number }>("window");
+      if (!current || current.resetAt <= now) {
+        await this.state.storage.put("window", { count: 1, resetAt: now + 60_000 });
+        return true;
+      }
+      if (current.count >= 15) return false;
+      await this.state.storage.put("window", { count: current.count + 1, resetAt: current.resetAt });
+      return true;
+    });
+    return new Response(null, { status: allowed ? 204 : 429 });
+  }
 }

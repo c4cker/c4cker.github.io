@@ -53,9 +53,14 @@
     const lines = Array.from({ length: 2 + Math.floor(Math.random() * 3) }, () => {
       const word = securityWords[Math.floor(Math.random() * securityWords.length)];
       const encoder = encoders[Math.floor(Math.random() * encoders.length)];
-      return `<span data-codec="${encoder.name}">${encoder.encode(word)}</span>`;
+      return { codec: encoder.name, value: encoder.encode(word) };
     });
-    glitchWords.innerHTML = lines.join("");
+    glitchWords.replaceChildren(...lines.map(({ codec, value }) => {
+      const line = document.createElement("span");
+      line.dataset.codec = codec;
+      line.textContent = value;
+      return line;
+    }));
     glitch.style.setProperty("--glitch-x", `${8 + Math.random() * 76}vw`);
     glitch.style.setProperty("--glitch-y", `${16 + Math.random() * 68}vh`);
     glitch.style.setProperty("--glitch-ratio", `${1.2 + Math.random() * 1.4}`);

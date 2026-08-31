@@ -45,7 +45,11 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       return "un navegador no identificado";
     };
     const browserVersion = () => navigator.userAgent.match(/(?:Edg|Firefox|CriOS|Chrome|Version)\/([\d.]+)/)?.[1]?.split(".")[0] ?? "";
-    const short = (value: string) => value.length > 50 ? `${value.slice(0, 49)}…` : value;
+    const countryName = () => {
+      const region = signal.zone.startsWith("America/Argentina/") || signal.zone === "America/Buenos_Aires" ? "AR" : new Intl.Locale(signal.language).region;
+      if (!region) return "tu zona horaria";
+      return new Intl.DisplayNames(["es"], { type: "region" }).of(region) ?? "tu zona horaria";
+    };
     const addLine = (content: string, emphasis = false) => {
       const line = document.createElement("p");
       line.className = `oracle-line${emphasis ? " oracle-line--signal" : ""}`;
@@ -81,22 +85,25 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
     const revealDevice = async () => {
       asked.add("device"); choices.replaceChildren();
       const agent = navigator.userAgent;
-      const system = /Windows NT 10\.0/.test(agent) ? "Windows 10" : /Windows/.test(agent) ? "Windows" : /Android/.test(agent) ? "Android" : /iPhone|iPad/.test(agent) ? "iOS" : /Mac OS X/.test(agent) ? "macOS" : "Unknown OS";
-      const architecture = /Win64|x86_64|x64/.test(agent) ? "x64" : /arm|aarch64/i.test(agent) ? "ARM" : "unknown architecture";
-      await reply(short(`Abriste desde ${system}, ${architecture}.`), true);
+      const system = /Windows NT 10\.0/.test(agent) ? "Windows 10" : /Windows/.test(agent) ? "Windows" : /Android/.test(agent) ? "Android" : /iPhone|iPad/.test(agent) ? "iOS" : /Mac OS X/.test(agent) ? "macOS" : /Linux/.test(agent) ? "Linux" : "sistema no identificado";
+      const userAgentData = (navigator as Navigator & { userAgentData?: { architecture?: string } }).userAgentData;
+      const architectureHint = userAgentData?.architecture?.toLowerCase();
+      const architecture = architectureHint?.includes("arm") ? "ARM" : architectureHint?.includes("86") || architectureHint?.includes("x64") ? "x64" : /Win64|x86_64|amd64|x64/.test(agent) ? "x64" : /arm64|aarch64|armv/i.test(agent) ? "ARM" : "arquitectura no disponible";
+      await reply(`Abriste desde ${system}. Arquitectura detectada: ${architecture}.`, true);
       showQuestions();
     };
     const revealEnvironment = async () => {
       asked.add("environment"); choices.replaceChildren();
-      const period = signal.hour < 6 ? "la madrugada" : signal.hour < 12 ? "la mañana" : signal.hour < 19 ? "la tarde" : "la noche";
-      await reply(short(`${browserName()} ${browserVersion()}, ${signal.zone}: ${period}.`), true);
+      const time = new Intl.DateTimeFormat("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
+      await reply(`Usás ${browserName()} ${browserVersion()}, sos de ${countryName()} y son las ${time} donde estás.`, true);
       showQuestions();
     };
     const revealCapabilities = async () => {
       asked.add("capabilities"); choices.replaceChildren();
       const navigatorSpecs = navigator as Navigator & { deviceMemory?: number };
-      const memory = navigatorSpecs.deviceMemory === undefined ? "unavailable" : `${navigatorSpecs.deviceMemory} GiB`;
-      await reply(short(`${navigator.hardwareConcurrency ?? "?"} núcleos, ${memory}, ${navigator.maxTouchPoints} toques.`), true);
+      const logicalProcessors = navigator.hardwareConcurrency === undefined ? "No pude detectar la cantidad de hilos lógicos de tu CPU" : `tu CPU tiene ${navigator.hardwareConcurrency} hilos lógicos`;
+      const memory = navigatorSpecs.deviceMemory === undefined ? "y no pude estimar la memoria RAM disponible" : `Tu memoria RAM es ${navigatorSpecs.deviceMemory} GiB`;
+      await reply(`${memory} y ${logicalProcessors}.`, true);
       showQuestions();
     };
     const revealNetwork = async () => {
