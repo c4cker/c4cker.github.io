@@ -54,7 +54,7 @@ No subas archivos `.local`, `.dev.vars` ni claves de Supabase.
 
 Labs usa Supabase Auth con GitHub OAuth para identificar a cada participante. El Worker valida el JWT, guarda el `user_id` y relaciona el solve con un perfil público que contiene únicamente el nickname elegido. La IP puede usarse de forma efímera para rate limiting, pero no se guarda ni se convierte en identidad. Las flags deben tener el formato `C4CKER{...}` con exactamente 32 caracteres alfanuméricos dentro de las llaves. `SUPABASE_SERVICE_ROLE_KEY` y `FLAGS_JSON` son variables privadas del Worker; `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` no son secretos.
 
-Para desplegar el Worker desde la raíz:
+Para desplegar el Worker manualmente desde la raíz:
 
 ```powershell
 npx wrangler deploy --config wrangler.jsonc
@@ -76,6 +76,10 @@ WHERE challenge_slug = 'header-trace'
 
 La API de producción no tiene permiso `DELETE` sobre esa tabla por diseño. No amplíes ese permiso solo para limpiar pruebas.
 
+La migración `006_remove_legacy_solves.sql` elimina los solves anónimos anteriores y las columnas `visitor_hash` y `nickname` legacy. Los solves autenticados se conservan; quienes habían participado con el esquema anterior deben volver a enviar sus flags con GitHub.
+
+El Worker también se publica automáticamente con [deploy-worker.yml](.github/workflows/deploy-worker.yml) cuando cambia su código o el catálogo de desafíos. El job usa el entorno protegido `cloudflare-production`, que debe tener como revisores requeridos a `c4cker`, y necesita los secretos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` configurados en ese entorno.
+
 ## Desarrollo del blog
 
 ```powershell
@@ -91,6 +95,7 @@ Abrí `http://127.0.0.1:4000`.
 La política y lista de salida para cambios relevantes está en [SECURITY.md](SECURITY.md). Ejecutá `npm.cmd run security:audit` antes de desplegar y habilitá Secret Scanning, Push Protection y Dependabot en GitHub.
 
 - No hay credenciales, flags válidas ni claves de servicio en el repositorio.
-- Los solves nuevos usan `user_id` y perfiles públicos separados; los solves anteriores quedan como registros legacy anónimos y no se reasignan automáticamente.
+- Los solves usan `user_id` y perfiles públicos separados; los solves anónimos anteriores se eliminan mediante la migración de contracción 006 y deben volver a registrarse.
 - La IP original no se guarda; comunicá el tratamiento en la política de privacidad y respetá la normativa aplicable.
 - Los retos descargables deben ejecutarse localmente y en entornos aislados.
+- CodeQL está activo mediante la configuración predeterminada de GitHub y `npm audit` corre automáticamente en GitHub Actions. Las acciones externas del repositorio están fijadas a commits concretos.

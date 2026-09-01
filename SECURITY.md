@@ -58,4 +58,4 @@ Las migraciones de `supabase/migrations/` deben conservarse en orden. La tabla `
 
 ## Antes de desplegar
 
-Revisar el diff, ejecutar los comandos anteriores, verificar cabeceras en producción y confirmar que GitHub Secret Scanning, Push Protection, Dependabot alerts y Dependabot security updates estén habilitados para el repositorio público.
+Revisar el diff, ejecutar los comandos anteriores, verificar cabeceras en producción y confirmar que GitHub Secret Scanning, Push Protection, Dependabot alerts, Dependabot security updates y CodeQL estén habilitados para el repositorio público. El despliegue del Worker pasa por el entorno protegido `cloudflare-production`, con revisión requerida de `c4cker`.

@@ -4,6 +4,11 @@ export type ChallengeStage = {
   title: string;
   objective: string;
 };
+export type ChallengeResource = {
+  title: string;
+  href: string;
+  source: string;
+};
 export type Challenge = {
   id: string;
   slug: string;
@@ -18,6 +23,8 @@ export type Challenge = {
   downloadUrl: string;
   description: string;
   objective: string;
+  practiceHint: string;
+  resources: ChallengeResource[];
   flagMode: FlagMode;
   stages: ChallengeStage[];
 };

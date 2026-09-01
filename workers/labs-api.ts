@@ -33,7 +33,7 @@ export default {
     const user = await authenticate(request, env);
     if (!user) return response({ ok: false, error: "auth_required" }, 401, origin);
     const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
-    if (!(await allowAttempt(ip, env))) return response({ ok: false, error: "rate_limited" }, 429, origin);
+    if (!(await allowAttempt([user.id, ip], env))) return response({ ok: false, error: "rate_limited" }, 429, origin);
     const contentType = request.headers.get("Content-Type") ?? "";
     if (!contentType.toLowerCase().startsWith("application/json")) return response({ ok: false, error: "unsupported_media_type" }, 415, origin);
     const contentLength = Number(request.headers.get("Content-Length") ?? 0);
@@ -43,7 +43,9 @@ export default {
     try {
       const raw = await request.arrayBuffer();
       if (raw.byteLength > 8192) return response({ ok: false, error: "payload_too_large" }, 413, origin);
-      body = JSON.parse(new TextDecoder().decode(raw));
+      const parsed: unknown = JSON.parse(new TextDecoder().decode(raw));
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return response({ ok: false, error: "bad_request" }, 400, origin);
+      body = parsed as { slug?: string; stage?: string; flag?: string; nickname?: string };
     } catch { return response({ ok: false, error: "bad_request" }, 400, origin); }
     const { slug, stage, flag } = body;
     if (!slug || !flag) return response({ ok: false, error: "bad_request" }, 400, origin);
@@ -101,17 +103,20 @@ export default {
 };
 
 function normalizeNickname(value?: string) {
-  const nickname = value?.trim().replace(/\s+/g, " ");
-  return nickname && nickname.length <= 32 && /^[\p{L}\p{N}_ .-]+$/u.test(nickname) ? nickname : null;
+  const nickname = value?.normalize("NFKC").trim().replace(/\s+/g, " ");
+  return nickname && nickname.length <= 32 && /^[A-Za-z0-9_ .-]+$/.test(nickname) ? nickname : null;
 }
 
-async function allowAttempt(ip: string, env: Env) {
+async function allowAttempt(keys: string[], env: Env) {
   if (env.RATE_LIMITER) {
-    const id = env.RATE_LIMITER.idFromName(ip);
-    const result = await env.RATE_LIMITER.get(id).fetch("https://rate-limit/allow");
-    return result.ok;
+    for (const key of keys) {
+      const id = env.RATE_LIMITER.idFromName(key);
+      const result = await env.RATE_LIMITER.get(id).fetch("https://rate-limit/allow");
+      if (!result.ok) return false;
+    }
+    return true;
   }
-  return allowAttemptLocal(ip);
+  return keys.every(allowAttemptLocal);
 }
 
 const FLAG_PATTERN = /^C4CKER\{[A-Za-z0-9]{32}\}$/;
@@ -142,7 +147,7 @@ function supabase(env: Env, path: string, method = "GET", body?: unknown) {
 }
 
 function response(body: unknown, status: number, origin: string, cacheControl = "no-store") {
-  const headers = new Headers({ "Content-Type": "application/json", "Cache-Control": cacheControl, "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" });
+  const headers = new Headers({ "Content-Type": "application/json", "Cache-Control": cacheControl, "Vary": "Origin", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, Authorization", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" });
   if (allowedOrigins.has(origin)) headers.set("Access-Control-Allow-Origin", origin);
   return new Response(body === null ? null : JSON.stringify(body), { status, headers });
 }
