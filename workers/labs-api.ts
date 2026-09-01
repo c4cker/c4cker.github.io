@@ -29,6 +29,32 @@ export default {
       }
       return response({ ok: true, ranking: [...ranking.values()].sort((a, b) => b.points - a.points || a.nickname.localeCompare(b.nickname)).slice(0, 100) }, 200, origin, "public, max-age=30");
     }
+    if ((request.method === "GET" || request.method === "PATCH") && pathname === "/profile") {
+      const user = await authenticate(request, env);
+      if (!user) return response({ ok: false, error: "auth_required" }, 401, origin);
+      if (!(await allowAttempt([user.id], env))) return response({ ok: false, error: "rate_limited" }, 429, origin);
+      if (request.method === "GET") {
+        const result = await supabase(env, `profiles?id=eq.${encodeURIComponent(user.id)}&select=public_nickname&limit=1`);
+        if (!result.ok) return response({ ok: false, error: "db_error" }, 500, origin);
+        const profiles = await result.json() as Array<{ public_nickname: string }>;
+        return response({ ok: true, profile: profiles[0] ?? null }, 200, origin, "no-store");
+      }
+      const contentType = request.headers.get("Content-Type") ?? "";
+      if (!contentType.toLowerCase().startsWith("application/json")) return response({ ok: false, error: "unsupported_media_type" }, 415, origin);
+      let body: { publicNickname?: string };
+      try {
+        const raw = await request.arrayBuffer();
+        if (raw.byteLength > 2048) return response({ ok: false, error: "payload_too_large" }, 413, origin);
+        const parsed: unknown = JSON.parse(new TextDecoder().decode(raw));
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return response({ ok: false, error: "bad_request" }, 400, origin);
+        body = parsed as { publicNickname?: string };
+      } catch { return response({ ok: false, error: "bad_request" }, 400, origin); }
+      const nickname = normalizeNickname(body.publicNickname);
+      if (!nickname) return response({ ok: false, error: "bad_nickname" }, 400, origin);
+      const updated = await supabase(env, "profiles", "POST", { id: user.id, public_nickname: nickname, updated_at: new Date().toISOString() }, "resolution=merge-duplicates,return=minimal");
+      if (!updated.ok) return response({ ok: false, error: updated.status === 409 ? "nickname_taken" : "db_error" }, updated.status === 409 ? 409 : 500, origin);
+      return response({ ok: true, profile: { public_nickname: nickname } }, 200, origin);
+    }
     if (request.method !== "POST" || pathname !== "/submit-flag") return response({ ok: false, error: "not_found" }, 404, origin);
     const user = await authenticate(request, env);
     if (!user) return response({ ok: false, error: "auth_required" }, 401, origin);
@@ -142,12 +168,12 @@ async function authenticate(request: Request, env: Env) {
   return typeof user.id === "string" && /^[0-9a-f-]{36}$/i.test(user.id) ? { id: user.id } : null;
 }
 
-function supabase(env: Env, path: string, method = "GET", body?: unknown) {
-  return fetch(`${env.SUPABASE_URL}/rest/v1/${path}`, { method, headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`, "Content-Type": "application/json", Prefer: "return=minimal" }, body: body ? JSON.stringify(body) : undefined });
+function supabase(env: Env, path: string, method = "GET", body?: unknown, prefer = "return=minimal") {
+  return fetch(`${env.SUPABASE_URL}/rest/v1/${path}`, { method, headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`, "Content-Type": "application/json", Prefer: prefer }, body: body ? JSON.stringify(body) : undefined });
 }
 
 function response(body: unknown, status: number, origin: string, cacheControl = "no-store") {
-  const headers = new Headers({ "Content-Type": "application/json", "Cache-Control": cacheControl, "Vary": "Origin", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, Authorization", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" });
+  const headers = new Headers({ "Content-Type": "application/json", "Cache-Control": cacheControl, "Vary": "Origin", "Access-Control-Allow-Methods": "GET, POST, PATCH, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, Authorization", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" });
   if (allowedOrigins.has(origin)) headers.set("Access-Control-Allow-Origin", origin);
   return new Response(body === null ? null : JSON.stringify(body), { status, headers });
 }

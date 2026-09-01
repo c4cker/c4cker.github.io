@@ -1,0 +1,21 @@
+---
+import Base from "../layouts/LabsLayout.astro";
+const apiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://c4cker-labs-api.lucianomps2015.workers.dev";
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || "";
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
+---
+<Base title="Mi perfil" description="Editá tu nickname público y la información que aparece en el ranking de c4cker labs.">
+  <article class="container-site max-w-3xl py-16 sm:py-20">
+    <a class="back-link font-mono" href="/">← Volver</a>
+    <p class="eyebrow mt-8">Cuenta</p>
+    <h1 class="mt-4 font-display text-5xl font-bold tracking-[-.07em] sm:text-6xl">Mi perfil</h1>
+    <p class="mt-5 max-w-2xl text-lg text-[#cbd5e1]">Elegí el nickname que se muestra cuando completás desafíos y aparecés en el ranking.</p>
+    <form class="profile-form mt-10 grid gap-4" data-profile-form data-api-url={apiUrl} data-supabase-url={supabaseUrl} data-supabase-key={supabaseKey} hidden>
+      <label class="grid gap-2 font-mono text-xs uppercase tracking-[.08em]">Nickname público<input class="field-input" name="publicNickname" maxlength="32" autocomplete="nickname" required /></label>
+      <p class="text-sm text-[#a9b6c8]" data-profile-state aria-live="polite"></p>
+      <button class="w-max cursor-pointer border border-signal bg-signal px-4 py-3 font-mono text-xs font-bold text-void hover:bg-transparent hover:text-signal" type="submit">Guardar cambios</button>
+    </form>
+    <div class="mt-10 border-l border-ember pl-4 font-mono text-sm text-[#a9b6c8]" data-profile-login>Iniciá sesión con GitHub desde el botón del navbar para editar tu perfil.</div>
+  </article>
+  <script src="../scripts/profile.ts"></script>
+</Base>
