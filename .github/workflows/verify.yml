@@ -29,4 +29,5 @@ jobs:
           ruby-version: "3.4"
           bundler-cache: true
           working-directory: apps/blog
-      - run: bundle exec jekyll build --source apps/blog --destination apps/blog/_site
+      - run: bundle exec jekyll build --source . --destination _site
+        working-directory: apps/blog
