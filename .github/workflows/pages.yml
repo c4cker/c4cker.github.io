@@ -45,6 +45,9 @@ jobs:
           PUBLIC_GOOGLE_ENTRY_SUBJECT: ${{ secrets.PUBLIC_GOOGLE_ENTRY_SUBJECT }}
           PUBLIC_GOOGLE_ENTRY_MESSAGE: ${{ secrets.PUBLIC_GOOGLE_ENTRY_MESSAGE }}
       - run: C4CKER_TARGET=pages C4CKER_APP=labs npm run build:labs
+        env:
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
       - uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1
         with:
           ruby-version: "3.4"

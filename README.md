@@ -52,7 +52,7 @@ No subas archivos `.local`, `.dev.vars` ni claves de Supabase.
 
 ## Labs, flags y Supabase
 
-Labs usa el Worker para validar flags. El Worker conserva únicamente el `visitor_hash` HMAC, el desafío, el nickname opcional y la fecha; nunca almacena la IP original. `SUPABASE_SERVICE_ROLE_KEY`, `FLAG_HMAC_SECRET`, `SUPABASE_URL` y `FLAGS_JSON` son variables privadas del Worker.
+Labs usa Supabase Auth con GitHub OAuth para identificar a cada participante. El Worker valida el JWT, guarda el `user_id` y relaciona el solve con un perfil público que contiene únicamente el nickname elegido. La IP puede usarse de forma efímera para rate limiting, pero no se guarda ni se convierte en identidad. Las flags deben tener el formato `C4CKER{...}` con exactamente 32 caracteres alfanuméricos dentro de las llaves. `SUPABASE_SERVICE_ROLE_KEY` y `FLAGS_JSON` son variables privadas del Worker; `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` no son secretos.
 
 Para desplegar el Worker desde la raíz:
 
@@ -66,12 +66,12 @@ Comprobá el servicio sin enviar una flag:
 curl.exe https://c4cker-labs-api.lucianomps2015.workers.dev/health
 ```
 
-Las migraciones de `supabase/migrations/` son acumulativas e históricas. No se deben borrar después de aplicarlas. Para una prueba controlada, usá un nickname identificable y una flag temporal fuera del repositorio; después eliminá solo el solve de prueba desde el SQL Editor:
+Las migraciones de `supabase/migrations/` son acumulativas e históricas. No se deben borrar después de aplicarlas. Para una prueba controlada, usá una cuenta de prueba y una flag temporal fuera del repositorio; después eliminá solo el solve de prueba desde el SQL Editor:
 
 ```sql
 DELETE FROM public.challenge_solves
 WHERE challenge_slug = 'header-trace'
-  AND nickname = 'integration-test-YYYYMMDD';
+  AND user_id = 'UUID-DE-LA-CUENTA-DE-PRUEBA';
 ```
 
 La API de producción no tiene permiso `DELETE` sobre esa tabla por diseño. No amplíes ese permiso solo para limpiar pruebas.
@@ -91,6 +91,6 @@ Abrí `http://127.0.0.1:4000`.
 La política y lista de salida para cambios relevantes está en [SECURITY.md](SECURITY.md). Ejecutá `npm.cmd run security:audit` antes de desplegar y habilitá Secret Scanning, Push Protection y Dependabot en GitHub.
 
 - No hay credenciales, flags válidas ni claves de servicio en el repositorio.
-- El backend futuro debe validar flags y calcular el HMAC de la IP con secretos del servidor antes de usar Supabase.
+- Los solves nuevos usan `user_id` y perfiles públicos separados; los solves anteriores quedan como registros legacy anónimos y no se reasignan automáticamente.
 - La IP original no se guarda; comunicá el tratamiento en la política de privacidad y respetá la normativa aplicable.
 - Los retos descargables deben ejecutarse localmente y en entornos aislados.

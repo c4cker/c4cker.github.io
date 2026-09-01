@@ -24,7 +24,7 @@ export type Challenge = {
 
 /**
  * FLAGS_JSON mantiene las flags fuera del catálogo público:
- * { "slug-single": "C4CKER{...}", "slug-staged": { "recon": "C4CKER{...}", "final": "C4CKER{...}" } }
+ * { "slug-single": "C4CKER{32caracteresalfanumericos...}", "slug-staged": { "recon": "C4CKER{32caracteresalfanumericos...}", "final": "C4CKER{32caracteresalfanumericos...}" } }
  */
 
 /** El catálogo publicado no contiene flags; estas permanecen únicamente en FLAGS_JSON. */

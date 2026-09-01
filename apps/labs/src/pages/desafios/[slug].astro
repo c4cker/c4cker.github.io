@@ -7,6 +7,8 @@ export function getStaticPaths() { return challenges.map((challenge) => ({ param
 const { challenge } = Astro.props;
 const challengesHref = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/desafios`;
 const flagsApiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://c4cker-labs-api.lucianomps2015.workers.dev";
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || "";
+const supabasePublishableKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
 ---
 <Base title={challenge.title} description={challenge.description}>
   <article class="container-site max-w-5xl py-16 sm:py-20">
@@ -15,7 +17,18 @@ const flagsApiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://c4cker-labs
     <section class="mt-10 border border-line bg-panel/70 p-6"><p class="eyebrow">Objetivo verificable · {challenge.flagMode}</p><p class="mt-3 text-lg">{challenge.objective}</p>{challenge.stages.length > 0 && <ol class="mt-6 grid gap-3">{challenge.stages.map((stage: ChallengeStage, index: number) => <li class="border-l border-line pl-4"><span class="font-mono text-xs text-signal">ETAPA {index + 1} · {stage.id}</span><h2 class="mt-1 font-display text-xl font-bold">{stage.title}</h2><p class="mt-1 text-sm text-[#a9b6c8]">{stage.objective}</p></li>)}</ol>}<a class="mt-6 inline-block border border-signal bg-signal px-4 py-3 font-mono text-xs font-bold text-void no-underline hover:bg-transparent hover:text-signal" href={challenge.downloadUrl} data-root-link>Descargar desafío ↓</a></section>
     <section class="mt-6 max-w-2xl border border-line bg-panel p-5"><p class="eyebrow">Guía rápida</p>{challenge.format === "html" ? <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-[#cbd5e1]"><li>Descargá y extraé el ZIP.</li><li>Abrí <code>index.html</code> en tu navegador.</li><li>Leé el <code>README.md</code> y resolvelo en tu equipo.</li></ol> : <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-[#cbd5e1]"><li>Descargá y extraé el ZIP.</li><li>Con Docker Desktop iniciado, abrí una terminal en esa carpeta.</li><li>Ejecutá <code>docker compose up --build</code>.</li><li>Seguí la URL y el cierre indicados en <code>README.md</code>.</li></ol>}</section>
     <section class="mt-6 max-w-2xl border-l-2 border-electric bg-panel/70 p-5"><p class="eyebrow">Qué vas a practicar</p><p class="mt-3 text-sm leading-6 text-[#cbd5e1]">Seguí una pista, comprobá tu hipótesis y anotá qué evidencia la sostiene. La flag confirma el recorrido, pero no reemplaza la explicación.</p>{challenge.format === "html" ? <p class="mt-3 text-sm text-[#a9b6c8]">Revisá HTML y JavaScript, usá DevTools, observá requests y distinguí rutas, headers y codificaciones.</p> : <p class="mt-3 text-sm text-[#a9b6c8]">Revisá <code>docker-compose.yml</code>, puertos, logs, servicios internos y el recorrido de una petición HTTP.</p>}<div class="mt-5 border-t border-line pt-4"><p class="font-mono text-xs text-signal">DÓNDE BUSCAR</p><ul class="mt-3 grid gap-2 text-sm text-[#a9b6c8]"><li><code>README.md</code>: alcance, arranque y apagado del reto.</li><li>Archivos entregados, configuración y logs: usalos como evidencia.</li>{challenge.format === "html" ? <li>DevTools: Elements, Sources, Network y Application.</li> : <li>Docker Compose, <code>docker compose logs</code> y la documentación oficial de Docker.</li>}<li>Documentación de HTTP y OWASP, siempre dentro del alcance autorizado.</li></ul></div></section>
-    <form class="mt-8 grid max-w-xl gap-3 border border-line bg-panel p-5" data-flag-form data-challenge={challenge.slug}><label class="font-mono text-sm" for="flag">Flag obtenida</label>{challenge.stages.length > 0 && <select class="border border-line bg-void p-3" id="stage" name="stage" aria-label="Etapa"><option value="">Seleccioná una etapa</option>{challenge.stages.map((stage: ChallengeStage, index: number) => <option value={stage.id}>Etapa {index + 1} · {stage.title}</option>)}</select>}<input class="border border-line bg-void p-3" id="flag" name="flag" autocomplete="off" maxlength="512" placeholder="Pegá la flag" required /><button class="w-max cursor-pointer border border-signal bg-signal px-4 py-3 font-mono text-xs font-bold text-void hover:bg-transparent hover:text-signal" type="submit">Verificar flag</button><output class="min-h-6 text-sm text-[#a9b6c8]" aria-live="polite"></output><p class="text-xs text-[#718096]">La flag se verifica en el Worker; nunca se guarda en este navegador.</p></form>
+    <form class="mt-8 grid max-w-xl gap-3 border border-line bg-panel p-5" data-flag-form data-challenge={challenge.slug} data-api-url={flagsApiUrl} data-supabase-url={supabaseUrl} data-supabase-key={supabasePublishableKey}><div class="grid gap-2"><label class="font-mono text-sm" for="flag">Flag obtenida</label><p class="text-xs leading-5 text-[#718096]" data-auth-state>Iniciá sesión para registrar tu solve.</p><button class="w-max border border-line px-4 py-3 font-mono text-xs font-bold text-[#cbd5e1] hover:border-signal hover:text-signal" data-login type="button">Iniciar sesión con GitHub</button></div>{challenge.stages.length > 0 && <select class="border border-line bg-void p-3" id="stage" name="stage" aria-label="Etapa"><option value="">Seleccioná una etapa</option>{challenge.stages.map((stage: ChallengeStage, index: number) => <option value={stage.id}>Etapa {index + 1} · {stage.title}</option>)}</select>}<input class="border border-line bg-void p-3" id="flag" name="flag" autocomplete="off" maxlength="40" pattern="C4CKER\{[A-Za-z0-9]{32}\}" placeholder="C4CKER&#123;32 caracteres&#125;" required /><button class="w-max cursor-pointer border border-signal bg-signal px-4 py-3 font-mono text-xs font-bold text-void hover:bg-transparent hover:text-signal" type="submit">Verificar flag</button><output class="min-h-6 text-sm text-[#a9b6c8]" aria-live="polite"></output><p class="text-xs text-[#718096]">Formato: <code>C4CKER&#123;32 caracteres alfanuméricos&#125;</code>. La flag se verifica en el Worker; nunca se guarda en este navegador.</p></form>
+    <dialog class="nickname-dialog" data-login-dialog aria-labelledby="login-title">
+      <div class="grid gap-4">
+        <p class="eyebrow">Participación opcional</p>
+        <h2 id="login-title" class="font-display text-3xl font-bold tracking-[-.05em]">Iniciar sesión para enviar</h2>
+        <p class="text-sm leading-6 text-[#a9b6c8]">El login con GitHub permite asociar tu solve a un nickname público y aparecer en el ranking. Podés cancelar y seguir usando el desafío sin registrarte.</p>
+        <div class="flex flex-wrap gap-3">
+          <button class="w-max border border-line px-4 py-3 font-mono text-xs font-bold text-[#cbd5e1] hover:border-signal hover:text-signal" data-login-cancel type="button">Cancelar</button>
+          <button class="w-max border border-signal bg-signal px-4 py-3 font-mono text-xs font-bold text-void hover:bg-transparent hover:text-signal" data-login-continue type="button">Continuar con GitHub</button>
+        </div>
+      </div>
+    </dialog>
     <dialog class="nickname-dialog" data-nickname-dialog aria-labelledby="nickname-title">
       <form method="dialog" data-nickname-form class="grid gap-4">
         <p class="eyebrow">Primer solve detectado</p>
@@ -26,77 +39,5 @@ const flagsApiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://c4cker-labs
       </form>
     </dialog>
   </article>
-  <script is:inline define:vars={{ flagsApiUrl }}>
-    const flagForm = document.querySelector("[data-flag-form]");
-    const apiUrl = flagsApiUrl;
-    let nickname;
-    let feedbackTimer;
-    const nicknameDialog = document.querySelector("[data-nickname-dialog]");
-    const nicknameForm = nicknameDialog?.querySelector("[data-nickname-form]");
-    const nicknameInput = nicknameForm?.querySelector("[name=nickname]");
-    let resolveNickname;
-    const askNickname = () => new Promise((resolve) => {
-      resolveNickname = resolve;
-      nicknameDialog?.showModal();
-      nicknameInput?.focus();
-    });
-    nicknameForm?.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const value = nicknameInput?.value.trim() ?? "";
-      nicknameDialog?.close();
-      resolveNickname?.(value);
-    });
-    nicknameDialog?.addEventListener("cancel", () => resolveNickname?.(""));
-    const messages = {
-      wrong_flag: "Flag incorrecta.",
-      bad_stage: "Seleccioná una etapa válida.",
-      stage_locked: "Completá las etapas anteriores primero.",
-      already: "Esta etapa ya estaba registrada.",
-      server_config: "El servicio de flags no está configurado.",
-      db_error: "No se pudo guardar el solve. Intentá nuevamente.",
-      rate_limited: "Demasiados intentos. Esperá un minuto y probá de nuevo.",
-      bad_nickname: "El nickname debe tener hasta 32 caracteres y usar letras, números, espacios, guiones o puntos.",
-      payload_too_large: "La solicitud es demasiado grande.",
-    };
-    const showFeedback = (output, message, error = false) => {
-      window.clearTimeout(feedbackTimer);
-      output.textContent = message;
-      output.dataset.state = error ? "error" : "success";
-      feedbackTimer = window.setTimeout(() => { output.textContent = ""; delete output.dataset.state; }, 5000);
-    };
-    flagForm?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const formData = new FormData(flagForm);
-      const flag = formData.get("flag");
-      const stage = formData.get("stage");
-      const output = flagForm.querySelector("output");
-      if (typeof flag !== "string" || !flag.trim() || !output) return;
-      const challenge = flagForm.dataset.challenge;
-      const stageId = typeof stage === "string" && stage ? stage : "final";
-      if (!challenge) return;
-      showFeedback(output, "Verificando…");
-      try {
-        const request = (candidateNickname) => fetch(`${apiUrl}/submit-flag`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slug: challenge, stage: stageId === "final" ? undefined : stageId, flag: flag.trim(), nickname: candidateNickname }),
-        });
-        let result = await request(nickname);
-        let payload = await result.json();
-        if (payload.error === "needs_nickname") {
-          const entered = await askNickname();
-          if (!entered?.trim()) { showFeedback(output, "Necesitás indicar un nickname para registrarte.", true); return; }
-          nickname = entered.trim().slice(0, 32);
-          result = await request(nickname);
-          payload = await result.json();
-        }
-        if (!result.ok || !payload.ok) { showFeedback(output, messages[payload.error ?? ""] ?? "No se pudo verificar la flag.", true); return; }
-        if (payload.already) showFeedback(output, "Este solve ya estaba registrado.");
-        else if (payload.ranked) showFeedback(output, "Flag correcta. Solve registrado en el ranking.");
-        else if (payload.completed) showFeedback(output, "Flag correcta. Desafío completado.");
-        else showFeedback(output, "Flag correcta. Etapa registrada.");
-        flagForm.reset();
-      } catch { showFeedback(output, "No se pudo conectar con el servicio de flags.", true); }
-    });
-  </script>
+  <script src="../../scripts/flag-submit.ts"></script>
 </Base>

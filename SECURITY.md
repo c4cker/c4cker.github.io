@@ -51,7 +51,7 @@ Las migraciones de `supabase/migrations/` deben conservarse en orden. La tabla `
 ## Reglas concretas para este repositorio
 
 - `.dev.vars`, `.env*` y claves privadas están ignorados; los valores de producción viven en Cloudflare/GitHub Secrets & Variables.
-- El endpoint de flags solo debe usar secretos desde bindings del Worker y debe almacenar el identificador HMAC, no la IP original.
+- El endpoint de flags solo debe aceptar JWT de Supabase Auth y derivar el `user_id` del token validado; nunca debe confiar en una identidad enviada por el cliente. La IP se usa solo de forma efímera para rate limiting.
 - Un laboratorio descargable no incluye una flag válida, credenciales, tokens ni servicios expuestos fuera del entorno aislado.
 - Los writeups publicados no incluyen información de terceros, secretos ni instrucciones fuera de un entorno autorizado.
 - Antes de conectar Supabase: crear RLS, políticas por operación, pruebas con el rol `anon` y una revisión de la respuesta mínima necesaria.

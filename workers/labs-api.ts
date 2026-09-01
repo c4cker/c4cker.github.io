@@ -1,7 +1,7 @@
 type Env = {
   FLAGS_JSON: string;
-  FLAG_HMAC_SECRET: string;
   SUPABASE_URL: string;
+  SUPABASE_PUBLISHABLE_KEY: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
   RATE_LIMITER?: DurableObjectNamespace;
 };
@@ -17,18 +17,21 @@ export default {
     const pathname = new URL(request.url).pathname;
     if (request.method === "GET" && pathname === "/health") return response({ ok: true, service: "labs-api" }, 200, origin, "no-store");
     if (request.method === "GET" && pathname === "/ranking") {
-      const result = await supabase(env, "challenge_solves?select=nickname,challenge_slug&nickname=not.is.null&order=solved_at.asc&limit=1000");
+      const result = await supabase(env, "challenge_solves?select=challenge_slug,profiles!inner(public_nickname)&user_id=not.is.null&order=solved_at.asc&limit=1000");
       if (!result.ok) return response({ ok: false, error: "db_error" }, 500, origin);
-      const rows = await result.json() as Array<{ nickname: string; challenge_slug: string }>;
+      const rows = await result.json() as Array<{ profiles: { public_nickname: string }; challenge_slug: string }>;
       const ranking = new Map<string, { nickname: string; points: number }>();
       for (const row of rows) {
-        const current = ranking.get(row.nickname) ?? { nickname: row.nickname, points: 0 };
+        const nickname = row.profiles.public_nickname;
+        const current = ranking.get(nickname) ?? { nickname, points: 0 };
         current.points += 1;
-        ranking.set(row.nickname, current);
+        ranking.set(nickname, current);
       }
       return response({ ok: true, ranking: [...ranking.values()].sort((a, b) => b.points - a.points || a.nickname.localeCompare(b.nickname)).slice(0, 100) }, 200, origin, "public, max-age=30");
     }
     if (request.method !== "POST" || pathname !== "/submit-flag") return response({ ok: false, error: "not_found" }, 404, origin);
+    const user = await authenticate(request, env);
+    if (!user) return response({ ok: false, error: "auth_required" }, 401, origin);
     const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
     if (!(await allowAttempt(ip, env))) return response({ ok: false, error: "rate_limited" }, 429, origin);
     const contentType = request.headers.get("Content-Type") ?? "";
@@ -45,6 +48,7 @@ export default {
     const { slug, stage, flag } = body;
     if (!slug || !flag) return response({ ok: false, error: "bad_request" }, 400, origin);
     if (typeof flag !== "string" || flag.trim().length > 512) return response({ ok: false, error: "bad_request" }, 400, origin);
+    if (!FLAG_PATTERN.test(flag.trim())) return response({ ok: false, error: "bad_flag_format" }, 400, origin);
     if (body.nickname !== undefined && !normalizeNickname(body.nickname)) return response({ ok: false, error: "bad_nickname" }, 400, origin);
     const challenge = challenges[slug];
     if (!challenge) return response({ ok: false, error: "unknown_challenge" }, 404, origin);
@@ -57,38 +61,40 @@ export default {
     const expected = typeof configured === "string" ? configured : configured?.[stage ?? ""];
     if (!expected || expected !== flag.trim()) return response({ ok: false, error: "wrong_flag" }, 200, origin);
 
-    const visitorHash = await hmac(ip, env.FLAG_HMAC_SECRET);
-    const existing = await supabase(env, `challenge_solves?visitor_hash=eq.${encodeURIComponent(visitorHash)}&select=nickname&limit=1`);
-    const existingRows = await existing.json() as Array<{ nickname: string | null }>;
-    let nickname = existingRows[0]?.nickname ?? null;
-    if (!nickname) {
-      const stageIdentity = await supabase(env, `challenge_stage_solves?visitor_hash=eq.${encodeURIComponent(visitorHash)}&select=nickname&nickname=not.is.null&limit=1`);
-      const stageRows = await stageIdentity.json() as Array<{ nickname: string | null }>;
-      nickname = stageRows[0]?.nickname ?? normalizeNickname(body.nickname) ?? null;
+    const profileResult = await supabase(env, `profiles?id=eq.${encodeURIComponent(user.id)}&select=public_nickname&limit=1`);
+    if (!profileResult.ok) return response({ ok: false, error: "db_error" }, 500, origin);
+    const profiles = await profileResult.json() as Array<{ public_nickname: string }>;
+    let nickname = profiles[0]?.public_nickname ?? null;
+    if (!nickname && body.nickname) {
+      nickname = normalizeNickname(body.nickname);
+      if (nickname) {
+        const created = await supabase(env, "profiles", "POST", { id: user.id, public_nickname: nickname });
+        if (!created.ok) return response({ ok: false, error: created.status === 409 ? "nickname_taken" : "db_error" }, created.status === 409 ? 409 : 500, origin);
+      }
     }
     if (!nickname) return response({ ok: false, error: "needs_nickname" }, 200, origin);
 
     if (challenge.mode === "staged") {
-      const progress = await supabase(env, `challenge_stage_solves?challenge_slug=eq.${encodeURIComponent(slug)}&visitor_hash=eq.${encodeURIComponent(visitorHash)}&select=stage_id`);
+      const progress = await supabase(env, `challenge_stage_solves?challenge_slug=eq.${encodeURIComponent(slug)}&user_id=eq.${encodeURIComponent(user.id)}&select=stage_id`);
       const solved = new Set((await progress.json() as Array<{ stage_id: string }>).map((row) => row.stage_id));
       const index = challenge.stages.indexOf(stage!);
       if (challenge.stages.slice(0, index).some((id) => !solved.has(id))) return response({ ok: false, error: "stage_locked" }, 200, origin);
     }
 
     if (challenge.mode !== "single") {
-      const key = `challenge_slug=eq.${encodeURIComponent(slug)}&stage_id=eq.${encodeURIComponent(stage!)}&visitor_hash=eq.${encodeURIComponent(visitorHash)}`;
+      const key = `challenge_slug=eq.${encodeURIComponent(slug)}&stage_id=eq.${encodeURIComponent(stage!)}&user_id=eq.${encodeURIComponent(user.id)}`;
       const prior = await supabase(env, `challenge_stage_solves?${key}&select=id&limit=1`);
       if ((await prior.json() as unknown[]).length) return response({ ok: true, already: true, completed: false, ranked: false }, 200, origin);
-      const inserted = await supabase(env, "challenge_stage_solves", "POST", { challenge_slug: slug, stage_id: stage, visitor_hash: visitorHash, nickname });
+      const inserted = await supabase(env, "challenge_stage_solves", "POST", { challenge_slug: slug, stage_id: stage, user_id: user.id });
       if (!inserted.ok && inserted.status !== 409) return response({ ok: false, error: "db_error" }, 500, origin);
-      const all = await supabase(env, `challenge_stage_solves?challenge_slug=eq.${encodeURIComponent(slug)}&visitor_hash=eq.${encodeURIComponent(visitorHash)}&select=stage_id`);
+      const all = await supabase(env, `challenge_stage_solves?challenge_slug=eq.${encodeURIComponent(slug)}&user_id=eq.${encodeURIComponent(user.id)}&select=stage_id`);
       const solved = new Set((await all.json() as Array<{ stage_id: string }>).map((row) => row.stage_id));
       if (!challenge.stages.every((id) => solved.has(id))) return response({ ok: true, completed: false, ranked: false }, 200, origin);
     }
 
-    const priorSolve = await supabase(env, `challenge_solves?challenge_slug=eq.${encodeURIComponent(slug)}&visitor_hash=eq.${encodeURIComponent(visitorHash)}&select=id&limit=1`);
+    const priorSolve = await supabase(env, `challenge_solves?challenge_slug=eq.${encodeURIComponent(slug)}&user_id=eq.${encodeURIComponent(user.id)}&select=id&limit=1`);
     if ((await priorSolve.json() as unknown[]).length) return response({ ok: true, already: true, completed: true, ranked: false }, 200, origin);
-    const inserted = await supabase(env, "challenge_solves", "POST", { challenge_slug: slug, nickname, visitor_hash: visitorHash });
+    const inserted = await supabase(env, "challenge_solves", "POST", { challenge_slug: slug, user_id: user.id });
     if (!inserted.ok) return inserted.status === 409 ? response({ ok: true, already: true, completed: true, ranked: false }, 200, origin) : response({ ok: false, error: "db_error" }, 500, origin);
     return response({ ok: true, completed: true, ranked: true }, 200, origin);
   }
@@ -108,6 +114,8 @@ async function allowAttempt(ip: string, env: Env) {
   return allowAttemptLocal(ip);
 }
 
+const FLAG_PATTERN = /^C4CKER\{[A-Za-z0-9]{32}\}$/;
+
 const localAttempts = new Map<string, { count: number; resetAt: number }>();
 function allowAttemptLocal(ip: string) {
   const now = Date.now();
@@ -118,10 +126,15 @@ function allowAttemptLocal(ip: string) {
   return true;
 }
 
-async function hmac(value: string, secret: string) {
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value));
-  return Array.from(new Uint8Array(signature), (byte) => byte.toString(16).padStart(2, "0")).join("");
+async function authenticate(request: Request, env: Env) {
+  const authorization = request.headers.get("Authorization") ?? "";
+  if (!authorization.startsWith("Bearer ") || !env.SUPABASE_PUBLISHABLE_KEY) return null;
+  const result = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
+    headers: { apikey: env.SUPABASE_PUBLISHABLE_KEY, Authorization: authorization },
+  });
+  if (!result.ok) return null;
+  const user = await result.json() as { id?: unknown };
+  return typeof user.id === "string" && /^[0-9a-f-]{36}$/i.test(user.id) ? { id: user.id } : null;
 }
 
 function supabase(env: Env, path: string, method = "GET", body?: unknown) {
