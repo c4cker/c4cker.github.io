@@ -1,8 +1,9 @@
 # c4cker.github.io
 
-Tres aplicaciones separadas, con componentes y contenido ordenados para editarlos a mano:
+Cuatro aplicaciones y servicios separados, con componentes y contenido ordenados para editarlos a mano:
 
 - `apps/main`: portfolio, proyectos, writeups, contacto y legales.
+- `apps/labs`: desafíos, laboratorios, comunidad y ranking.
 - `apps/blog`: blog Jekyll independiente.
 - `packages/shared`: identidad visual y componentes reutilizados por Main y Labs.
 
@@ -52,13 +53,15 @@ No subas archivos `.local`, `.dev.vars` ni claves de Supabase.
 
 ## Labs, flags y Supabase
 
-Labs usa Supabase Auth con GitHub OAuth para identificar a cada participante. El Worker valida el JWT, guarda el `user_id` y relaciona el solve con un perfil público que contiene únicamente el nickname elegido. La IP puede usarse de forma efímera para rate limiting, pero no se guarda ni se convierte en identidad. Las flags deben tener el formato `C4CKER{...}` con exactamente 32 caracteres alfanuméricos dentro de las llaves. `SUPABASE_SERVICE_ROLE_KEY` y `FLAGS_JSON` son variables privadas del Worker; `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` no son secretos.
+Labs usa Supabase Auth con GitHub OAuth para identificar a cada participante. El Worker valida el JWT, guarda el `user_id` y relaciona el solve con un perfil público que contiene únicamente el nickname elegido. La IP puede usarse de forma efímera para rate limiting, pero no se guarda ni se convierte en identidad. Las flags deben tener el formato `C4CKER{...}`, con entre 32 y 64 caracteres alfanuméricos dentro de las llaves. `SUPABASE_SERVICE_ROLE_KEY` y `FLAGS_JSON` son variables privadas del Worker; `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` no son secretos.
 
 Para desplegar el Worker manualmente desde la raíz:
 
 ```powershell
 npx wrangler deploy --config wrangler.jsonc
 ```
+
+Antes de abrir un PR ejecutá `npm.cmd run check:all`; para reproducir los builds de Pages ejecutá `npm.cmd run build:all`.
 
 Comprobá el servicio sin enviar una flag:
 

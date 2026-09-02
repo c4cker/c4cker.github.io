@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/LabsLayout.astro";
 import { challenges } from "../../data/challenges";
+import { labPath } from "../../lib/paths";
 ---
 <Base title="Desafíos" description="Retos CTF locales para ejecutar únicamente en un entorno propio y aislado.">
   <section class="container-site max-w-6xl py-16 sm:py-20">
@@ -12,7 +13,7 @@ import { challenges } from "../../data/challenges";
       <button class="filter-button" type="button" data-challenge-filter="html" aria-pressed="false">HTML</button>
     </div>}
     <div class="mt-6 grid gap-4 md:grid-cols-2" data-challenge-list>
-      {challenges.map((item) => <a class="card trace-card group" data-challenge-card data-format={item.format} href={`/desafios/${item.id}`}><div class="flex justify-between gap-3"><span class="eyebrow">{item.category}</span><span class="font-mono text-[10px] uppercase text-signal">{item.format}</span></div><h2 class="mt-4 font-display text-3xl font-bold tracking-[-.04em] group-hover:text-signal">{item.title}</h2><p class="mt-2 font-mono text-xs text-electric">{item.difficulty} · {item.duration} · {item.artifact}</p><p class="mt-4 text-[#a9b6c8]">{item.description}</p><p class="mt-4 font-mono text-[10px] uppercase text-signal">{item.flagMode}{item.stages.length ? ` · ${item.stages.length} etapas` : ""}</p></a>)}
+      {challenges.map((item) => <a class="card trace-card group" data-challenge-card data-format={item.format} href={labPath(`/desafios/${item.id}`)}><div class="flex justify-between gap-3"><span class="eyebrow">{item.category}</span><span class="font-mono text-[10px] uppercase text-signal">{item.format}</span></div><h2 class="mt-4 font-display text-3xl font-bold tracking-[-.04em] group-hover:text-signal">{item.title}</h2><p class="mt-2 font-mono text-xs text-electric">{item.difficulty} · {item.duration} · {item.artifact}</p><p class="mt-4 text-[#a9b6c8]">{item.description}</p><p class="mt-4 font-mono text-[10px] uppercase text-signal">{item.flagMode}{item.stages.length ? ` · ${item.stages.length} etapas` : ""}</p></a>)}
     </div>
     {challenges.length > 0 ? <p class="mt-5 font-mono text-xs text-[#7f9b87]" data-challenge-empty hidden>No hay desafíos de este formato todavía.</p> : <p class="mt-10 border-l border-ember pl-4 font-mono text-sm text-[#a9b6c8]">Próximamente habrá desafíos para practicar.</p>}
   </section>

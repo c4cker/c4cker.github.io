@@ -116,8 +116,8 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       } catch {
         await reply("No pude encontrar una IPv4 pública desde este entorno.", true);
       }
-      await new Promise((resolve) => window.setTimeout(resolve, 2500));
-      await reply("Oh no, me metí con la persona equivocada…", true, 2500);
+      await new Promise((resolve) => window.setTimeout(resolve, 2200));
+      await reply("Oh no, me metí con la persona equivocada…", true, 2000);
       window.setTimeout(() => {
         root.classList.add("is-glitching");
         panel.setAttribute("aria-hidden", "true");
@@ -127,7 +127,7 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
           root.classList.add("is-gone");
           trigger.tabIndex = -1;
         }, 420);
-      }, 2800);
+      }, 2500);
     };
     const showQuestions = () => {
       choices.replaceChildren();

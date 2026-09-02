@@ -16,9 +16,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run check
-      - run: npm run community:check
-      - run: node scripts/astro.mjs labs check
+      - run: npm run check:all
       - run: C4CKER_TARGET=pages npm run build:main
       - run: C4CKER_TARGET=pages C4CKER_APP=labs npm run build:labs
         env:

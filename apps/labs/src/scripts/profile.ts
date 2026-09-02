@@ -14,7 +14,7 @@ if (form) {
     if (!session || !state) return;
     const result = await fetch(`${apiUrl}/profile`, { headers: { Authorization: `Bearer ${session.access_token}` } });
     const payload = await result.json();
-    if (!result.ok || !payload.ok) { state.textContent = "No se pudo cargar el perfil."; return; }
+    if (!result.ok || !payload.ok) { state.textContent = "No se pudo cargar tu perfil."; return; }
     const input = form.elements.namedItem("publicNickname") as HTMLInputElement;
     input.value = payload.profile?.public_nickname ?? "";
   };
@@ -23,10 +23,10 @@ if (form) {
     const session = (await supabase?.auth.getSession())?.data.session;
     const input = form.elements.namedItem("publicNickname") as HTMLInputElement;
     if (!session || !state) return;
-    state.textContent = "Guardando…";
+    state.textContent = "Guardando cambios…";
     const result = await fetch(`${apiUrl}/profile`, { method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` }, body: JSON.stringify({ publicNickname: input.value.trim() }) });
     const payload = await result.json();
-    state.textContent = result.ok && payload.ok ? "Perfil actualizado." : payload.error === "nickname_taken" ? "Ese nickname ya está en uso." : "No se pudo actualizar el perfil.";
+    state.textContent = result.ok && payload.ok ? "Cambios guardados." : payload.error === "nickname_taken" ? "Ese nombre ya está en uso. Elegí otro." : "No se pudieron guardar los cambios.";
   });
   if (supabase) { void supabase.auth.getSession().then(({ data }) => load(data.session)); supabase.auth.onAuthStateChange((_event, session) => void load(session)); }
 }

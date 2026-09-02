@@ -1,13 +1,13 @@
 # Integraciones
 
-## Próximo backend: Supabase
+## Backend actual: Supabase + Cloudflare Worker
 
-1. Creá un proyecto de Supabase y ejecutá `supabase/migrations/001_initial.sql`.
+1. Creá el proyecto de Supabase y aplicá las migraciones de `supabase/migrations/` en orden, incluida `007_ranking_rpc.sql`.
 2. Si necesitás datos de prueba local, cargá `supabase/seed.local.sql`; está ignorado y no debe ejecutarse en producción.
-3. Cuando se migren las APIs de Labs, usá claves públicas en el cliente y políticas RLS; nunca publiques la service role ni flags válidas.
+3. El frontend usa la clave publicable; el Worker usa la service role únicamente en servidor. Nunca publiques la service role ni flags válidas.
 
-## Despliegue previsto: GitHub Pages
+## Despliegue: GitHub Pages
 
-GitHub Pages publica un único artefacto: Main en `/`, Labs en `/labs/` y el blog Chirpy en `/blog/`. Las funciones persistentes de Labs —flags y Hall of Fame— se habilitan cuando Supabase esté configurado.
+GitHub Pages publica un único artefacto: Main en `/`, Labs en `/labs/` y el blog Chirpy en `/blog/`. Las funciones persistentes de Labs —flags y Hall of Fame— pasan por `workers/labs-api.ts`. Pages publica el frontend y los ZIPs; Wrangler despliega el Worker por separado.
 
 El workflow de Pages se ejecuta en cada cambio relevante. No guardes secretos de Cloudflare ni de Supabase en el repositorio.

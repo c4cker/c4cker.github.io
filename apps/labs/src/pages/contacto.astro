@@ -4,18 +4,17 @@ import LabsLayout from "../layouts/LabsLayout.astro";
 
 <LabsLayout title="Contacto" description="Canal público para proponer recursos, correcciones o colaboraciones para c4cker Labs.">
   <article class="container-site max-w-3xl py-16 sm:py-20">
-    <p class="eyebrow">Abrir canal</p>
-    <h1 class="mt-3 font-display text-5xl font-bold tracking-[-.07em] sm:text-6xl">Hablemos</h1>
-    <p class="mt-5 max-w-2xl text-lg text-[#cbd5e1]">Para una corrección, una propuesta o una colaboración en los laboratorios, dejame el contexto y el alcance. No incluyas secretos, flags ni información sensible.</p>
+    <h1 class="mt-3 font-display text-5xl font-bold tracking-[-.07em] sm:text-6xl">Contacto</h1>
+    <p class="mt-5 max-w-2xl text-lg text-[#cbd5e1]">Enviame correcciones, propuestas o consultas sobre los laboratorios. Incluí el contexto necesario. No incluyas secretos, flags ni información sensible.</p>
 
     <form class="contact-form mt-12" data-contact-form>
-      <div class="contact-form__head"><div><p class="eyebrow">Contacto público</p><h2 class="mt-3 font-display text-3xl font-bold">Dejame un mensaje</h2></div></div>
+      <div class="contact-form__head"><div><h2 class="mt-3 font-display text-3xl font-bold">Enviar consulta</h2></div></div>
       <div class="mt-8 grid gap-5 sm:grid-cols-2">
         <label>Nombre<input name="name" autocomplete="name" maxlength="80" placeholder="Tu nombre" required /></label>
         <label>Correo<input name="email" type="email" autocomplete="email" maxlength="254" placeholder="nombre@dominio.com" required /></label>
       </div>
-      <label class="mt-5 block">Asunto<input name="subject" maxlength="160" placeholder="Motivo del mensaje" required /></label>
-      <label class="mt-5 block">Mensaje<textarea name="message" rows="6" maxlength="4000" placeholder="Contexto, alcance y cualquier enlace público relevante" required></textarea></label>
+      <label class="mt-5 block">Asunto<input name="subject" maxlength="160" placeholder="Asunto" required /></label>
+      <label class="mt-5 block">Mensaje<textarea name="message" rows="6" maxlength="4000" placeholder="Contá el problema o la propuesta e incluí los enlaces relevantes" required></textarea></label>
       <div class="mt-7 flex flex-wrap items-center justify-between gap-4"><button class="contact-form__submit" type="submit">Enviar <span aria-hidden="true">→</span></button></div>
       <p class="contact-form__notice" role="status" aria-live="polite" hidden></p>
     </form>
@@ -46,10 +45,10 @@ import LabsLayout from "../layouts/LabsLayout.astro";
       try {
         await fetch(FORM_URL, { method: "POST", body, mode: "no-cors" });
         form.reset();
-        if (notice) { notice.textContent = "Mensaje recibido. Gracias por escribir."; notice.hidden = false; }
+        if (notice) { notice.textContent = "Mensaje enviado."; notice.hidden = false; }
         setTimeout(() => { if (notice) notice.hidden = true; if (submitBtn) submitBtn.disabled = false; }, 3000);
       } catch {
-        if (notice) { notice.textContent = "Error al enviar. Intentá de nuevo o escribime por LinkedIn."; notice.hidden = false; }
+        if (notice) { notice.textContent = "No se pudo enviar el mensaje. Probá nuevamente."; notice.hidden = false; }
         if (submitBtn) submitBtn.disabled = false;
       }
     });

@@ -9,6 +9,9 @@ export type CommunityResource = {
   format: string;
   language: string;
   access: string;
+  /** Permite mostrar el mismo recurso en más de un panel con una ficha contextual. */
+  curation?: "revisado" | "pendiente";
+  warning?: string;
 };
 
 export type CommunityPanel = {
@@ -43,9 +46,17 @@ export const communityPanels: CommunityPanel[] = [
     slug: "linux",
     title: "Linux",
     eyebrow: "sistemas y terminal",
-    description: "Recursos para moverse por la terminal, administrar sistemas y entender permisos, procesos, red y hardening.",
+    description: "Recursos para usar Linux, administrar sistemas, entender permisos, procesos, filesystem, red y hardening.",
     intro: "Linux aparece en servidores, laboratorios y herramientas de seguridad. Acá se puede practicar desde los comandos iniciales hasta la revisión de un sistema expuesto.",
     categories: ["Linux"]
+  },
+  {
+    slug: "windows",
+    title: "Windows",
+    eyebrow: "sistema y administración",
+    description: "Comandos, administración y análisis de sistemas Windows para aprender y practicar en entornos propios o autorizados.",
+    intro: "Estudiá Windows desde la terminal, los servicios y la administración del sistema. Usá máquinas de prueba y evitá ejecutar comandos sobre equipos ajenos.",
+    categories: ["Windows"]
   },
   {
     slug: "network",
@@ -64,6 +75,14 @@ export const communityPanels: CommunityPanel[] = [
     categories: ["Hacking Web"]
   },
   {
+    slug: "mobile-security",
+    title: "Mobile Security",
+    eyebrow: "aplicaciones móviles",
+    description: "Estándares y metodologías para evaluar la seguridad de aplicaciones Android e iOS.",
+    intro: "Este panel reúne referencias específicas de seguridad móvil. Practicá sobre aplicaciones propias o entornos autorizados y preservá siempre los datos de prueba.",
+    categories: ["Mobile Security"]
+  },
+  {
     slug: "full-stack-development",
     title: "Full Stack Development",
     eyebrow: "construir para entender",
@@ -72,12 +91,28 @@ export const communityPanels: CommunityPanel[] = [
     categories: ["Full Stack Development"]
   },
   {
-    slug: "red-team-cloud-blue-team",
-    title: "Red Team · Cloud · Blue Team",
-    eyebrow: "ataque y defensa",
-    description: "Referencias para estudiar operaciones ofensivas, seguridad cloud, living off the land, monitoreo y detección.",
-    intro: "Las técnicas ofensivas se presentan junto a su contexto defensivo: qué comportamiento producen, cómo observarlo y en qué entornos se puede practicar de forma segura.",
-    categories: ["Red Team · Cloud · Blue Team"]
+    slug: "red-team-pentesting",
+    title: "Red Team · Pentesting",
+    eyebrow: "ataque autorizado",
+    description: "Reconocimiento, pentesting, explotación y operaciones ofensivas para practicar únicamente dentro de un alcance autorizado.",
+    intro: "Estudiá técnicas ofensivas en laboratorios y sistemas propios. Documentá el alcance, el impacto y las medidas de mitigación de cada ejercicio.",
+    categories: ["Red Team · Pentesting"]
+  },
+  {
+    slug: "blue-team",
+    title: "Blue Team",
+    eyebrow: "detección y respuesta",
+    description: "Recursos para monitoreo, hardening, análisis forense, respuesta a incidentes y detección de amenazas.",
+    intro: "La defensa completa la práctica ofensiva: aprendé a observar señales, investigar incidentes y reducir la superficie de ataque.",
+    categories: ["Blue Team"]
+  },
+  {
+    slug: "cloud",
+    title: "Cloud",
+    eyebrow: "infraestructura cloud",
+    description: "Rutas, guías y herramientas para estudiar seguridad, identidad y operación de servicios cloud.",
+    intro: "Usá cuentas de laboratorio y presupuestos controlados. Revisá siempre permisos, costos y datos antes de probar una configuración.",
+    categories: ["Cloud"]
   },
   {
     slug: "ctf",

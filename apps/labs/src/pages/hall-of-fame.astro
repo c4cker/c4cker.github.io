@@ -1,10 +1,10 @@
 ---
 import Base from "../layouts/LabsLayout.astro";
 ---
-<Base title="Hall of Fame" description="Registro anónimo de solves verificados en los desafíos de c4cker.">
+<Base title="Ranking" description="Resultados de los desafíos completados en c4cker Labs.">
   <article class="container-site max-w-4xl py-20">
-    <h1 class="mt-3 font-display text-6xl font-bold tracking-[-.07em]">Hall of Fame</h1>
-    <p class="mt-5 max-w-2xl text-lg text-[#cbd5e1]">Cada desafío completado suma un punto. En los retos por etapas, el punto llega al completar el recorrido.</p>
+    <h1 class="mt-3 font-display text-6xl font-bold tracking-[-.07em]">Ranking</h1>
+    <p class="mt-5 max-w-2xl text-lg text-[#cbd5e1]">Cada desafío completado suma un punto. Los desafíos por etapas se registran al completar todas sus etapas.</p>
     <div class="mt-10 border border-line bg-panel p-6" data-ranking-state><p class="text-[#a9b6c8]">Cargando ranking…</p></div>
   </article>
   <script is:inline define:vars={{ apiUrl: "https://c4cker-labs-api.lucianomps2015.workers.dev" }}>
@@ -12,19 +12,19 @@ import Base from "../layouts/LabsLayout.astro";
     fetch(`${apiUrl}/ranking`, { headers: { Accept: "application/json" } }).then(async (result) => {
       const payload = await result.json();
       if (!result.ok || !payload.ok) throw new Error("ranking");
-      if (!payload.ranking?.length) { rankingState.textContent = "Todavía no hay solves registrados."; return; }
+      if (!payload.ranking?.length) { rankingState.textContent = "Todavía no hay desafíos completados."; return; }
       const table = document.createElement("table");
       table.className = "w-full text-left text-sm";
       const head = table.createTHead();
       head.className = "font-mono text-xs uppercase text-signal";
       const headerRow = head.insertRow();
-      ["#", "Nickname", "Puntos"].forEach((label, index) => { const cell = document.createElement("th"); cell.className = index < 2 ? "pb-3 pr-6" : "pb-3"; cell.textContent = label; headerRow.append(cell); });
+      ["Puesto", "Nombre", "Puntos"].forEach((label, index) => { const cell = document.createElement("th"); cell.className = index < 2 ? "pb-3 pr-6" : "pb-3"; cell.textContent = label; headerRow.append(cell); });
       const body = table.createTBody();
       payload.ranking.forEach((item, index) => { const row = body.insertRow(); row.className = "border-t border-line"; [index + 1, item.nickname, item.points].forEach((value, cellIndex) => { const cell = row.insertCell(); cell.className = cellIndex < 2 ? "py-3 pr-6" : "py-3"; cell.textContent = String(value); if (cellIndex === 0) cell.classList.add("font-mono", "text-[#718096]"); if (cellIndex === 2) cell.classList.add("font-mono", "text-electric"); }); });
       const scroll = document.createElement("div");
       scroll.className = "overflow-x-auto";
       scroll.append(table);
       rankingState.replaceChildren(scroll);
-    }).catch(() => { rankingState.textContent = "No se pudo cargar el ranking. Intentá nuevamente más tarde."; });
+    }).catch(() => { rankingState.textContent = "No se pudieron cargar los resultados. Probá nuevamente."; });
   </script>
 </Base>

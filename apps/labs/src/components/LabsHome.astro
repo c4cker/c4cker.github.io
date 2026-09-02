@@ -2,8 +2,9 @@
 import { challenges } from "../data/challenges";
 import { labs } from "../data/laboratories";
 import { communityPanels } from "../data/community";
+import { labPath } from "../lib/paths";
 
-const labsOrigin = import.meta.env.DEV ? "http://labs.localhost:4322" : "/labs";
+const labsOrigin = labPath("");
 const htmlCount = challenges.filter((item) => item.format === "html").length;
 const dockerCount = challenges.filter((item) => item.format === "docker").length;
 const publishedLabs = labs.length;
@@ -12,19 +13,19 @@ const panelCount = communityPanels.length;
 const tour = [
   {
     name: "Desafíos",
-    detail: "Descargá ejercicios acotados para practicar reconocimiento, análisis y resolución de problemas con una hipótesis concreta. Cada desafío incluye sus evidencias, instrucciones y un entorno HTML o Docker para que puedas trabajar de forma local.",
+    detail: "Descargá ejercicios acotados para practicar reconocimiento, análisis y resolución de problemas. Cada desafío incluye evidencias, instrucciones y un entorno HTML o Docker para trabajar localmente.",
     href: labsOrigin + "/desafios",
       action: "Ver desafíos",
   },
   {
     name: "Laboratorios",
-      detail: `Hay ${publishedLabs} entorno${publishedLabs === 1 ? "" : "s"} reproducible${publishedLabs === 1 ? "" : "s"} para estudiar servicios, tráfico y cadenas de ataque. Levantá los componentes en una red controlada, observá su comportamiento y documentá cada hallazgo sin tocar objetivos externos.`,
+      detail: `Hay ${publishedLabs} entorno${publishedLabs === 1 ? "" : "s"} para estudiar servicios y tráfico. Levantá los componentes en una red controlada, observá su comportamiento y documentá cada hallazgo.`,
     href: labsOrigin + "/laboratorios",
     action: "Ver laboratorios",
   },
   {
     name: "Comunidad",
-      detail: `Hay ${panelCount} temas con recursos externos seleccionados para seguir aprendiendo después de cada práctica. Encontrá cursos, documentación, libros, herramientas y plataformas sobre sistemas, Linux, redes, web, cloud, equipos defensivos y CTF.`,
+      detail: `Hay ${panelCount} paneles con cursos, documentación, libros, herramientas y plataformas sobre sistemas, Linux, redes, web, cloud, defensa y CTF.`,
     href: labsOrigin + "/comunidad",
       action: "Explorar recursos",
   },
@@ -34,7 +35,7 @@ const tour = [
 <section class="labs-intro container-site">
   <div class="labs-intro__copy">
     <h1>Un lugar <span>para desarrollarte</span></h1>
-    <p class="labs-intro__lead">Este lugar está pensado para enriquecer a cada persona que lo necesite y esté interesada en sumar ciberseguridad a su perfil, también hay recursos para otros perfiles. Descargá un ejercicio, levantá un entorno local y documentá lo que encuentres.</p>
+    <p class="labs-intro__lead">Practicá ciberseguridad con desafíos descargables, laboratorios locales y recursos organizados por tema. Elegí un ejercicio, levantá el entorno y documentá lo que encuentres.</p>
     <div class="labs-intro__actions">
       <a class="labs-primary" href={labsOrigin + "/desafios"}>Empezar con un desafío</a>
     </div>
@@ -54,7 +55,7 @@ const tour = [
   <ol>
     <li><b>1</b><span>Descargá el ZIP del desafío.</span></li>
     <li><b>2</b><span>Leé el README y levantá el entorno.</span></li>
-    <li><b>3</b><span>Encontrá la flag y enviala para registrar el solve.</span></li>
+    <li><b>3</b><span>Encontrá la flag y enviala para registrar el desafío.</span></li>
   </ol>
 </section>
 

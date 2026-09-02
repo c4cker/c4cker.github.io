@@ -44,6 +44,11 @@ supabase/seed.local.sql
 apps/labs/src/data/_templates/
 
 # Fuentes locales de los desafíos; solo se publican sus ZIPs en challenges-sources/
+/.challenge-work-*/
+/.wrangler-dry-run*/
+/apps/blog/.verify-site/
+/apps/blog/_site-ci/
+/apps/blog/.jekyll-verify/
 challenges/
 
 # Mocks editoriales sólo para desarrollo local

@@ -15,8 +15,8 @@ const isExternal = hasRepo && project.repoUrl.startsWith("http");
       <div><p class="eyebrow">{project.kind}</p><h1 class="mt-4 font-display text-5xl font-bold tracking-[-.07em] sm:text-7xl">{project.title}</h1><p class="mt-5 max-w-2xl text-xl leading-8 text-[#cbd5e1]">{project.detail}</p></div>
       <aside class="relative self-start pl-5 font-mono text-xs leading-6 text-[#a9b6c8] before:absolute before:left-0 before:top-1 before:h-48 before:w-px before:bg-electric/50"><span class="text-signal">LENGUAJE</span><br />{project.language}<br /><br /><span class="text-signal">STACK</span><br />{project.stack}<br /><br /><span class="text-signal">ESTADO</span><br />{project.status}</aside>
     </header>
-    <section class="mt-10 border border-line bg-panel/70 p-6"><p class="eyebrow">Qué intento resolver</p><p class="mt-4 max-w-2xl text-lg leading-8 text-[#cbd5e1]">{project.objective}</p></section>
-    <section class="mt-10 border-l border-ember pl-4"><p class="eyebrow">Qué falta por ahora</p><p class="mt-3 max-w-3xl text-sm leading-7 text-[#a9b6c8]">{project.pending}</p></section>
-    {hasRepo && <a class="route-link repo-link mt-8 inline-flex gap-2" href={project.repoUrl} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noreferrer noopener" : undefined}>{isExternal ? "Abrir repositorio" : "Ir a la sección relacionada"} <span aria-hidden="true">↗</span></a>}
+    <section class="mt-10 border border-line bg-panel/70 p-6"><p class="eyebrow">Problema</p><p class="mt-4 max-w-2xl text-lg leading-8 text-[#cbd5e1]">{project.objective}</p></section>
+    <section class="mt-10 border-l border-ember pl-4"><p class="eyebrow">Pendiente</p><p class="mt-3 max-w-3xl text-sm leading-7 text-[#a9b6c8]">{project.pending}</p></section>
+    {hasRepo && <a class="route-link repo-link mt-8 inline-flex gap-2" href={project.repoUrl} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noreferrer noopener" : undefined}>{isExternal ? "Abrir repositorio" : "Ver proyecto relacionado"}</a>}
   </article>
 </Base>

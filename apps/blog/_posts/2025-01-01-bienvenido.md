@@ -5,4 +5,4 @@ categories: [General]
 tags: [inicio]
 ---
 
-Primer post del blog. Acá voy a documentar writeups, notas de investigación y herramientas de seguridad ofensiva responsable.
+Acá documento writeups, notas técnicas y herramientas de seguridad. Los ejemplos se prueban en entornos controlados.

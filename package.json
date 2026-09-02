@@ -11,10 +11,13 @@
     "build": "npm run build:main",
     "build:main": "node scripts/astro.mjs main build",
     "build:labs": "node scripts/astro.mjs labs build",
+    "build:all": "node scripts/verify-all.mjs --build",
     "preview": "node scripts/astro.mjs main preview",
     "check": "node scripts/astro.mjs main check",
+    "check:all": "node scripts/verify-all.mjs --check",
     "flag:new": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/new-flag.ps1",
     "security:audit": "npm audit --omit=dev --audit-level=high",
+    "worker:check": "node scripts/check-worker-contract.mjs",
     "community:check": "node scripts/check-community.mjs"
   },
   "dependencies": {

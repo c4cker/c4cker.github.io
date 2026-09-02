@@ -1,6 +1,21 @@
 import type { CommunityResource } from "./community";
+import { browserResources } from "./community.browser";
+import { crossPanelResources } from "./community.cross-panel";
 
-export const communityResources: CommunityResource[] = [
+const curatedResources: CommunityResource[] = [
+  {
+    category: "Red Team · Pentesting",
+    title: "Dragkob · Security Certification Roadmap",
+    source: "Dragkob",
+    description: "Mapa visual para orientarse entre certificaciones y construir un recorrido de aprendizaje en seguridad informática.",
+    href: "https://dragkob.com/security-certification-roadmap/",
+    topics: ["certificaciones", "roadmap", "carrera"],
+    level: "Mixto",
+    format: "Roadmap",
+    language: "Inglés",
+    access: "Gratis; enlace externo",
+    curation: "revisado"
+  },
   {
     category: "Computer Science",
     title: "pwn.college",
@@ -278,7 +293,9 @@ export const communityResources: CommunityResource[] = [
     level: "Mixto",
     format: "Artículo",
     language: "Español",
-    access: "Gratis"
+    access: "Gratis; enlace externo no auditado",
+    curation: "pendiente",
+    warning: "No se alcanzó a curar todo el contenido del sitio. Revisá cada artículo, enlace y descarga antes de seguir sus indicaciones."
   },
   {
     category: "Hacking Web",
@@ -354,7 +371,7 @@ export const communityResources: CommunityResource[] = [
     access: "Gratis; consultar disponibilidad"
   },
   {
-    category: "DevOps · Cloud · Blue Team",
+    category: "Cloud",
     title: "DevOps Journey 101",
     source: "GitHub · roxsross",
     description: "Repositorio de aprendizaje para Linux, Git, Docker, Kubernetes, AWS, Terraform, CI/CD y prácticas DevSecOps con SAST y DAST.",
@@ -367,7 +384,7 @@ export const communityResources: CommunityResource[] = [
   },
 
   {
-    category: "Red Team · Cloud · Blue Team",
+    category: "Red Team · Pentesting",
     title: "revshells",
     source: "revshells.com",
     description: "Generador de referencias para conexiones reverse shell y listeners, organizado por sistema, shell, formato y codificación.",
@@ -379,7 +396,7 @@ export const communityResources: CommunityResource[] = [
     access: "Gratis",
   },
   {
-    category: "Red Team · Cloud · Blue Team",
+    category: "Red Team · Pentesting",
     title: "LOLBAS",
     source: "LOLBAS Project",
     description: "Catálogo de binarios, scripts y librerías de Windows que pueden abusarse para ejecutar, transferir archivos, elevar privilegios o evadir controles.",
@@ -391,7 +408,7 @@ export const communityResources: CommunityResource[] = [
     access: "Gratis",
   },
   {
-    category: "Red Team · Cloud · Blue Team",
+    category: "Cloud",
     title: "AWS Security Ramp-Up Guide",
     source: "AWS",
     description: "Guía de aprendizaje para ordenar conceptos, servicios y capacitaciones de seguridad en AWS desde fundamentos hasta especialización.",
@@ -403,7 +420,7 @@ export const communityResources: CommunityResource[] = [
     access: "Gratis",
   },
   {
-    category: "Red Team · Cloud · Blue Team",
+    category: "Cloud",
     title: "AWS Skill Builder",
     source: "AWS",
     description: "Catálogo oficial de cursos y aprendizaje guiado para servicios AWS, seguridad cloud, identidad, operaciones y arquitectura.",
@@ -415,7 +432,7 @@ export const communityResources: CommunityResource[] = [
     access: "Gratis y opciones de pago; puede requerir cuenta"
   },
   {
-    category: "Red Team · Cloud · Blue Team",
+    category: "Blue Team",
     title: "Splunk Training",
     source: "Splunk",
     description: "Cursos y rutas para explorar análisis de logs, SPL, SOC, threat hunting, SOAR y operaciones de seguridad.",
@@ -427,7 +444,7 @@ export const communityResources: CommunityResource[] = [
     access: "Incluye cursos gratis; puede requerir cuenta"
   },
   {
-    category: "Red Team · Cloud · Blue Team",
+    category: "Blue Team",
     title: "Splunk Education Student Handbook",
     source: "Splunk",
     description: "Referencia para entender el recorrido formativo, laboratorios y opciones educativas disponibles dentro del ecosistema Splunk.",
@@ -510,5 +527,63 @@ export const communityResources: CommunityResource[] = [
     format: "Índice de videos",
     language: "Inglés",
     access: "Gratis",
+  },
+  {
+    category: "Hacking Web",
+    title: "bWAPP",
+    source: "bWAPP",
+    description: "Aplicación web deliberadamente vulnerable para practicar pruebas en un entorno controlado.",
+    href: "https://bwapp.ddlr.org/login.php",
+    topics: ["web", "vulnerabilidades", "laboratorio"],
+    level: "Intermedio",
+    format: "Laboratorio web",
+    language: "Inglés",
+    access: "Externo; puede requerir cuenta",
+    curation: "pendiente",
+    warning: "No se auditó todo el contenido ni la disponibilidad del laboratorio. Usalo solo dentro del alcance autorizado y no introduzcas datos reales."
+  },
+  {
+    category: "Red Team · Pentesting",
+    title: "NetSPI · Bypass de PowerShell Execution Policy",
+    source: "NetSPI",
+    description: "Artículo técnico sobre las limitaciones de Execution Policy y las formas en que puede evadirse en escenarios de evaluación autorizada.",
+    href: "https://www.netspi.com/blog/technical-blog/network-penetration-testing/15-ways-to-bypass-the-powershell-execution-policy/",
+    topics: ["PowerShell", "Windows", "defensa", "pentesting"],
+    level: "Avanzado",
+    format: "Artículo técnico",
+    language: "Inglés",
+    access: "Gratis; enlace externo",
+    curation: "pendiente",
+    warning: "El contenido es dual-use y no fue curado completamente. Probalo únicamente en máquinas propias o con autorización explícita, y revisá cada comando antes de ejecutarlo."
+  },
+  {
+    category: "CTF",
+    title: "elhacker.info",
+    source: "elhacker.info",
+    description: "Repositorio externo con cursos, apuntes y material de seguridad compartido por la comunidad hispanohablante.",
+    href: "https://elhacker.info/",
+    topics: ["seguridad", "cursos", "comunidad"],
+    level: "Mixto",
+    format: "Repositorio de material",
+    language: "Español",
+    access: "Enlace externo no auditado",
+    curation: "pendiente",
+    warning: "El contenido y los archivos no fueron revisados por completo. Verificá licencias, procedencia y hashes; no ejecutes descargas sin analizarlas primero."
+  },
+  {
+    category: "Red Team · Pentesting",
+    title: "GeoImgr",
+    source: "GeoImgr",
+    description: "Herramienta web para inspeccionar metadatos y ubicación asociada a imágenes, útil para estudiar riesgos de exposición de información.",
+    href: "https://tool.geoimgr.com/",
+    topics: ["OSINT", "metadatos", "privacidad"],
+    level: "Inicial",
+    format: "Herramienta web",
+    language: "Inglés",
+    access: "Enlace externo no auditado",
+    curation: "pendiente",
+    warning: "No se verificó completamente cómo procesa o conserva los archivos. Usá imágenes de prueba sin información personal o sensible."
   }
 ];
+
+export const communityResources: CommunityResource[] = [...curatedResources, ...browserResources, ...crossPanelResources];
