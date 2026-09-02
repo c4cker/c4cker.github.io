@@ -9,7 +9,7 @@ const { title, description = "Desafíos y laboratorios locales para practicar se
 const pageTitle = title ? `${title} · c4cker` : "c4cker · seguridad aplicada";
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image.startsWith("http") ? image : labAsset(image), Astro.site);
-const mainOrigin = import.meta.env.DEV ? "http://localhost:4321" : "https://c4cker.github.io/";
+const mainOrigin = import.meta.env.DEV ? "http://localhost:4321" : "https://c4cker.com/";
 const labsLinks = [["Desafíos", labPath("/desafios")], ["Labs", labPath("/laboratorios")], ["Ranking", labPath("/hall-of-fame")], ["Comunidad", labPath("/comunidad")], ["Contacto", labPath("/contacto")]];
 const links = [...labsLinks, ["Portfolio", mainOrigin]];
 const brand = "c4cker/labs";
@@ -57,7 +57,7 @@ const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4
       });
       document.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((link) => {
         const destination = new URL(link.href, window.location.href);
-        if (destination.origin !== window.location.origin) {
+        if (link.textContent?.trim() !== "Portfolio" && destination.origin !== window.location.origin) {
           link.target = "_blank";
           link.rel = "noreferrer noopener";
         }
@@ -86,12 +86,6 @@ const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4
       };
       toggle?.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
       menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setMenu(false)));
-      document.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
-        if (link.textContent?.trim() === "Portfolio") {
-          link.target = "_blank";
-          link.rel = "noreferrer noopener";
-        }
-      });
       document.addEventListener("keydown", (event) => { if (event.key === "Escape") setMenu(false); });
       window.matchMedia("(min-width: 1024px)").addEventListener("change", (event) => { if (event.matches) setMenu(false); });
     </script>
