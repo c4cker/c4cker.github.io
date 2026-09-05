@@ -15,7 +15,7 @@ Cloudflare Pages publica el frontend desde GitHub; el Worker se despliega por se
 
 El repositorio solo referencia ese proyecto Pages y ese Worker. No borres ninguno sin actualizar primero las URLs y la configuración de despliegue.
 
-Para actualizar Hetzner, ejecuta `scripts/update-hetzner.ps1`. El script hace `git pull --ff-only origin main`, instala dependencias, recompila Main, Labs y el blog, valida Caddy y recarga el servicio.
+Para actualizar Hetzner, conectate al servidor, entrá en `/opt/c4cker` y ejecutá `npm run prod`. El comando hace `git pull --ff-only origin main`, instala dependencias, recompila Main, Labs y el blog, valida Caddy y recarga el servicio.
 
 La cuenta actual no tiene una zona DNS en Cloudflare, por lo que no se pueden aplicar reglas WAF de zona ni Bot Fight Mode sobre un dominio propio. La protección efectiva está en el Worker: Durable Object para rate limiting, validación de origen y método, JSON obligatorio, límite de payload, validación de entrada y respuestas con `nosniff` y `no-referrer`.
 
