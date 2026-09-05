@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "onlyBuiltDependencies": [
+    "esbuild",
+    "workerd"
+  ],
   "scripts": {
     "dev": "npm exec concurrently -- --kill-others-on-fail --names main,labs,blog --prefix-colors cyan,green,magenta \"node scripts/astro.mjs main dev --force --port 4321\" \"node scripts/astro.mjs labs dev --ignore-lock --host labs.localhost --port 4322\" \"bundle exec --gemfile apps/blog/Gemfile jekyll serve --source apps/blog --destination apps/blog/_site --livereload --port 4000\"",
     "dev:main": "node scripts/astro.mjs main dev --port 4321",
