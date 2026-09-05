@@ -21,7 +21,7 @@ run("npm", ["run", "build:labs"]);
 const bundleUser = process.env.C4CKER_DEPLOY_USER ?? "c4cker";
 run("chown", ["-R", `${bundleUser}:${bundleUser}`, blog]);
 run("runuser", ["-u", bundleUser, "--", "bundle", "install"], blog);
-run("runuser", ["-u", bundleUser, "--", "bundle", "exec", "jekyll", "build", "--destination", "_site"], blog);
+run("runuser", ["-u", bundleUser, "--", "bundle", "exec", "jekyll", "build", "--disable-disk-cache", "--destination", "_site"], blog);
 run("caddy", ["validate", "--config", "/etc/caddy/Caddyfile"]);
 run("systemctl", ["reload", "caddy"]);
 run("systemctl", ["is-active", "caddy"]);
