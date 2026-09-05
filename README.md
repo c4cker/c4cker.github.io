@@ -9,11 +9,13 @@ Cuatro aplicaciones y servicios separados, con componentes y contenido ordenados
 
 ## Publicación y servicios
 
-La publicación productiva se sirve desde Hetzner: `c4cker.com`, `blog.c4cker.com` y `labs.c4cker.com`. El Worker activo es `c4cker-labs-api`; Caddy lo expone bajo `https://api.c4cker.com` para el envío de flags y el ranking.
+La publicación productiva se sirve desde Hetzner: `c4cker.com`, `blog.c4cker.com` y `labs.c4cker.com`. El checkout productivo vive en `/opt/c4cker`; Caddy sirve únicamente sus artefactos compilados. El Worker activo es `c4cker-labs-api`; Caddy lo expone bajo `https://api.c4cker.com` para el envío de flags y el ranking.
 
 Cloudflare Pages publica el frontend desde GitHub; el Worker se despliega por separado con Wrangler. Cloudflare también proporciona el Durable Object `RATE_LIMITER`, usado para limitar intentos del endpoint de flags. En el plan Free, su migración debe declararse como `new_sqlite_classes` en [wrangler.jsonc](wrangler.jsonc).
 
 El repositorio solo referencia ese proyecto Pages y ese Worker. No borres ninguno sin actualizar primero las URLs y la configuración de despliegue.
+
+Para actualizar Hetzner, ejecuta `scripts/update-hetzner.ps1`. El script hace `git pull --ff-only origin main`, instala dependencias, recompila Main, Labs y el blog, valida Caddy y recarga el servicio.
 
 La cuenta actual no tiene una zona DNS en Cloudflare, por lo que no se pueden aplicar reglas WAF de zona ni Bot Fight Mode sobre un dominio propio. La protección efectiva está en el Worker: Durable Object para rate limiting, validación de origen y método, JSON obligatorio, límite de payload, validación de entrada y respuestas con `nosniff` y `no-referrer`.
 

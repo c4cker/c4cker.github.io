@@ -40,21 +40,21 @@ c4cker.com {
 		redir https://blog.c4cker.com{uri} permanent
 	}
 	handle {
-		root * /srv/c4cker/current/main
+	root * /opt/c4cker/dist/main
 		file_server
 	}
 }
 
 blog.c4cker.com {
 	import security
-	root * /srv/c4cker/current/blog
+	root * /opt/c4cker/apps/blog/_site
 	file_server
 }
 
 labs.c4cker.com {
 	import security
 	header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self' https://api.c4cker.com https://c4cker-labs-api.lucianomps2015.workers.dev https://qwueucglybtchopehynh.supabase.co https://api4.ipify.org https://docs.google.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; frame-ancestors 'none'; form-action 'self' https://docs.google.com; upgrade-insecure-requests"
-	root * /srv/c4cker/current/labs
+	root * /opt/c4cker/dist/labs
 	file_server
 }
 
