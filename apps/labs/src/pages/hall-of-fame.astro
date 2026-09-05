@@ -7,7 +7,7 @@ import Base from "../layouts/LabsLayout.astro";
     <p class="mt-5 max-w-2xl text-lg text-[#cbd5e1]">Cada desafío completado suma un punto. Los desafíos por etapas se registran al completar todas sus etapas.</p>
     <div class="mt-10 border border-line bg-panel p-6" data-ranking-state><p class="text-[#a9b6c8]">Cargando ranking…</p></div>
   </article>
-  <script is:inline define:vars={{ apiUrl: "https://c4cker-labs-api.lucianomps2015.workers.dev" }}>
+  <script is:inline define:vars={{ apiUrl: "https://api.c4cker.com" }}>
     const rankingState = document.querySelector("[data-ranking-state]");
     fetch(`${apiUrl}/ranking`, { headers: { Accept: "application/json" } }).then(async (result) => {
       const payload = await result.json();

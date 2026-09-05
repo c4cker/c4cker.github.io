@@ -7,7 +7,7 @@ type Env = {
 };
 import { challenges as challengeCatalog } from "../apps/labs/src/data/challenges.published";
 
-const allowedOrigins = new Set(["https://c4cker.com", "https://www.c4cker.com", "https://c4cker.github.io", "http://localhost:4322", "http://labs.localhost:4322"]);
+const allowedOrigins = new Set(["https://c4cker.com", "https://www.c4cker.com", "https://labs.c4cker.com", "https://c4cker.github.io", "http://localhost:4322", "http://labs.localhost:4322"]);
 const challenges = Object.fromEntries(challengeCatalog.map((item) => [item.slug, { mode: item.flagMode, stages: item.stages.map((stage) => stage.id) }]));
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {

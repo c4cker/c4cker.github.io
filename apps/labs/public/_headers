@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; connect-src 'self' https://c4cker-labs-api.lucianomps2015.workers.dev https://qwueucglybtchopehynh.supabase.co https://api4.ipify.org https://docs.google.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; frame-ancestors 'none'; form-action 'self' https://docs.google.com; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; connect-src 'self' https://api.c4cker.com https://c4cker-labs-api.lucianomps2015.workers.dev https://qwueucglybtchopehynh.supabase.co https://api4.ipify.org https://docs.google.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; frame-ancestors 'none'; form-action 'self' https://docs.google.com; upgrade-insecure-requests
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()

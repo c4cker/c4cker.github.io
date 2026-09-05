@@ -9,7 +9,7 @@ Cuatro aplicaciones y servicios separados, con componentes y contenido ordenados
 
 ## Publicación y servicios
 
-El proyecto Pages activo es `c4cker-github-io`, conectado al repositorio `c4cker/c4cker.github.io`. El Worker activo es `c4cker-labs-api` y atiende el envío de flags y el ranking en `https://c4cker-labs-api.lucianomps2015.workers.dev`.
+La publicación productiva se sirve desde Hetzner: `c4cker.com`, `blog.c4cker.com` y `labs.c4cker.com`. El Worker activo es `c4cker-labs-api`; Caddy lo expone bajo `https://api.c4cker.com` para el envío de flags y el ranking.
 
 Cloudflare Pages publica el frontend desde GitHub; el Worker se despliega por separado con Wrangler. Cloudflare también proporciona el Durable Object `RATE_LIMITER`, usado para limitar intentos del endpoint de flags. En el plan Free, su migración debe declararse como `new_sqlite_classes` en [wrangler.jsonc](wrangler.jsonc).
 

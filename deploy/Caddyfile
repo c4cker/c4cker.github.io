@@ -1,0 +1,68 @@
+{
+	# Caddy obtiene y renueva certificados Let's Encrypt automáticamente cuando
+	# los DNS de estos hostnames apunten al servidor y los puertos 80/443 estén libres.
+	servers {
+		protocols h1 h2 h3
+	}
+}
+
+(security) {
+	encode zstd gzip
+	header {
+		-Server
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+		Cross-Origin-Opener-Policy "same-origin"
+		Cross-Origin-Resource-Policy "same-origin"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	}
+}
+
+(static_site) {
+	import security
+	file_server
+}
+
+www.c4cker.com {
+	redir https://c4cker.com{uri} permanent
+}
+
+c4cker.com {
+	import security
+	header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
+
+	handle_path /labs* {
+		redir https://labs.c4cker.com{uri} permanent
+	}
+	handle_path /blog* {
+		redir https://blog.c4cker.com{uri} permanent
+	}
+	handle {
+		root * /srv/c4cker/current/main
+		file_server
+	}
+}
+
+blog.c4cker.com {
+	import security
+	root * /srv/c4cker/current/blog
+	file_server
+}
+
+labs.c4cker.com {
+	import security
+	header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self' https://api.c4cker.com https://c4cker-labs-api.lucianomps2015.workers.dev https://qwueucglybtchopehynh.supabase.co https://api4.ipify.org https://docs.google.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; frame-ancestors 'none'; form-action 'self' https://docs.google.com; upgrade-insecure-requests"
+	root * /srv/c4cker/current/labs
+	file_server
+}
+
+# Mantiene la API existente detrás de un hostname propio. Cuando Cloudflare
+# quede activo, este host se proxifica (nube naranja) y recibe las reglas WAF.
+api.c4cker.com {
+	import security
+	reverse_proxy https://c4cker-labs-api.lucianomps2015.workers.dev {
+		header_up Host c4cker-labs-api.lucianomps2015.workers.dev
+	}
+}

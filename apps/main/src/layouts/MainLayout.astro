@@ -9,8 +9,8 @@ const pageTitle = title ? `${title} · c4cker` : "c4cker · seguridad aplicada";
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image, Astro.site);
 const portfolioLinks = [
-  ["Blog", import.meta.env.DEV ? "http://127.0.0.1:4000" : "/blog/", "_blank"], ["Writeups", "/writeups"], ["Proyectos", "/proyectos"],
-  ["Labs", import.meta.env.DEV ? "http://labs.localhost:4322" : "/labs/"],
+  ["Blog", import.meta.env.DEV ? "http://127.0.0.1:4000" : "https://blog.c4cker.com", "_blank"], ["Writeups", "/writeups"], ["Proyectos", "/proyectos"],
+  ["Labs", import.meta.env.DEV ? "http://labs.localhost:4322" : "https://labs.c4cker.com"],
   ["Contacto", "/contacto"]
 ];
 const links = portfolioLinks;
@@ -50,7 +50,7 @@ const schema = { "@context": "https://schema.org", "@type": "WebSite", name: "c4
     <script>
       document.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((link) => {
         const destination = new URL(link.href, window.location.href);
-        if (destination.origin !== window.location.origin) {
+        if (!['Labs', 'Portfolio'].includes(link.textContent?.trim() || '') && destination.origin !== window.location.origin) {
           link.target = "_blank";
           link.rel = "noreferrer noopener";
         }

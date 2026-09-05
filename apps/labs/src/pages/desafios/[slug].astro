@@ -6,7 +6,7 @@ export const prerender = true;
 export function getStaticPaths() { return challenges.map((challenge) => ({ params: { slug: challenge.id }, props: { challenge } })); }
 const { challenge } = Astro.props;
 const challengesHref = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/desafios`;
-const flagsApiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://c4cker-labs-api.lucianomps2015.workers.dev";
+const flagsApiUrl = import.meta.env.PUBLIC_FLAGS_API_URL || "https://api.c4cker.com";
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || "";
 const supabasePublishableKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
 ---
