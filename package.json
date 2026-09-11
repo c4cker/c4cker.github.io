@@ -27,10 +27,10 @@
     "community:check": "node scripts/check-community.mjs"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "14.2.6",
-    "@supabase/supabase-js": "^2.114.0",
+    "@astrojs/cloudflare": "14.3.0",
+    "@supabase/supabase-js": "^2.116.0",
     "@tailwindcss/vite": "^4.1.12",
-    "astro": "^7.2.10",
+    "astro": "^7.3.1",
     "tailwindcss": "^4.1.12"
   },
   "devDependencies": {
