@@ -21,7 +21,7 @@ La cuenta actual no tiene una zona DNS en Cloudflare, por lo que no se pueden ap
 
 ## Desarrollo local del sitio principal
 
-Requiere Node.js 20.19 o superior.
+Requiere Node.js 24 LTS (cualquier versión 24.x). La versión de referencia del proyecto está en `.nvmrc`.
 
 ```powershell
 npm.cmd install
