@@ -52,7 +52,7 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
     };
     const systemName = () => {
       const agent = navigator.userAgent;
-      if (/Windows NT 10\.0/.test(agent)) return "Windows 10";
+      if (/Windows NT 10\.0/.test(agent)) return "Windows";
       if (/Windows/.test(agent)) return "Windows";
       if (/Android/.test(agent)) return "Android";
       if (/iPhone|iPad/.test(agent)) return "iOS";
@@ -70,7 +70,7 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
         if (hints?.architecture) architecture = hints.architecture.toUpperCase();
         if (hints?.bitness) bitness = hints.bitness;
       } catch { /* El navegador puede ocultar estas pistas. */ }
-      return { architecture, bitness, memory: specs.deviceMemory, threads: navigator.hardwareConcurrency };
+      return { architecture, bitness, memory: specs.deviceMemory };
     };
     const addLine = (content: string, emphasis = false) => {
       const line = document.createElement("p");
@@ -108,7 +108,7 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       asked.add("device"); choices.replaceChildren();
       const hints = await systemHints();
       const bits = hints.bitness ? ` (${hints.bitness} bits)` : "";
-      await reply(`Abriste desde ${systemName()}. Arquitectura detectada: ${hints.architecture}${bits}.`, true);
+      await reply(`Abriste desde ${systemName()}. Arquitectura informada por tu navegador: ${hints.architecture}${bits}.`, true);
       showQuestions();
     };
     const revealEnvironment = async () => {
@@ -120,9 +120,12 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
     const revealCapabilities = async () => {
       asked.add("capabilities"); choices.replaceChildren();
       const hints = await systemHints();
-      const memory = hints.memory === undefined ? "No pude estimar la memoria RAM" : `El navegador estima ${hints.memory} GiB de RAM`;
-      const logicalProcessors = hints.threads === undefined ? "no pude detectar los hilos lógicos" : `detecta ${hints.threads} hilos lógicos`;
-      await reply(`${memory} y ${logicalProcessors}. No expone el modelo exacto del CPU por privacidad.`, true);
+      const memory = hints.memory === undefined ? "No pude obtener una estimación de RAM" : `RAM estimada por el navegador: ${hints.memory} GiB`;
+      const bits = hints.bitness ? ` (${hints.bitness} bits)` : "";
+      const architecture = hints.architecture === "arquitectura no disponible"
+        ? "No informó la arquitectura del procesador."
+        : `Arquitectura reportada: ${hints.architecture}${bits}.`;
+      await reply(`${memory}. ${architecture}`, true);
       showQuestions();
     };
     const revealNetwork = async () => {
