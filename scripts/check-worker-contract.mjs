@@ -9,6 +9,7 @@ const required = [
   ["bounded body", "readJsonBody"],
   ["flag format", "FLAG_PATTERN"],
   ["ranking RPC", "rpc/get_ranking"],
+  ["visitor IP", "visitor-ip"],
   ["staged validation", "stage_locked"]
 ];
 const missing = required.filter(([, marker]) => !worker.includes(marker));

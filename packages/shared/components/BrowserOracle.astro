@@ -50,6 +50,28 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       if (!region) return "tu zona horaria";
       return new Intl.DisplayNames(["es"], { type: "region" }).of(region) ?? "tu zona horaria";
     };
+    const systemName = () => {
+      const agent = navigator.userAgent;
+      if (/Windows NT 10\.0/.test(agent)) return "Windows 10";
+      if (/Windows/.test(agent)) return "Windows";
+      if (/Android/.test(agent)) return "Android";
+      if (/iPhone|iPad/.test(agent)) return "iOS";
+      if (/Mac OS X/.test(agent)) return "macOS";
+      if (/Linux/.test(agent)) return "Linux";
+      return "sistema no identificado";
+    };
+    const systemHints = async () => {
+      const specs = navigator as Navigator & { deviceMemory?: number; userAgentData?: { architecture?: string; bitness?: string; getHighEntropyValues?: (hints: string[]) => Promise<{ architecture?: string; bitness?: string }> } };
+      const agent = navigator.userAgent;
+      let architecture = /Win64|x86_64|amd64|x64/.test(agent) ? "x64" : /arm64|aarch64|armv/i.test(agent) ? "ARM" : "arquitectura no disponible";
+      let bitness = "";
+      try {
+        const hints = await specs.userAgentData?.getHighEntropyValues?.(["architecture", "bitness"]);
+        if (hints?.architecture) architecture = hints.architecture.toUpperCase();
+        if (hints?.bitness) bitness = hints.bitness;
+      } catch { /* El navegador puede ocultar estas pistas. */ }
+      return { architecture, bitness, memory: specs.deviceMemory, threads: navigator.hardwareConcurrency };
+    };
     const addLine = (content: string, emphasis = false) => {
       const line = document.createElement("p");
       line.className = `oracle-line${emphasis ? " oracle-line--signal" : ""}`;
@@ -84,12 +106,9 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
     };
     const revealDevice = async () => {
       asked.add("device"); choices.replaceChildren();
-      const agent = navigator.userAgent;
-      const system = /Windows NT 10\.0/.test(agent) ? "Windows 10" : /Windows/.test(agent) ? "Windows" : /Android/.test(agent) ? "Android" : /iPhone|iPad/.test(agent) ? "iOS" : /Mac OS X/.test(agent) ? "macOS" : /Linux/.test(agent) ? "Linux" : "sistema no identificado";
-      const userAgentData = (navigator as Navigator & { userAgentData?: { architecture?: string } }).userAgentData;
-      const architectureHint = userAgentData?.architecture?.toLowerCase();
-      const architecture = architectureHint?.includes("arm") ? "ARM" : architectureHint?.includes("86") || architectureHint?.includes("x64") ? "x64" : /Win64|x86_64|amd64|x64/.test(agent) ? "x64" : /arm64|aarch64|armv/i.test(agent) ? "ARM" : "arquitectura no disponible";
-      await reply(`Abriste desde ${system}. Arquitectura detectada: ${architecture}.`, true);
+      const hints = await systemHints();
+      const bits = hints.bitness ? ` (${hints.bitness} bits)` : "";
+      await reply(`Abriste desde ${systemName()}. Arquitectura detectada: ${hints.architecture}${bits}.`, true);
       showQuestions();
     };
     const revealEnvironment = async () => {
@@ -100,21 +119,21 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
     };
     const revealCapabilities = async () => {
       asked.add("capabilities"); choices.replaceChildren();
-      const navigatorSpecs = navigator as Navigator & { deviceMemory?: number };
-      const logicalProcessors = navigator.hardwareConcurrency === undefined ? "No pude detectar la cantidad de hilos lógicos de tu CPU" : `tu CPU tiene ${navigator.hardwareConcurrency} hilos lógicos`;
-      const memory = navigatorSpecs.deviceMemory === undefined ? "y no pude estimar la memoria RAM disponible" : `Tu memoria RAM es ${navigatorSpecs.deviceMemory} GiB`;
-      await reply(`${memory} y ${logicalProcessors}.`, true);
+      const hints = await systemHints();
+      const memory = hints.memory === undefined ? "No pude estimar la memoria RAM" : `El navegador estima ${hints.memory} GiB de RAM`;
+      const logicalProcessors = hints.threads === undefined ? "no pude detectar los hilos lógicos" : `detecta ${hints.threads} hilos lógicos`;
+      await reply(`${memory} y ${logicalProcessors}. No expone el modelo exacto del CPU por privacidad.`, true);
       showQuestions();
     };
     const revealNetwork = async () => {
       asked.add("network"); choices.replaceChildren();
       try {
-        const result = await fetch("https://api4.ipify.org?format=json", { headers: { Accept: "application/json" } });
-        const payload = await result.json();
-        if (!result.ok || !/^\d{1,3}(?:\.\d{1,3}){3}$/.test(payload.ip ?? "")) throw new Error("ipv4 unavailable");
-        await reply(`Tu IPv4 pública es ${payload.ip}.`, true);
+        const result = await fetch("https://api.c4cker.com/visitor-ip", { headers: { Accept: "application/json" }, cache: "no-store", credentials: "omit" });
+        const payload = await result.json() as { ip?: unknown; family?: unknown };
+        if (!result.ok || typeof payload.ip !== "string" || (payload.family !== "ipv4" && payload.family !== "ipv6")) throw new Error("ip unavailable");
+        await reply(`Tu ${payload.family === "ipv4" ? "IPv4" : "IPv6"} pública es ${payload.ip}.`, true);
       } catch {
-        await reply("No pude encontrar una IPv4 pública desde este entorno.", true);
+        await reply("No pude consultar tu IP pública en este momento.", true);
       }
       await new Promise((resolve) => window.setTimeout(resolve, 2200));
       await reply("Oh no, me metí con la persona equivocada…", true, 2000);

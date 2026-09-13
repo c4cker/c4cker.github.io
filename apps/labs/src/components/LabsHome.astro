@@ -4,7 +4,6 @@ import { labs } from "../data/laboratories";
 import { communityPanels } from "../data/community";
 import { labPath } from "../lib/paths";
 
-const labsOrigin = labPath("");
 const htmlCount = challenges.filter((item) => item.format === "html").length;
 const dockerCount = challenges.filter((item) => item.format === "docker").length;
 const publishedLabs = labs.length;
@@ -14,19 +13,19 @@ const tour = [
   {
     name: "Desafíos",
     detail: "Descargá ejercicios acotados para practicar reconocimiento, análisis y resolución de problemas. Cada desafío incluye evidencias, instrucciones y un entorno HTML o Docker para trabajar localmente.",
-    href: labsOrigin + "/desafios",
+    href: labPath("/desafios"),
       action: "Ver desafíos",
   },
   {
     name: "Laboratorios",
       detail: `Hay ${publishedLabs} entorno${publishedLabs === 1 ? "" : "s"} para estudiar servicios y tráfico. Levantá los componentes en una red controlada, observá su comportamiento y documentá cada hallazgo.`,
-    href: labsOrigin + "/laboratorios",
+    href: labPath("/laboratorios"),
     action: "Ver laboratorios",
   },
   {
     name: "Comunidad",
       detail: `Hay ${panelCount} paneles con cursos, documentación, libros, herramientas y plataformas sobre sistemas, Linux, redes, web, cloud, defensa y CTF.`,
-    href: labsOrigin + "/comunidad",
+    href: labPath("/comunidad"),
       action: "Explorar recursos",
   },
 ];
@@ -37,7 +36,7 @@ const tour = [
     <h1>Un lugar <span>para desarrollarte</span></h1>
     <p class="labs-intro__lead">Practicá ciberseguridad con desafíos descargables, laboratorios locales y recursos organizados por tema. Elegí un ejercicio, levantá el entorno y documentá lo que encuentres.</p>
     <div class="labs-intro__actions">
-      <a class="labs-primary" href={labsOrigin + "/desafios"}>Empezar con un desafío</a>
+      <a class="labs-primary" href={labPath("/desafios")}>Empezar con un desafío</a>
     </div>
     <dl class="labs-stats" aria-label="Resumen de Labs">
       <div><dt>{challenges.length}</dt><dd>desafíos</dd></div>

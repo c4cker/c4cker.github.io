@@ -21,6 +21,11 @@ export default {
       const configured = Boolean(env.FLAGS_JSON && env.SUPABASE_URL && env.SUPABASE_PUBLISHABLE_KEY && env.SUPABASE_SERVICE_ROLE_KEY && env.RATE_LIMITER);
       return response({ ok: configured, service: "labs-api" }, configured ? 200 : 503, origin, "no-store");
     }
+    if (request.method === "GET" && pathname === "/visitor-ip") {
+      const ip = request.headers.get("CF-Connecting-IP");
+      if (!ip) return response({ ok: false, error: "ip_unavailable" }, 503, origin, "no-store");
+      return response({ ok: true, ip, family: ip.includes(":") ? "ipv6" : "ipv4" }, 200, origin, "no-store");
+    }
     if (request.method === "GET" && pathname === "/ranking") {
       const result = await supabase(env, "rpc/get_ranking", "POST", { limit_count: 100 });
       if (!result.ok) return response({ ok: false, error: "db_error" }, 500, origin);
