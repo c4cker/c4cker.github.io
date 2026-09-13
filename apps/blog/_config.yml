@@ -24,6 +24,20 @@ paginate: 10
 
 permalink: /:year/:month/:day/:title/
 
+collections:
+  tabs:
+    output: true
+    sort_by: order
+
+jekyll-archives:
+  enabled: [categories, tags]
+  layouts:
+    category: category
+    tag: tag
+  permalinks:
+    category: /categories/:name/
+    tag: /tags/:name/
+
 defaults:
   - scope:
       path: ""
@@ -32,6 +46,11 @@ defaults:
       layout: post
       comments: false
       toc: true
+  - scope:
+      type: tabs
+    values:
+      layout: page
+      permalink: /:title/
 
 compress_html:
   clippings: all
