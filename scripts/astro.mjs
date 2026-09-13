@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { cp } from "node:fs/promises";
 
 const [app, command, ...args] = process.argv.slice(2);
 
@@ -18,4 +19,21 @@ const child = spawn(process.execPath, ['node_modules/astro/bin/astro.mjs', comma
   }
 });
 
-child.on('exit', (code, signal) => process.exitCode = signal ? 1 : (code ?? 1));
+child.on('exit', async (code, signal) => {
+  if (signal || code !== 0) {
+    process.exitCode = 1;
+    return;
+  }
+
+  if (app === 'labs' && command === 'build') {
+    try {
+      await cp('challenges-sources', 'dist/labs/challenges-sources', { recursive: true });
+    } catch (error) {
+      console.error('No se pudieron incorporar los paquetes descargables de Labs.', error);
+      process.exitCode = 1;
+      return;
+    }
+  }
+
+  process.exitCode = 0;
+});
