@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -7,6 +8,22 @@ const blog = resolve(root, "apps", "blog");
 
 if (process.platform === "win32") {
   throw new Error("npm run prod debe ejecutarse en el servidor de producción, dentro de /opt/c4cker.");
+}
+
+const node24Bin = "/opt/node-v24.21.0-linux-x64/bin";
+const node24 = `${node24Bin}/node`;
+
+if (process.env.C4CKER_PROD_NODE24 !== "1" && existsSync(node24)) {
+  execFileSync(node24, [fileURLToPath(import.meta.url)], {
+    cwd: root,
+    stdio: "inherit",
+    env: {
+      ...process.env,
+      C4CKER_PROD_NODE24: "1",
+      PATH: `${node24Bin}:${process.env.PATH ?? ""}`,
+    },
+  });
+  process.exit(0);
 }
 
 const run = (command, args, cwd = root) => {
