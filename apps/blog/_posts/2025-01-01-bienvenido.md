@@ -1,9 +1,9 @@
 ---
 title: La IA como primer cerebro
-date: 2026-09-31
+date: 2026-09-23
 categories: [Philosophy]
 tags: [me]
-image: /apss/blog/assets/img/cerebro.webp
+image: /assets/img/cerebro.webp
 ---
 
 ## Introducción
