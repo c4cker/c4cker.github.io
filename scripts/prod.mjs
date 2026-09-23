@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, rmSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,6 +39,8 @@ const bundleUser = process.env.C4CKER_DEPLOY_USER ?? "c4cker";
 run("chown", ["-R", `${bundleUser}:${bundleUser}`, blog]);
 run("runuser", ["-u", bundleUser, "--", "bundle", "install"], blog);
 run("runuser", ["-u", bundleUser, "--", "bundle", "exec", "jekyll", "build", "--disable-disk-cache", "--destination", "_site"], blog);
+const legacyBlogFavicon = resolve(blog, "_site", "assets", "img", "favicons", "favicon.svg");
+if (existsSync(legacyBlogFavicon)) rmSync(legacyBlogFavicon);
 run("caddy", ["validate", "--config", "/etc/caddy/Caddyfile"]);
 run("systemctl", ["reload", "caddy"]);
 run("systemctl", ["is-active", "caddy"]);
