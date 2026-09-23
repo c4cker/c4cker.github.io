@@ -25,11 +25,11 @@
 	file_server
 }
 
-www.c4cker.com {
+http://www.c4cker.com:8080 {
 	redir https://c4cker.com{uri} permanent
 }
 
-c4cker.com {
+http://c4cker.com:8080 {
 	import security
 	header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
 
@@ -45,13 +45,13 @@ c4cker.com {
 	}
 }
 
-blog.c4cker.com {
+http://blog.c4cker.com:8080 {
 	import security
 	root * /opt/c4cker/apps/blog/_site
 	file_server
 }
 
-labs.c4cker.com {
+http://labs.c4cker.com:8080 {
 	import security
 	header Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self' https://api.c4cker.com https://c4cker-labs-api.lucianomps2015.workers.dev https://qwueucglybtchopehynh.supabase.co https://api4.ipify.org https://docs.google.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; frame-ancestors 'none'; form-action 'self' https://docs.google.com; upgrade-insecure-requests"
 	root * /opt/c4cker/dist/labs
@@ -60,7 +60,7 @@ labs.c4cker.com {
 
 # Mantiene la API existente detrás de un hostname propio. Cuando Cloudflare
 # quede activo, este host se proxifica (nube naranja) y recibe las reglas WAF.
-api.c4cker.com {
+http://api.c4cker.com:8080 {
 	import security
 	reverse_proxy https://c4cker-labs-api.lucianomps2015.workers.dev {
 		header_up Host c4cker-labs-api.lucianomps2015.workers.dev
