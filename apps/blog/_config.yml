@@ -22,8 +22,6 @@ theme: jekyll-theme-chirpy
 
 paginate: 10
 
-permalink: /:year/:month/:day/:title/
-
 collections:
   tabs:
     output: true
@@ -44,6 +42,7 @@ defaults:
       type: posts
     values:
       layout: post
+      permalink: /posts/:title/
       comments: false
       toc: true
   - scope:
