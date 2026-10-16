@@ -30,15 +30,15 @@
     "community:check": "node scripts/check-community.mjs"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "14.3.1",
-    "@supabase/supabase-js": "^2.116.0",
+    "@astrojs/cloudflare": "14.3.4",
+    "@supabase/supabase-js": "^2.117.3",
     "@tailwindcss/vite": "^4.1.12",
-    "astro": "^7.3.2",
+    "astro": "^7.3.8",
     "tailwindcss": "^4.1.12"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "concurrently": "^10.0.5",
+    "concurrently": "^10.0.6",
     "typescript": "^6.0.3"
   }
 }
