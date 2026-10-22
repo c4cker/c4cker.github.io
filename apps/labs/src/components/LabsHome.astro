@@ -4,8 +4,6 @@ import { labs } from "../data/laboratories";
 import { communityPanels } from "../data/community";
 import { labPath } from "../lib/paths";
 
-const htmlCount = challenges.filter((item) => item.format === "html").length;
-const dockerCount = challenges.filter((item) => item.format === "docker").length;
 const publishedLabs = labs.length;
 const panelCount = communityPanels.length;
 
@@ -37,14 +35,7 @@ const tour = [
     <p class="labs-intro__lead">Practicá ciberseguridad con desafíos descargables, laboratorios locales y recursos organizados por tema. Elegí un ejercicio, levantá el entorno y documentá lo que encuentres.</p>
     <div class="labs-intro__actions">
       <a class="labs-primary" href={labPath("/desafios")}>Empezar con un desafío</a>
-    </div>
-    <dl class="labs-stats" aria-label="Resumen de Labs">
-      <div><dt>{challenges.length}</dt><dd>desafíos</dd></div>
-      <div><dt>{htmlCount}</dt><dd>HTML</dd></div>
-      <div><dt>{dockerCount}</dt><dd>Docker</dd></div>
-      <div><dt>{publishedLabs}</dt><dd>laboratorios</dd></div>
-    </dl>
-  </div>
+    </div>  </div>
 </section>
 
 <section class="labs-start container-site" aria-labelledby="labs-start-title">
@@ -92,10 +83,6 @@ const tour = [
   .labs-intro__lead { max-width: 42rem; margin: 2rem auto 0; color: #cbd5e1; font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.75; }
   .labs-intro__actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 1.25rem 1.75rem; margin-top: 2.25rem; }
   .labs-primary { display: inline-flex; align-items: center; gap: 1.5rem; padding: 1rem 1.2rem; border: 1px solid var(--color-signal); background: var(--color-signal); color: var(--color-void); font: 700 .95rem/1 var(--font-mono); text-decoration: none; letter-spacing: .04em; transition: background .2s ease, color .2s ease, transform .2s ease; }
-  .labs-stats { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin: 3rem 0 0; }
-  .labs-stats div { display: flex; align-items: baseline; gap: .55rem; border-left: 1px solid var(--color-line); padding-left: .75rem; }
-  .labs-stats dt { color: var(--color-signal); font: 700 1.7rem/1 var(--font-display); }
-  .labs-stats dd { color: #91a799; font: .63rem var(--font-mono); text-transform: uppercase; }
   .labs-start { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(2rem, 8vw, 9rem); padding-top: clamp(3.5rem, 7vw, 6rem); padding-bottom: clamp(3.5rem, 7vw, 6rem); border-top: 1px solid var(--color-line); }
   .labs-start h2, .labs-guide h2, .labs-author h2 { max-width: 34rem; font-size: clamp(2.7rem, 5vw, 5rem); }
   .labs-start ol { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }

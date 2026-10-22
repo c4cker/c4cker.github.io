@@ -126,6 +126,13 @@
 .mobile-menu.is-open { grid-template-rows: 1fr; border-color: var(--color-line); opacity: 1; }
 .mobile-nav-link { display: flex; min-height: 0; align-items: center; justify-content: space-between; padding: .9rem max(1rem, calc((100% - 1120px) / 2 + 1rem)); border-bottom: 1px solid rgb(50 68 93 / .7); color: #cbd5e1; font-family: var(--font-mono); font-size: .78rem; text-decoration: none; opacity: 0; transform: translateY(-.4rem); transition: color .2s ease, background-color .2s ease, opacity .24s calc(var(--menu-index) * 25ms), transform .28s calc(var(--menu-index) * 25ms); }
 .mobile-menu.is-open .mobile-nav-link { opacity: 1; transform: translateY(0); }
+/* Índices en CSS y no en style="": la CSP de _headers no permite estilos inline. */
+.mobile-nav-link { --menu-index: 0; }
+.mobile-nav-link:nth-child(2) { --menu-index: 1; }
+.mobile-nav-link:nth-child(3) { --menu-index: 2; }
+.mobile-nav-link:nth-child(4) { --menu-index: 3; }
+.mobile-nav-link:nth-child(5) { --menu-index: 4; }
+.mobile-nav-link:nth-child(n + 6) { --menu-index: 5; }
 .mobile-nav-link:hover, .mobile-nav-link[aria-current="page"] { color: var(--color-signal); background: rgb(134 169 255 / .08); }
 ::-webkit-scrollbar { width: .78rem; height: .78rem; }
 ::-webkit-scrollbar-track { background: var(--color-void); border: 0; }
