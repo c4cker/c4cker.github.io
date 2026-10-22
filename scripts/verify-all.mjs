@@ -16,8 +16,8 @@ run("node", ["scripts/astro.mjs", "labs", "check"]);
 run(npm, ["run", "community:check"]);
 
 if (mode === "--build") {
-  run(npm, ["run", "build:main"], { env: { ...process.env, C4CKER_TARGET: "pages" } });
-  run(npm, ["run", "build:labs"], { env: { ...process.env, C4CKER_TARGET: "pages", C4CKER_APP: "labs" } });
+  run(npm, ["run", "build:main"]);
+  run(npm, ["run", "build:labs"]);
   run(bundle, ["exec", "jekyll", "build", "--source", ".", "--destination", ".verify-site"], { cwd: "apps/blog" });
 }
 

@@ -3,20 +3,39 @@ updates:
   - package-ecosystem: npm
     directory: "/"
     schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
+      interval: daily
+      time: "06:00"
+      timezone: America/Argentina/Buenos_Aires
+    open-pull-requests-limit: 10
     groups:
       npm-non-breaking:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # astro check todavía no soporta TypeScript 7.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: bundler
     directory: "/apps/blog"
     schedule:
-      interval: weekly
+      interval: daily
+      time: "06:00"
+      timezone: America/Argentina/Buenos_Aires
     open-pull-requests-limit: 5
     groups:
       bundler-non-breaking:
         update-types:
           - "minor"
           - "patch"
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "06:00"
+      timezone: America/Argentina/Buenos_Aires
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns:
+          - "*"

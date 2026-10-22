@@ -17,8 +17,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check:all
-      - run: C4CKER_TARGET=pages npm run build:main
-      - run: C4CKER_TARGET=pages C4CKER_APP=labs npm run build:labs
+      - run: npm run build:main
+      - run: npm run build:labs
       - uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1
         with:
           ruby-version: "3.4"
