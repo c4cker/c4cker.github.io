@@ -3,4 +3,4 @@ Site: c4cker.github.io/labs
 Focus: investigación y práctica de seguridad responsable
 
 /* STACK */
-Astro · Tailwind · Cloudflare · Supabase
+Astro · Tailwind · GitHub Pages
