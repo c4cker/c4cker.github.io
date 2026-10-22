@@ -130,6 +130,15 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
     };
     const revealNetwork = async () => {
       asked.add("network"); choices.replaceChildren();
+      // /cdn-cgi/trace lo responde Cloudflare en el mismo origen: no hay backend propio ni se guarda nada.
+      try {
+        const result = await fetch("/cdn-cgi/trace", { cache: "no-store", credentials: "omit" });
+        const ip = (await result.text()).match(/^ip=(.+)$/m)?.[1];
+        if (!result.ok || !ip) throw new Error("ip unavailable");
+        await reply(`Tu ${ip.includes(":") ? "IPv6" : "IPv4"} pública es ${ip}.`, true);
+      } catch {
+        await reply("Tu IP se me escapa… por ahora.", true);
+      }
       await new Promise((resolve) => window.setTimeout(resolve, 2200));
       await reply("Oh no, me metí con la persona equivocada…", true, 2000);
       window.setTimeout(() => {
@@ -148,7 +157,7 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
       if (!asked.has("device")) button("¿Desde dónde abrí la página?", revealDevice);
       if (!asked.has("environment")) button("Decime algo más", revealEnvironment);
       if (!asked.has("capabilities")) button("¿Qué puede hacer mi navegador?", revealCapabilities);
-      if (asked.has("device") && asked.has("environment") && asked.has("capabilities") && !asked.has("network")) button("¿Algo más?", revealNetwork);
+      if (asked.has("device") && asked.has("environment") && asked.has("capabilities") && !asked.has("network")) button("¿Querés que te diga tu IP?", revealNetwork);
     };
     const setOpen = (open: boolean) => {
       root.classList.toggle("is-open", open);
