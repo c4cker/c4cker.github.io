@@ -26,7 +26,7 @@ jobs:
       - name: Avisar actualización mayor
         if: steps.meta.outputs.update-type == 'version-update:semver-major'
         run: |
-          gh issue create --title "Actualización mayor para revisar: $DEPS" \
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "Actualización mayor para revisar: $DEPS" \
             --body "Dependabot abrió $PR_URL con un cambio de versión mayor ($DEPS). No se mergea solo: revisá si rompe algo antes de aprobarlo. @c4cker" \
             --assignee c4cker
         env:

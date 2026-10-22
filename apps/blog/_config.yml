@@ -20,6 +20,11 @@ avatar: /assets/img/avatar.webp
 
 theme: jekyll-theme-chirpy
 
+# Librerías y tipografías del tema desde assets/lib (submódulo chirpy-static-assets), sin CDN.
+assets:
+  self_host:
+    enabled: true
+
 paginate: 10
 
 collections:
