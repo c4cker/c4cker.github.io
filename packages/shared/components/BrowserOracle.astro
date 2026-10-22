@@ -130,16 +130,20 @@ const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL :
     };
     const revealNetwork = async () => {
       asked.add("network"); choices.replaceChildren();
-      // /cdn-cgi/trace de Cloudflare: sin backend propio ni datos guardados. 1.1.1.1 es una IP literal,
-      // así que fuerza IPv4; si la red no tiene IPv4, cae al endpoint del mismo origen (puede dar IPv6).
-      const traceIp = async (url: string) => {
+      // api4.ipify.org solo tiene registros A (sin AAAA), forzando conexión IPv4 real.
+      // Fallback: /cdn-cgi/trace del mismo origen (puede dar IPv6 si la red es solo IPv6).
+      const fetchIp = async (url: string, extract?: (body: string) => string | undefined) => {
         const result = await fetch(url, { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(4000) });
-        const ip = result.ok ? (await result.text()).match(/^ip=(.+)$/m)?.[1] : undefined;
+        if (!result.ok) throw new Error("not ok");
+        const body = await result.text();
+        const ip = extract ? extract(body) : body.trim();
         if (!ip) throw new Error("ip unavailable");
         return ip;
       };
       try {
-        const ip = await traceIp("https://1.1.1.1/cdn-cgi/trace").catch(() => traceIp("/cdn-cgi/trace"));
+        const ip = await fetchIp("https://api4.ipify.org").catch(() =>
+          fetchIp("/cdn-cgi/trace", (b) => b.match(/^ip=(.+)$/m)?.[1])
+        );
         await reply(`Tu ${ip.includes(":") ? "IPv6" : "IPv4"} pública es ${ip}.`, true);
       } catch {
         await reply("Tu IP se me escapa… por ahora.", true);
