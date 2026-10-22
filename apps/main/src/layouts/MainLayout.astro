@@ -9,8 +9,8 @@ const pageTitle = title ? `${title} · c4cker` : "c4cker · seguridad aplicada";
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image, Astro.site);
 const portfolioLinks = [
-  ["Blog", import.meta.env.DEV ? "http://127.0.0.1:4000" : "https://blog.c4cker.com", "_blank"], ["Writeups", "/writeups"], ["Proyectos", "/proyectos"],
-  ["Labs", import.meta.env.DEV ? "http://labs.localhost:4322" : "https://labs.c4cker.com"],
+  ["Blog", import.meta.env.DEV ? "http://127.0.0.1:4000" : "https://c4cker.com/blog/", "_blank"], ["Writeups", "/writeups"], ["Proyectos", "/proyectos"],
+  ["Labs", import.meta.env.DEV ? "http://labs.localhost:4322" : "https://c4cker.com/labs/"],
   ["Contacto", "/contacto"]
 ];
 const links = portfolioLinks;

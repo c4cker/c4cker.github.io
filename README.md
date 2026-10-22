@@ -1,23 +1,15 @@
 # c4cker.github.io
 
-Cuatro aplicaciones y servicios separados, con componentes y contenido ordenados para editarlos a mano:
+Sitio 100 % estático, publicado con GitHub Pages:
 
-- `apps/main`: portfolio, proyectos, writeups, contacto y legales.
-- `apps/labs`: desafíos, laboratorios, comunidad y ranking.
-- `apps/blog`: blog Jekyll independiente.
+- `apps/main`: portfolio, proyectos, writeups, contacto y legales → `https://c4cker.com/`
+- `apps/labs`: desafíos descargables, laboratorios y comunidad → `https://c4cker.com/labs/`
+- `apps/blog`: blog Jekyll → `https://c4cker.com/blog/`
 - `packages/shared`: identidad visual y componentes reutilizados por Main y Labs.
 
-## Publicación y servicios
+## Publicación
 
-La publicación productiva se sirve desde Hetzner: `c4cker.com`, `blog.c4cker.com` y `labs.c4cker.com`. El checkout productivo vive en `/opt/c4cker`; Caddy sirve únicamente sus artefactos compilados. El Worker activo es `c4cker-labs-api`; Caddy lo expone bajo `https://api.c4cker.com` para el envío de flags y el ranking.
-
-Cloudflare Pages publica el frontend desde GitHub; el Worker se despliega por separado con Wrangler. Cloudflare también proporciona el Durable Object `RATE_LIMITER`, usado para limitar intentos del endpoint de flags. En el plan Free, su migración debe declararse como `new_sqlite_classes` en [wrangler.jsonc](wrangler.jsonc).
-
-El repositorio solo referencia ese proyecto Pages y ese Worker. No borres ninguno sin actualizar primero las URLs y la configuración de despliegue.
-
-Para actualizar Hetzner, conectate al servidor, entrá en `/opt/c4cker` y ejecutá `npm run prod`. El comando hace `git pull --ff-only origin main`, instala dependencias, recompila Main, Labs y el blog, valida Caddy y recarga el servicio.
-
-La cuenta actual no tiene una zona DNS en Cloudflare, por lo que no se pueden aplicar reglas WAF de zona ni Bot Fight Mode sobre un dominio propio. La protección efectiva está en el Worker: Durable Object para rate limiting, validación de origen y método, JSON obligatorio, límite de payload, validación de entrada y respuestas con `nosniff` y `no-referrer`.
+[pages.yml](.github/workflows/pages.yml) compila las tres apps en un único artefacto y lo publica en GitHub Pages en cada push a `main`. No hay backend, base de datos ni login: los desafíos se descargan y se resuelven localmente, sin envío ni validación de flags.
 
 ## Desarrollo local del sitio principal
 
@@ -51,39 +43,9 @@ PUBLIC_GOOGLE_FORM_URL=https://docs.google.com/forms/d/e/TU_ID/viewform?embedded
 
 La URL de inserción es pública y no es un secreto. No guardes credenciales de Google, tokens ni claves en el repositorio. El formulario queda oculto hasta que esa variable exista.
 
-No subas archivos `.local`, `.dev.vars` ni claves de Supabase.
-
-## Labs, flags y Supabase
-
-Labs usa Supabase Auth con GitHub OAuth para identificar a cada participante. El Worker valida el JWT, guarda el `user_id` y relaciona el solve con un perfil público que contiene únicamente el nickname elegido. La IP puede usarse de forma efímera para rate limiting, pero no se guarda ni se convierte en identidad. Las flags deben tener el formato `C4CKER{...}`, con entre 32 y 64 caracteres alfanuméricos dentro de las llaves. `SUPABASE_SERVICE_ROLE_KEY` y `FLAGS_JSON` son variables privadas del Worker; `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` no son secretos.
-
-Para desplegar el Worker manualmente desde la raíz:
-
-```powershell
-npx wrangler deploy --config wrangler.jsonc
-```
+No subas archivos `.local` ni `.env`.
 
 Antes de abrir un PR ejecutá `npm.cmd run check:all`; para reproducir los builds de Pages ejecutá `npm.cmd run build:all`.
-
-Comprobá el servicio sin enviar una flag:
-
-```powershell
-curl.exe https://c4cker-labs-api.lucianomps2015.workers.dev/health
-```
-
-Las migraciones de `supabase/migrations/` son acumulativas e históricas. No se deben borrar después de aplicarlas. Para una prueba controlada, usá una cuenta de prueba y una flag temporal fuera del repositorio; después eliminá solo el solve de prueba desde el SQL Editor:
-
-```sql
-DELETE FROM public.challenge_solves
-WHERE challenge_slug = 'header-trace'
-  AND user_id = 'UUID-DE-LA-CUENTA-DE-PRUEBA';
-```
-
-La API de producción no tiene permiso `DELETE` sobre esa tabla por diseño. No amplíes ese permiso solo para limpiar pruebas.
-
-La migración `006_remove_legacy_solves.sql` elimina los solves anónimos anteriores y las columnas `visitor_hash` y `nickname` legacy. Los solves autenticados se conservan; quienes habían participado con el esquema anterior deben volver a enviar sus flags con GitHub.
-
-El Worker también se publica automáticamente con [deploy-worker.yml](.github/workflows/deploy-worker.yml) cuando cambia su código o el catálogo de desafíos. El job usa el entorno protegido `cloudflare-production`, que debe tener como revisores requeridos a `c4cker`, y necesita los secretos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` configurados en ese entorno.
 
 ## Desarrollo del blog
 
@@ -100,7 +62,5 @@ Abrí `http://127.0.0.1:4000`.
 La política y lista de salida para cambios relevantes está en [SECURITY.md](SECURITY.md). Ejecutá `npm.cmd run security:audit` antes de desplegar y habilitá Secret Scanning, Push Protection y Dependabot en GitHub.
 
 - No hay credenciales, flags válidas ni claves de servicio en el repositorio.
-- Los solves usan `user_id` y perfiles públicos separados; los solves anónimos anteriores se eliminan mediante la migración de contracción 006 y deben volver a registrarse.
-- La IP original no se guarda; comunicá el tratamiento en la política de privacidad y respetá la normativa aplicable.
 - Los retos descargables deben ejecutarse localmente y en entornos aislados.
 - CodeQL está activo mediante la configuración predeterminada de GitHub y `npm audit` corre automáticamente en GitHub Actions. Las acciones externas del repositorio están fijadas a commits concretos.

@@ -34,28 +34,15 @@ npm.cmd run security:audit
 
 `security:audit` falla ante vulnerabilidades de severidad alta o crítica de dependencias de producción. El análisis completo no sustituye una revisión de autorización, RLS, entradas y exposición de datos.
 
-## Despliegue de Labs
+## Despliegue
 
-El frontend se publica mediante el proyecto Pages `c4cker-github-io`. La API se publica por separado como Worker `c4cker-labs-api`:
-
-```powershell
-npx wrangler deploy --config wrangler.jsonc
-```
-
-El Worker usa el Durable Object `RATE_LIMITER`. Para cuentas Cloudflare Free, la migración de `RateLimiter` debe usar `new_sqlite_classes`; cambiarla a `new_classes` hace fallar el despliegue.
-
-La cuenta no tiene una zona DNS administrada por Cloudflare, así que no hay reglas WAF de zona ni Bot Fight Mode aplicables al dominio actual. El Worker funciona como primera barrera: limita intentos, restringe orígenes y métodos, exige JSON, limita el cuerpo y añade headers defensivos. Si se incorpora un dominio a Cloudflare, se debe agregar un WAF Managed Ruleset y una regla de rate limiting específica para `/submit-flag` sin retirar estas validaciones.
-
-Las migraciones de `supabase/migrations/` deben conservarse en orden. La tabla `challenge_solves` concede al rol del Worker solo lectura e inserción; no se concede borrado desde la API. Los datos creados por pruebas deben limpiarse manualmente desde el SQL Editor con un identificador específico, nunca con un borrado amplio.
+Todo el sitio es estático y se publica con GitHub Pages ([pages.yml](.github/workflows/pages.yml)). No hay backend, base de datos ni autenticación. GitHub Pages no aplica archivos `_headers`, así que las cabeceras de seguridad dependen de GitHub; si se vuelve a agregar un backend, esta lista aplica completa.
 
 ## Reglas concretas para este repositorio
 
-- `.dev.vars`, `.env*` y claves privadas están ignorados; los valores de producción viven en Cloudflare/GitHub Secrets & Variables.
-- El endpoint de flags solo debe aceptar JWT de Supabase Auth y derivar el `user_id` del token validado; nunca debe confiar en una identidad enviada por el cliente. La IP se usa solo de forma efímera para rate limiting.
+- `.env*` y claves privadas están ignorados; las variables de build viven en GitHub Secrets & Variables.
 - Un laboratorio descargable no incluye una flag válida, credenciales, tokens ni servicios expuestos fuera del entorno aislado.
 - Los writeups publicados no incluyen información de terceros, secretos ni instrucciones fuera de un entorno autorizado.
-- Antes de conectar Supabase: crear RLS, políticas por operación, pruebas con el rol `anon` y una revisión de la respuesta mínima necesaria.
-
 ## Antes de desplegar
 
-Revisar el diff, ejecutar los comandos anteriores, verificar cabeceras en producción y confirmar que GitHub Secret Scanning, Push Protection, Dependabot alerts, Dependabot security updates y CodeQL estén habilitados para el repositorio público. El despliegue del Worker pasa por el entorno protegido `cloudflare-production`, con revisión requerida de `c4cker`.
+Revisar el diff, ejecutar los comandos anteriores, verificar cabeceras en producción y confirmar que GitHub Secret Scanning, Push Protection, Dependabot alerts, Dependabot security updates y CodeQL estén habilitados para el repositorio público.

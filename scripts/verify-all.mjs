@@ -14,7 +14,6 @@ function run(command, args, options = {}) {
 run(npm, ["run", "check"]);
 run("node", ["scripts/astro.mjs", "labs", "check"]);
 run(npm, ["run", "community:check"]);
-run(npm, ["run", "worker:check"]);
 
 if (mode === "--build") {
   run(npm, ["run", "build:main"], { env: { ...process.env, C4CKER_TARGET: "pages" } });
